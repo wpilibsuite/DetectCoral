@@ -1,0 +1,33 @@
+#!/bin/bash
+
+# By Grant Perkins, 2019
+
+# Make directories used in training
+mkdir /tensorflow/models/research/learn
+mkdir /tensorflow/models/research/learn/ckpt
+
+# Remove directories created during training
+rm -rf /tensorflow/models/research/learn/train
+rm -rf /tensorflow/models/research/learn/models
+
+cd /tensorflow/models/research
+
+# Download checkpoints for MobileNet v2 hosted by Google
+echo "Downloading model"
+./prepare_checkpoint_and_dataset.sh --network_type mobilenet_v2_ssd --train_whole_model false # > /dev/null 2>/dev/null
+
+# Copy custom pipeline into docker
+cp pipeline.config /tensorflow/models/research/learn/ckpt/pipeline.config
+
+./tar_to_record.sh
+
+# Get number of epochs from SageMaker
+TRAIN_STEPS=$(python3 hyper.py)
+
+echo "Beginning training on Docker image"
+./retrain_detection_model.sh --num_training_steps $TRAIN_STEPS --num_eval_steps 1 > /dev/null 2>&1
+
+echo "Converting checkpoint to tflite"
+./convert_checkpoint_to_edgetpu_tflite.sh --checkpoint_num $TRAIN_STEPS > /dev/null 2>&1
+
+cp ./learn/models/output_tflite_graph.tflite /opt/ml/model/output.tflite
