@@ -10,9 +10,9 @@ WPILib provides thousands of labelled images for this years game, which you can 
 2. Create a [supervise.ly](supervise.ly) account. This is a very nice tool for labelling data.
 3. (Optional) You can add other teammates to your Supervise.ly workspace by clicking 'Members' on the left and then 'INVITE' at the top.
 4. Choose a workspace to work in, in the 'Workspaces' tab.
-5. Upload the official WPILib labelled data to your workspace. [Download the tar here](https://github.com/GrantPerkins/TestSagemaker/releases/download/v1/WPILib.tar), extract it, then click 'IMPORT DATA' or 'UPLOAD' inside of your workspace. Change the import plugin to Supervisely, then drag in the extracted FOLDER. Then, give the project a name, then click import.
+5. Upload the official WPILib labelled data to your workspace. [Download the tar here](https://github.com/GrantPerkins/TestSagemaker/releases/download/v1/WPILib.tar), extract it, then click 'IMPORT DATA' or 'UPLOAD' inside of your workspace. Change the import plugin to Supervisely, then drag in the extracted FOLDER. Then, give the project a name, then click import. ![import](https://github.com/GrantPerkins/TestSagemaker/blob/master/docs/supervisely-import.png)
 6. Upload your own video to your workspace. Click 'UPLOAD' when inside of your workspace, change your import plugin to video, drag in your video, give the project a name, and click import.
-7. Click into your newly import Dataset. Use the `rectangle tool` to draw appropriate boxes around the objects which you wish to label. Make sure to choose the right class when you are labelling. The class selector is in the top left of your screen.
+7. Click into your newly import Dataset. Use the `rectangle tool` to draw appropriate boxes around the objects which you wish to label. Make sure to choose the right class when you are labelling. The class selector is in the top left of your screen. ![labeling](https://github.com/GrantPerkins/TestSagemaker/blob/master/docs/supervisely-labeling.png)
 
 ### Training
 
