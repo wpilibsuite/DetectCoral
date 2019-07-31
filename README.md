@@ -19,6 +19,7 @@ WPILib provides thousands of labelled images for this years game, which you can 
 1. Download your datasets from Supervise.ly. Select the `.json + images` option.
 2. Go to the Amazon Web Services console, and open S3.
 3. Create a new bucket, and make sure it had public read permissions if multiple accounts will be using this data.
+- Once you've made the bucket, go into the bucket, then `Permissions` --> `Access Control List`. Then change the public access to allow `List objects` and `Read bucket permissions`.
 4. Upload the `.tar` file that you downloaded from Supervisely into the new S3 bucket. Make sure it also has public read permissions if multiple accounts will be using this data.
 5. Open SageMaker, and create a new notebook instance. The instance should have the following characteristics:
  - IAM Permissions: Click `Create a new role` inside of the dropdown. It should have access to ANY S3 bucket.
