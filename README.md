@@ -24,14 +24,15 @@ WPILib provides thousands of labelled images for this years game, which you can 
  - IAM Permissions: Click `Create a new role` inside of the dropdown. It should have access to ANY S3 bucket.
  - GitHub repository: open the panel, then click on where it says `None`. Click `Clone a public repository to this notebook instance only`, then paste in this link: [https://github.com/GrantPerkins/TestSagemaker.git](https://github.com/GrantPerkins/TestSagemaker.git)
  - Now create the instance
-6. Run the first code block, which builds and deploys the necessary dependencies to an ECR image, used by the training instance.
-7. Run the second code block, which gets the execution role, used for communication between computers.
-8. Run the third code block, which gets the address of the ECR image made in the first step.
-9. Change the fourth code block to use your data. If your data is stored in a bucket called `my-bucket1`, then you must replace `"s3://wpilib"` to `"s3://my-bucket1"`. As a reminder, there should be only one `.tar` in your bucket.
-10. Run the fourth code block. This block will take roughly 45 minutes to train your model.
-11. Go to the SageMaker main page in the AWS console. Open Training Jobs. Open the most recent job.
-12. Once the model is done training (the job says `Completed`), scroll to the bottom inside the training job. Click on the link in the `Output` section, where it says `S3 model artifact`.
-13. Click on `model.tar.gz`. Click on `Download`.
+6. Open `coral.ipynb`, found on the left side of the screen.
+7. Run the first code block, which builds and deploys the necessary dependencies to an ECR image, used by the training instance.
+8. Run the second code block, which gets the execution role, used for communication between computers.
+9. Run the third code block, which gets the address of the ECR image made in the first step.
+10. Change the fourth code block to use your data. If your data is stored in a bucket called `my-bucket1`, then you must replace `"s3://wpilib"` to `"s3://my-bucket1"`. As a reminder, there should be only one `.tar` in your bucket.
+11. Run the fourth code block. This block will take roughly 45 minutes to train your model.
+12. Go to the SageMaker main page in the AWS console. Open Training Jobs. Open the most recent job.
+13. Once the model is done training (the job says `Completed`), scroll to the bottom inside the training job. Click on the link in the `Output` section, where it says `S3 model artifact`.
+14. Click on `model.tar.gz`. Click on `Download`.
 
 ### Inference
 
