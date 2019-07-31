@@ -1,6 +1,50 @@
 # WPILib-ML Docs
 
-## To see how to use/train, view the notebook
+## How to Use
+
+### Getting Data
+
+WPILib provides thousands of labelled images for this years game, which you can download here. However, you can train with custom data using this notebook as well. The below instructions describe how to gather and label your own data.
+
+1. Plug a USB Camera into your laptop, and run a script similar to [record_video.py](utils/record_video.py), which simply makes an mp4 from the camera stream.
+2. Create a [supervise.ly](supervise.ly) account. This is a very nice tool for labelling data.
+3. (Optional) You can add other teammates to your Supervise.ly workspace by clicking 'Members' on the left and then 'INVITE' at the top.
+4. Choose a workspace to work in, in the 'Workspaces' tab.
+5. Upload the official WPILib labelled data to your workspace. [Download the tar here](https://github.com/GrantPerkins/TestSagemaker/releases/download/v1/WPILib.tar), extract it, then click 'IMPORT DATA' or 'UPLOAD' inside of your workspace. Change the import plugin to Supervisely, then drag in the extracted FOLDER. Then, give the project a name, then click import.
+6. Upload your own video to your workspace. Click 'UPLOAD' when inside of your workspace, change your import plugin to video, drag in your video, give the project a name, and click import.
+7. Click into your newly import Dataset. Use the `rectangle tool` to draw appropriate boxes around the objects which you wish to label. Make sure to choose the right class when you are labelling. The class selector is in the top left of your screen.
+
+### Training
+
+1. Download your datasets from Supervise.ly. Select the `.json + images` option.
+2. Go to the Amazon Web Services console, and open S3.
+3. Create a new bucket, and make sure it had public read permissions if multiple accounts will be using this data.
+4. Upload the `.tar` file that you downloaded from Supervisely into the new S3 bucket. Make sure it also has public read permissions if multiple accounts will be using this data.
+5. Open SageMaker, and create a new notebook instance. The instance should have the following characteristics:
+ - IAM Permissions: Click `Create a new role` inside of the dropdown. It should have access to ANY S3 bucket.
+ - GitHub repository: open the panel, then click on where it says `None`. Click `Clone a public repository to this notebook instance only`, then paste in this link: [https://github.com/GrantPerkins/TestSagemaker.git](https://github.com/GrantPerkins/TestSagemaker.git)
+ - Now create the instance
+6. Run the first code block, which builds and deploys the necessary dependencies to an ECR image, used by the training instance.
+7. Run the second code block, which gets the execution role, used for communication between computers.
+8. Run the third code block, which gets the address of the ECR image made in the first step.
+9. Change the fourth code block to use your data. If your data is stored in a bucket called `my-bucket1`, then you must replace `"s3://wpilib"` to `"s3://my-bucket1"`. As a reminder, there should be only one `.tar` in your bucket.
+10. Run the fourth code block. This block will take roughly 45 minutes to train your model.
+11. Go to the SageMaker main page in the AWS console. Open Training Jobs. Open the most recent job.
+12. Once the model is done training (the job says `Completed`), scroll to the bottom inside the training job. Click on the link in the `Output` section, where it says `S3 model artifact`.
+13. Click on `model.tar.gz`. Click on `Download`.
+
+### Inference
+
+1. Go to the training job in SageMaker, scroll to the bottom, and find the output S3 location
+2. Download the the tar file in the bucket, extract it, and get your .tflite file
+3. Put the tflite on your Raspberry Pi by plugging in the SD card into your computer and dragging it in to /home/pi
+4. Run the python script, using `python3 object_detection.py --model output.tflite`
+
+
+## Notebook
+### Building and registering the container
+
+This code block runs a script that builds a docker container, and saves it as an Amazon ECR image. This image is used by the training instance so that all proper dependencies and WPILib files are in place.
 
 ## How it works
 
