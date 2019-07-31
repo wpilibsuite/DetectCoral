@@ -25,7 +25,7 @@ WPILib provides thousands of labelled images for this years game, which you can 
  - IAM Permissions: Click `Create a new role` inside of the dropdown. It should have access to ANY S3 bucket.
  - GitHub repository: open the panel, then click on where it says `None`. Click `Clone a public repository to this notebook instance only`, then paste in this link: [https://github.com/GrantPerkins/TestSagemaker.git](https://github.com/GrantPerkins/TestSagemaker.git) ![new notebook](https://github.com/GrantPerkins/TestSagemaker/blob/master/docs/new-notebook.png)
  - Now create the instance
-6. Open `coral.ipynb`, found on the left side of the screen.
+6. Open `coral.ipynb`, found on the left side of the screen. If prompted, the kernel is `conda_tensorflow_p36`
 7. Run the first code block, which builds and deploys the necessary dependencies to an ECR image, used by the training instance.
 8. Run the second code block, which gets the execution role, used for communication between computers.
 9. Run the third code block, which gets the address of the ECR image made in the first step.
