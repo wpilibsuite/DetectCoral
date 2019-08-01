@@ -4,7 +4,7 @@ usage() {
   cat << END_OF_USAGE
   Install dependencies for inference on a Raspberry Pi.
   
-  --input -i         Path of model.tar.gz downloaded from SageMaker
+  --input -i        Path of model.tar.gz downloaded from SageMaker
   --help            Print this help.
 END_OF_USAGE
 }
@@ -27,3 +27,5 @@ done
 
 echo "Extracting $path"
 tar zxvf $path
+
+python3 object_detection.py --model model.tflite
