@@ -6,8 +6,8 @@
 
 WPILib provides thousands of labelled images for this years game, which you can download here. However, you can train with custom data using this notebook as well. The below instructions describe how to gather and label your own data.
 
-1. Plug a USB Camera into your laptop, and run a script similar to [record_video.py](utils/record_video.py), which simply makes an mp4 from the camera stream.
-2. Create a [supervise.ly](supervise.ly) account. This is a very nice tool for labelling data.
+1. Plug a USB Camera into your laptop, and run a script similar to [record_video.py](utils/record_video.py), which simply makes an mp4 from the camera stream. Any video of the game field will suffice, but the provided script is just one option for recording video.
+2. Create a [supervise.ly](supervise.ly) account. This is a very nice tool for labelling data. After going to the [supervise.ly](supervise.ly) website, the Signup box is in the top right corner. Provide the necessary details, then click "CREATE AN ACCOUNT". If you would rather link a Google or GitHub, click Log in, ten click the appropriate platform with which you wish to link.
 3. (Optional) You can add other teammates to your Supervise.ly workspace by clicking 'Members' on the left and then 'INVITE' at the top.
 4. Choose a workspace to work in, in the 'Workspaces' tab.
 5. Upload the official WPILib labelled data to your workspace. [Download the tar here](https://github.com/GrantPerkins/CoralSagemaker/releases/download/v1/WPILib.tar), extract it, then click 'IMPORT DATA' or 'UPLOAD' inside of your workspace. Change the import plugin to Supervisely, then drag in the extracted FOLDER. Then, give the project a name, then click import. ![import](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/supervisely-import.png)
