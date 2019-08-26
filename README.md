@@ -16,8 +16,8 @@ WPILib provides thousands of labelled images for this years game, which you can 
 
 ### Training
 
-1. Download your datasets from Supervise.ly. Select the `.json + images` option. ![json and images](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/supervisely-download.png)
-2. Go to the Amazon Web Services console, and open S3.
+1. Download your datasets from Supervise.ly. Click on the vertical three dots on the dataset, then "Download as", then select the `.json + images` option. ![json and images](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/supervisely-download.png)
+2. Go to the Amazon Web Services console website, and search S3 in the "Find Services" field. Open S3.
 3. Create a new bucket, and make sure it had public read permissions if multiple accounts will be using this data. ![new bucket](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/new-bucket.png)
 - Once you've made the bucket, go into the bucket, then `Permissions` --> `Access Control List`. Then change the public access to allow `List objects` and `Read bucket permissions`. ![permissions](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/bucket-permissions.png)
 4. Upload the `.tar` file that you downloaded from Supervisely into the new S3 bucket. Make sure it also has public read permissions if multiple accounts will be using this data. ![upload tar](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/upload-tar.png)
