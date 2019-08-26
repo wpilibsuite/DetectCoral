@@ -10,20 +10,20 @@ WPILib provides thousands of labelled images for this years game, which you can 
 2. Create a [supervise.ly](supervise.ly) account. This is a very nice tool for labelling data.
 3. (Optional) You can add other teammates to your Supervise.ly workspace by clicking 'Members' on the left and then 'INVITE' at the top.
 4. Choose a workspace to work in, in the 'Workspaces' tab.
-5. Upload the official WPILib labelled data to your workspace. [Download the tar here](https://github.com/GrantPerkins/TestSagemaker/releases/download/v1/WPILib.tar), extract it, then click 'IMPORT DATA' or 'UPLOAD' inside of your workspace. Change the import plugin to Supervisely, then drag in the extracted FOLDER. Then, give the project a name, then click import. ![import](https://github.com/GrantPerkins/TestSagemaker/blob/master/docs/supervisely-import.png)
+5. Upload the official WPILib labelled data to your workspace. [Download the tar here](https://github.com/GrantPerkins/CoralSagemaker/releases/download/v1/WPILib.tar), extract it, then click 'IMPORT DATA' or 'UPLOAD' inside of your workspace. Change the import plugin to Supervisely, then drag in the extracted FOLDER. Then, give the project a name, then click import. ![import](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/supervisely-import.png)
 6. Upload your own video to your workspace. Click 'UPLOAD' when inside of your workspace, change your import plugin to video, drag in your video, give the project a name, and click import.
-7. Click into your newly import Dataset. Use the `rectangle tool` to draw appropriate boxes around the objects which you wish to label. Make sure to choose the right class when you are labelling. The class selector is in the top left of your screen. ![labeling](https://github.com/GrantPerkins/TestSagemaker/blob/master/docs/supervisely-labeling.png)
+7. Click into your newly import Dataset. Use the `rectangle tool` to draw appropriate boxes around the objects which you wish to label. Make sure to choose the right class when you are labelling. The class selector is in the top left of your screen. ![labeling](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/supervisely-labeling.png)
 
 ### Training
 
-1. Download your datasets from Supervise.ly. Select the `.json + images` option. ![json and images](https://github.com/GrantPerkins/TestSagemaker/blob/master/docs/supervisely-download.png)
+1. Download your datasets from Supervise.ly. Select the `.json + images` option. ![json and images](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/supervisely-download.png)
 2. Go to the Amazon Web Services console, and open S3.
-3. Create a new bucket, and make sure it had public read permissions if multiple accounts will be using this data. ![new bucket](https://github.com/GrantPerkins/TestSagemaker/blob/master/docs/new-bucket.png)
-- Once you've made the bucket, go into the bucket, then `Permissions` --> `Access Control List`. Then change the public access to allow `List objects` and `Read bucket permissions`. ![permissions](https://github.com/GrantPerkins/TestSagemaker/blob/master/docs/bucket-permissions.png)
-4. Upload the `.tar` file that you downloaded from Supervisely into the new S3 bucket. Make sure it also has public read permissions if multiple accounts will be using this data. ![upload tar](https://github.com/GrantPerkins/TestSagemaker/blob/master/docs/upload-tar.png)
+3. Create a new bucket, and make sure it had public read permissions if multiple accounts will be using this data. ![new bucket](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/new-bucket.png)
+- Once you've made the bucket, go into the bucket, then `Permissions` --> `Access Control List`. Then change the public access to allow `List objects` and `Read bucket permissions`. ![permissions](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/bucket-permissions.png)
+4. Upload the `.tar` file that you downloaded from Supervisely into the new S3 bucket. Make sure it also has public read permissions if multiple accounts will be using this data. ![upload tar](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/upload-tar.png)
 5. Open SageMaker, and create a new notebook instance. The instance should have the following characteristics:
  - IAM Permissions: Click `Create a new role` inside of the dropdown. It should have access to ANY S3 bucket.
- - GitHub repository: open the panel, then click on where it says `None`. Click `Clone a public repository to this notebook instance only`, then paste in this link: [https://github.com/GrantPerkins/TestSagemaker.git](https://github.com/GrantPerkins/TestSagemaker.git) ![new notebook](https://github.com/GrantPerkins/TestSagemaker/blob/master/docs/new-notebook.png)
+ - GitHub repository: open the panel, then click on where it says `None`. Click `Clone a public repository to this notebook instance only`, then paste in this link: [https://github.com/GrantPerkins/CoralSagemaker.git](https://github.com/GrantPerkins/CoralSagemaker.git) ![new notebook](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/new-notebook.png)
  - Now create the instance
 6. Open `coral.ipynb`, found on the left side of the screen. If prompted, the kernel is `conda_tensorflow_p36`
 7. Run the first code block, which builds and deploys the necessary dependencies to an ECR image, used by the training instance.
