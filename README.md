@@ -17,11 +17,11 @@ WPILib provides thousands of labelled images for this years game, which you can 
 ### Training
 
 1. Download your datasets from Supervise.ly. Click on the vertical three dots on the dataset, then "Download as", then select the `.json + images` option. ![json and images](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/supervisely-download.png)
-2. Go to the Amazon Web Services console website, and search S3 in the "Find Services" field. Open S3.
+2. Go to the Amazon Web Services console website, and search S3 in the "Find Services" field. Open S3. ![search](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/search-s3.png)
 3. Create a new bucket, and make sure it had public read permissions if multiple accounts will be using this data. ![new bucket](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/new-bucket.png)
 - Once you've made the bucket, go into the bucket, then `Permissions` --> `Access Control List`. Then change the public access to allow `List objects` and `Read bucket permissions`. ![permissions](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/bucket-permissions.png)
 4. Upload the `.tar` file that you downloaded from Supervisely into the new S3 bucket. Click "Add files", then select the file, click "Next", then make sure it also has public read permissions if multiple accounts will be using this data. Keep the file properties "Standard", and then click "Upload" ![upload tar](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/upload-tar.png)
-5. Open SageMaker from the AWS console, and create a new notebook instance. The instance should have the following characteristics:
+5. Open SageMaker from the AWS console, and create a new notebook instance. ![search](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/search-sagemaker.png) The instance should have the following characteristics:
  - IAM Permissions: Click `Create a new role` inside of the dropdown. It should have access to ANY S3 bucket.
  - GitHub repository: open the panel, then click on where it says `None`. Click `Clone a public repository to this notebook instance only`, then paste in this link: [https://github.com/GrantPerkins/CoralSagemaker.git](https://github.com/GrantPerkins/CoralSagemaker.git) ![new notebook](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/new-notebook.png)
  - Now create the instance
