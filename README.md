@@ -7,34 +7,38 @@
 WPILib provides thousands of labelled images for this years game, which you can download here. However, you can train with custom data using this notebook as well. The below instructions describe how to gather and label your own data.
 
 1. Plug a USB Camera into your laptop, and run a script similar to [record_video.py](utils/record_video.py), which simply makes an mp4 from the camera stream. Any video of the game field will suffice, but the provided script is just one option for recording video.
-2. Create a [supervise.ly](supervise.ly) account. This is a very nice tool for labelling data. After going to the [supervise.ly](supervise.ly) website, the Signup box is in the top right corner. Provide the necessary details, then click "CREATE AN ACCOUNT". If you would rather link a Google or GitHub, click Log in, then click the appropriate platform with which you wish to link.
+2. Create a [supervise.ly](https://supervise.ly) account. This is a very nice tool for labelling data. After going to the [supervise.ly](https://supervise.ly) website, the Signup box is in the top right corner. Provide the necessary details, then click "CREATE AN ACCOUNT". If you would rather link a Google or GitHub, click Log in, then click the appropriate platform with which you wish to link.
 3. (Optional) You can add other teammates to your Supervise.ly workspace by clicking 'Members' on the left and then 'INVITE' at the top.
 4. Choose a workspace to work in, in the 'Workspaces' tab.
-5. Upload the official WPILib labelled data to your workspace. [Download the tar here](https://github.com/GrantPerkins/CoralSagemaker/releases/download/v1/WPILib.tar), extract it, then click 'IMPORT DATA' or 'UPLOAD' inside of your workspace. Change the import plugin to Supervisely, then drag in the extracted FOLDER. Then, give the project a name, then click import. ![import](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/supervisely-import.png)
+5. Upload the official WPILib labelled data to your workspace. [Download the tar here](https://github.com/GrantPerkins/CoralSagemaker/releases/download/v1/WPILib.tar), extract it, then click 'IMPORT DATA' or 'UPLOAD' inside of your workspace. Change the import plugin to Supervisely, then drag in the extracted FOLDER.(Note: Some applications create two folders when extracting from a .tar file. If this happens, upload the nested folder.) Then, give the project a name, then click import. ![import](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/supervisely-import.png)
 6. Upload your own video to your workspace. Click 'UPLOAD' when inside of your workspace, change your import plugin to video, drag in your video, give the project a name, and click import. The default configuration, seen in the picture below, is fine. 
 ![upload](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/supervisely-custom-upload.png)
 7. Click into your newly import Dataset. Use the `rectangle tool` to draw appropriate boxes around the objects which you wish to label. Make sure to choose the right class when you are labelling. The class selector is in the top left of your screen. ![labeling](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/supervisely-labeling.png)
 
 ### Training
 
+Running this notebook should take 1-2 hours and cost roughly $0.60
+
 1. Download your datasets from Supervise.ly. Click on the vertical three dots on the dataset, then "Download as", then select the `.json + images` option. ![json and images](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/supervisely-download.png)
 2. Go to the Amazon Web Services console website, and search S3 in the "Find Services" field. Open S3. ![search](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/search-s3.png)
 3. Create a new bucket, and make sure it had public read permissions if multiple accounts will be using this data. ![new bucket](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/new-bucket.png)
 - Once you've made the bucket, go into the bucket, then `Permissions` --> `Access Control List`. Then change the public access to allow `List objects` and `Read bucket permissions`. ![permissions](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/bucket-permissions.png)
 4. Upload the `.tar` file that you downloaded from Supervisely into the new S3 bucket. Click "Add files", then select the file, click "Next", then make sure it also has public read permissions if multiple accounts will be using this data. Keep the file properties "Standard", and then click "Upload" ![upload tar](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/upload-tar.png)
-5. Open SageMaker from the AWS console, and create a new notebook instance. ![search](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/search-sagemaker.png) The instance should have the following characteristics:
+5. Open SageMaker from the AWS console, and create a new notebook instance. ![search](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/search-sagemaker.png) The notebook instance should have the following characteristics:
  - IAM Permissions: Click `Create a new role` inside of the dropdown. It should have access to ANY S3 bucket.
  - GitHub repository: open the panel, then click on where it says `None`. Click `Clone a public repository to this notebook instance only`, then paste in this link: [https://github.com/GrantPerkins/CoralSagemaker.git](https://github.com/GrantPerkins/CoralSagemaker.git) ![new notebook](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/new-notebook.png)
  - Now create the instance
-6. Open `coral.ipynb`, found on the left side of the screen. If prompted, the kernel is `conda_tensorflow_p36`
-7. Run the first code block, which builds and deploys the necessary dependencies to an ECR image, used by the training instance.
-8. Run the second code block, which gets the execution role, used for communication between computers.
-9. Run the third code block, which gets the address of the ECR image made in the first step.
-10. Change the fourth code block to use your data. If your data is stored in a bucket called `my-bucket1`, then you must replace `"s3://wpilib"` to `"s3://my-bucket1"`. As a reminder, there should be only one `.tar` in your bucket.
-11. Run the fourth code block. This block will take roughly 45 minutes to train your model.
-12. Go to the SageMaker main page in the AWS console. Open Training Jobs. Open the most recent job.
-13. Once the model is done training (the job says `Completed`), scroll to the bottom inside the training job. Click on the link in the `Output` section, where it says `S3 model artifact`.
-14. Click on `model.tar.gz`. Click on `Download`.
+6. Open the notebook in JupyterLab
+7. Open `coral.ipynb`, found on the left side of the screen. If prompted, the kernel is `conda_tensorflow_p36`
+8. Run the first code block, which builds and deploys the necessary dependencies to an ECR image, used by the training instance.
+9. Run the second code block, which gets the execution role, used for communication between computers.
+10. Run the third code block, which gets the address of the ECR image made in the first step.
+11. Change the fourth code block to use your data. If your data is stored in a bucket called `my-bucket1`, then you must replace "s3://wpilib"` with `"s3://my-bucket1"`. As a reminder, there should be only one `.tar` in your bucket.
+12. Run the fourth code block. This block will take roughly 45 minutes to train your model.
+13. Remember to stop the notebook after you are done running it to stop getting charged
+14. Go to the SageMaker main page in the AWS console. Open Training Jobs. Open the most recent job.
+15. Once the model is done training (the job says `Completed`), scroll to the bottom inside the training job. Click on the link in the `Output` section, where it says `S3 model artifact`.
+16. Click on `model.tar.gz`. Click on `Download`.
 
 ### Inference
 
@@ -59,9 +63,8 @@ The dockerfile is used to build an ECR image used by the training instance. The 
  - Coral retraining scripts
  - WPILib scripts
  The WPILib scripts are found in /container/coral/
- 
- Building and pushing to ECR takes a while. It should.
- 
+
+
  ### Data
  
  Images should be labelled in Supervisely. They should be downloaded as jpeg + json, in a tar file.
