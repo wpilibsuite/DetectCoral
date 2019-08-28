@@ -1,10 +1,10 @@
 # WPILib-ML Docs
 
-This document describes the steps need to use a provided set of labeled images and make a trained model to deploy on a RasberryPi with a Google Coral. The basic steps are: gather new data, train a model from the data in AWS, and run inference using the trained model.
+This document describes the steps needed to use a provided set of labeled images and make a trained model to deploy on a RasberryPi with a Google Coral. The basic steps are: gather new data, train your model, and run inference on a coprocessor.
 
 ## How to Use
 
-First get a set of labeled images [Download the tar here](https://github.com/GrantPerkins/CoralSagemaker/releases/download/v1/WPILib.tar), if you want to add your own images to this dataset go to the Gathering Data section below.
+First, download the official WPILib dataset. [Download the tar here.](https://github.com/GrantPerkins/CoralSagemaker/releases/download/v1/WPILib.tar) If you want to add your own images to this dataset go to the **Gathering Data** section below.
 
 ### Training
 
