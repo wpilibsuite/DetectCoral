@@ -69,7 +69,7 @@ wget https://github.com/GrantPerkins/CoralSagemaker/blob/master/utils/object_det
 NetworkTable table = NetworkTableInstance.getDefault().getTable("ML");
 int totalObjects = (int) table.getEntry("nb_boxes").getDouble(0);
 double[] boxArray = table.getEntry("boxes").getDoubleArray(totalObjects*4);
-double[][][] objects = new double[totalobjects][2][2]; // array of pairs of coordinates, each pair is an object
+double[][][] objects = new double[totalObjects][2][2]; // array of pairs of coordinates, each pair is an object
 for (int i = 0; i < totalObjects; i++) {
     for (int pair = 0; pair < 2; pair++) {
         for (int j = 0; j < 2; j++)
