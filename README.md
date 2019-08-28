@@ -56,8 +56,30 @@ wget https://github.com/GrantPerkins/CoralSagemaker/blob/master/utils/object_det
 5. Turn off your Raspberry Pi by running the command `sudo poweroff`. It is not recommended to simply unplug your Pi.
 6. Plug the Pi's SD card into your computer, and drag `output.tflite` into the directory `SD_CARD:/home/pi`.
 7. Eject the SD card, plug it into your Raspberry Pi again, and turn it on. Connect your Pi to an HDMI monitor with a USB keyboard and mouse, or connect via SSH if it is connected to the same network as your computer.
-8. Run the python script, using the command `python3 object_detection.py --model output.tflite`
+8. Run the python script, using the command `python3 object_detection.py --model output.tflite --team YOUR_TEAM_NUMBER`
 9. Real time labelling can be found on an MJPEG stream located at `http://frc-vision:1182`
+10. The information about the detected objects is put to Network Tables. View the **Network Tables** section for more information about usable output.
+
+#### Network Tables
+- The table containing all inference data is called `ML`.
+- The following entries populate that table:
+1. `nb_boxes`     -> the number (double) of detected objects in the current frame.
+2. `boxes`        -> a double array containg the coordinates of every detected object. The coordinates are in the following format: [top_left__x1, top_left_y1, bottom_right_x1, bottom_right_y1, top_left_x2, top_left_y2, ... ]. There are four coordinates per box. A way to parse this array in Java is shown below.
+```java
+NetworkTable table = NetworkTableInstance.getDefault().getTable("ML");
+int totalObjects = (int) table.getEntry("nb_boxes").getDouble(0);
+double[] boxArray = table.getEntry("boxes").getDoubleArray(totalObjects*4);
+double[][][] objects = new double[totalobjects][2][2]; // array of pairs of coordinates, each pair is an object
+for (int i = 0; i < totalObjects; i++) {
+    for (int pair = 0; pair < 2; pair++) {
+        for (int j = 0; j < 2; j++)
+            objects[i][pair][j] = boxArray[totalObjects*4 + pair*2 + j];
+        }
+    }
+}
+```
+3. `boxes_names`  -> a string array of the class names of each object. These are in the same order as the coordinates.
+
 
 ## Details of procedures used above
 
