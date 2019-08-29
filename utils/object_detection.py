@@ -5,16 +5,19 @@ from edgetpu.detection.engine import DetectionEngine
 from PIL import Image
 from PIL import ImageDraw
 import cscore
-import networktables import NetworkTablesInstance
+import networktables
+import NetworkTablesInstance
 import numpy as np
 from time import time
 
 WIDTH, HEIGHT = 320, 240
 
-
-# 0.0017*w**2-0.3868*w+26.252
-# Distance? =(((x1 + x2)/2-160)/((x1 - x2)/19.5))/12
-# Angle =(9093.75/POWER(E5-D5, LOG(54/37,41/29)))/12
+"""
+Math stuff for later
+0.0017*w**2-0.3868*w+26.252
+Distance? =(((x1 + x2)/2-160)/((x1 - x2)/19.5))/12
+Angle =(9093.75/POWER(E5-D5, LOG(54/37,41/29)))/12
+"""
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -26,7 +29,7 @@ def main():
     engine = DetectionEngine(args.model)
     labels = {0: "hatch",
               1: "cargo"}
-    
+
     ntinst = NetworkTablesInstance.getDefault()
     ntinst.startClientTeam(args.team)
     # integer, number of detected boxes at this curent moment
@@ -37,7 +40,7 @@ def main():
     boxes_entry = ntinst.getTable("ML").getEntry("boxes")
     # string array, list of class names of each box
     boxes_names_entry = ntinst.getTable("ML").getEntry("boxes_names")
-    
+
     cs = cscore.CameraServer.getInstance()
     camera = cs.startAutomaticCapture()
     camera.setResolution(WIDTH, HEIGHT)
@@ -55,7 +58,7 @@ def main():
 
         # Run inference.
         ans = engine.DetectWithImage(frame, threshold=0.05, keep_aspect_ratio=True, relative_coord=False, top_k=10)
-        
+
         nb_boxes_entry.setNumber(len(ans))
         boxes = []
         names = []
@@ -75,7 +78,7 @@ def main():
                 # Draw a rectangle.
                 draw.rectangle(box, outline='green')
                 output.putFrame(np.array(frame))
-            
+
         else:
             print('No object detected!')
             output.putFrame(img)
