@@ -35,4 +35,4 @@ if __name__ == "__main__":
     parser.add_argument("--device", help="OpenCV device id. Default is 0.", type=int, default=0)
     parser.add_argument("--output", help="Output mp4 path", type=str, required=True)
     args = parser.parse_args()
-    record(args.video, args.output)
+    record(args.device, args.output)
