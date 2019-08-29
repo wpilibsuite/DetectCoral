@@ -23,7 +23,7 @@ Training on AWS with the provided dataset should take 1-2 hours and cost roughly
 7. Run the first code block, which builds and deploys the necessary dependencies to an ECR image, used by the training instance.
 8. Run the second code block, which gets the execution role, used for communication between computers.
 9. Run the third code block, which gets the address of the ECR image made in the first step.
-10. Change the fourth code block to use your data. If your data is stored in a bucket called `my-bucket1`, then you must replace "s3://wpilib"` with `"s3://my-bucket1"`. As a reminder, there should be only one `.tar` in your bucket.
+10. Change the fourth code block to use your data. If your data is stored in a bucket called `my-bucket1`, then you must replace `s3://wpilib` with `s3://my-bucket1`. As a reminder, there should be only one `.tar` in your bucket.
 11. Run the fourth code block. This block will take roughly 45 minutes to train your model.
 12. Remember to stop the notebook after you are done running it to stop getting charged
 13. Go to the SageMaker main page in the AWS console. Open Training Jobs. Open the most recent job.
