@@ -1,10 +1,10 @@
 # WPILib-ML Docs
 
-This document describes the steps need to use a provided set of labeled images and make a trained model to deploy on a RasberryPi with a Google Coral. The basic steps are: gather new data, train a model from the data in AWS, and run inference using the trained model.
+This document describes the steps needed to use a provided set of labeled images and make a trained model to deploy on a RasberryPi with a Google Coral. The basic steps are: gather new data, train your model, and run inference on a coprocessor.
 
 ## How to Use
 
-First get a set of labeled images [Download the tar here](https://github.com/GrantPerkins/CoralSagemaker/releases/download/v1/WPILib.tar), if you want to add your own images to this dataset go to the Gathering Data section below.
+First, download the official WPILib dataset. [Download the tar here.](https://github.com/GrantPerkins/CoralSagemaker/releases/download/v1/WPILib.tar) If you want to add your own images to this dataset go to the **Gathering Data** section below.
 
 ### Training
 
@@ -33,9 +33,52 @@ Training on AWS with the provided dataset should take 1-2 hours and cost roughly
 ### Inference
 
 1. Go to the training job in SageMaker, scroll to the bottom, and find the output S3 location
-2. Download the the tar file in the bucket, extract it, and get your .tflite file
-3. Put the tflite on your Raspberry Pi by plugging in the SD card into your computer and dragging it in to /home/pi
-4. Run the python script, using `python3 object_detection.py --model output.tflite`
+2. Download the the tar file in the bucket, and extract it. Notice the `output.tflite` file in the new directory. This is your new trained model.
+
+#### Raspberry Pi Setup
+1. [Follow this guide](https://wpilib.screenstepslive.com/s/currentCS/m/85074/l/1027260-installing-the-image-to-your-microsd-card) in order to install the WPILib Raspberry Pi image. This will install an operating system and most of the WPILib software that you will use for machine learning. However, there are a few dependenc
+2. After successfully imaging your Pi, connect your Pi to an HDMI monitor with a USB keyboard and mouse, or connect via SSH if it is connected to the same network as your computer. PuTTY is a good tool for Windows to SSH.
+3. After logging in with the username `pi` and the password `raspberry`, run the following commands to install the proper dependencies used by the Google Coral.
+```bash
+sudo apt-get update
+
+wget https://dl.google.com/coral/edgetpu_api/edgetpu_api_latest.tar.gz -O edgetpu_api.tar.gz --trust-server-names
+
+tar xzf edgetpu_api.tar.gz
+
+sudo edgetpu_api/install.sh
+
+cd ~
+
+wget https://github.com/GrantPerkins/CoralSagemaker/blob/master/utils/object_detection.py
+```
+4. You now have all dependencies necessary to run real-time inference. The last step is to run your model.
+5. Turn off your Raspberry Pi by running the command `sudo poweroff`. It is not recommended to simply unplug your Pi.
+6. Plug the Pi's SD card into your computer, and drag `output.tflite` into the directory `SD_CARD:/home/pi`.
+7. Eject the SD card, plug it into your Raspberry Pi again, and turn it on. Connect your Pi to an HDMI monitor with a USB keyboard and mouse, or connect via SSH if it is connected to the same network as your computer.
+8. Run the python script, using the command `python3 object_detection.py --model output.tflite --team YOUR_TEAM_NUMBER`
+9. Real time labelling can be found on an MJPEG stream located at `http://frc-vision:1182`
+10. The information about the detected objects is put to Network Tables. View the **Network Tables** section for more information about usable output.
+
+#### Network Tables
+- The table containing all inference data is called `ML`.
+- The following entries populate that table:
+1. `nb_boxes`     -> the number (double) of detected objects in the current frame.
+2. `boxes`        -> a double array containg the coordinates of every detected object. The coordinates are in the following format: [top_left__x1, top_left_y1, bottom_right_x1, bottom_right_y1, top_left_x2, top_left_y2, ... ]. There are four coordinates per box. A way to parse this array in Java is shown below.
+```java
+NetworkTable table = NetworkTableInstance.getDefault().getTable("ML");
+int totalObjects = (int) table.getEntry("nb_boxes").getDouble(0);
+double[] boxArray = table.getEntry("boxes").getDoubleArray(totalObjects*4);
+double[][][] objects = new double[totalObjects][2][2]; // array of pairs of coordinates, each pair is an object
+for (int i = 0; i < totalObjects; i++) {
+    for (int pair = 0; pair < 2; pair++) {
+        for (int j = 0; j < 2; j++)
+            objects[i][pair][j] = boxArray[totalObjects*4 + pair*2 + j];
+        }
+    }
+}
+```
+3. `boxes_names`  -> a string array of the class names of each object. These are in the same order as the coordinates.
 
 
 ## Details of procedures used above
