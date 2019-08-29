@@ -14,7 +14,7 @@ def record(device, output):
     cap.set(cv2.CAP_PROP_FPS, FPS)
 
     fourcc = cv2.VideoWriter_fourcc(*'MP4V')
-    out = cv2.VideoWriter('output', fourcc, FPS, (WIDTH, HEIGHT))
+    out = cv2.VideoWriter(output, fourcc, FPS, (WIDTH, HEIGHT))
 
     # Stop recording by pressing 'q'
     while True:
