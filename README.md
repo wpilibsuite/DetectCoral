@@ -30,15 +30,22 @@ Training on AWS with the provided dataset should take 1-2 hours and cost roughly
 14. Once the model is done training (the job says `Completed`), scroll to the bottom inside the training job. Click on the link in the `Output` section, where it says `S3 model artifact`.
 15. Click on `model.tar.gz`. Click on `Download`.
 
-### Inference
+## Inference
 
 1. Go to the training job in SageMaker, scroll to the bottom, and find the output S3 location
 2. Download the the tar file in the bucket, and extract it. Notice the `output.tflite` file in the new directory. This is your new trained model.
+3. Setup your RasberryPI and Google Coral as described below.
+4. Plug the Pi's SD card into your computer, and drag `output.tflite` into the directory `SD_CARD:/home/pi`.
+5. Eject the SD card, plug it into your Raspberry Pi again, and turn it on. Connect your Pi to an HDMI monitor with a USB keyboard and mouse, or connect via SSH if it is connected to the same network as your computer.
+6. Run the python script, using the command `python3 object_detection.py --model output.tflite --team YOUR_TEAM_NUMBER`
+7. Real time labelling can be found on an MJPEG stream located at `http://frc-vision:1182`
+8. The information about the detected objects is put to Network Tables. View the **Network Tables** section for more information about usable output.
 
 #### Raspberry Pi Setup
 1. [Follow this guide](https://wpilib.screenstepslive.com/s/currentCS/m/85074/l/1027260-installing-the-image-to-your-microsd-card) in order to install the WPILib Raspberry Pi image. This will install an operating system and most of the WPILib software that you will use for machine learning. However, there are a few dependenc
 2. After successfully imaging your Pi, connect your Pi to an HDMI monitor with a USB keyboard and mouse, or connect via SSH if it is connected to the same network as your computer. PuTTY is a good tool for Windows to SSH.
-3. After logging in with the username `pi` and the password `raspberry`, run the following commands to install the proper dependencies used by the Google Coral.
+3. After logging in with the username `pi` and the password `raspberry`, first change the default password to protect your Rasberry Pi.
+4. Run the following commands to install the proper dependencies used by the Google Coral.
 ```bash
 sudo apt-get update
 
@@ -52,13 +59,9 @@ cd ~
 
 wget https://github.com/GrantPerkins/CoralSagemaker/blob/master/utils/object_detection.py
 ```
-4. You now have all dependencies necessary to run real-time inference. The last step is to run your model.
-5. Turn off your Raspberry Pi by running the command `sudo poweroff`. It is not recommended to simply unplug your Pi.
-6. Plug the Pi's SD card into your computer, and drag `output.tflite` into the directory `SD_CARD:/home/pi`.
-7. Eject the SD card, plug it into your Raspberry Pi again, and turn it on. Connect your Pi to an HDMI monitor with a USB keyboard and mouse, or connect via SSH if it is connected to the same network as your computer.
-8. Run the python script, using the command `python3 object_detection.py --model output.tflite --team YOUR_TEAM_NUMBER`
-9. Real time labelling can be found on an MJPEG stream located at `http://frc-vision:1182`
-10. The information about the detected objects is put to Network Tables. View the **Network Tables** section for more information about usable output.
+5. You now have all dependencies necessary to run real-time inference.
+6. When shutting down your Raspberry Pi run the command `sudo poweroff`. It is not recommended to simply unplug your Pi.
+
 
 #### Network Tables
 - The table containing all inference data is called `ML`.
