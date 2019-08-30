@@ -14,16 +14,16 @@ Training on AWS with the provided dataset should take 1-2 hours and cost roughly
 2. Create a new bucket by giving it a unique name. Hit next and then hit next again without changing anything on the second page. On the third page, make sure it has public read permissions if multiple accounts will be using this data. ![new bucket](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/new-bucket.png)
 - Once you've made the bucket, go into the bucket, then `Permissions` --> `Access Control List`. Then change the public access to allow `List objects` and `Read bucket permissions`. ![permissions](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/bucket-permissions.png)
 3. Upload the `.tar` file that you downloaded from Supervisely into the new S3 bucket. Click "Add files", then select the file, click "Next", then make sure it also has public read permissions if multiple accounts will be using this data. Keep the file properties "Standard", and then click "Upload" ![upload tar](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/upload-tar.png)
-4. Open SageMaker from the AWS console, and create a new notebook instance. ![search](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/search-sagemaker.png) The notebook instance should have the following characteristics:
+4. Open SageMaker from the AWS console,(https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/search-sagemaker.png) and create a new notebook instance(https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/create-instance.png).(https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/create-notebook.png) ![search] The notebook instance should have the following characteristics:
  - IAM Permissions: Click `Create a new role` inside of the dropdown. It should have access to ANY S3 bucket.
  - GitHub repository: open the panel, then click on where it says `None`. Click `Clone a public repository to this notebook instance only`, then paste in this link: [https://github.com/GrantPerkins/CoralSagemaker.git](https://github.com/GrantPerkins/CoralSagemaker.git) ![new notebook](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/new-notebook.png)
  - Now create the instance
-5. Open the notebook in JupyterLab
+5. Open the notebook using the JupyterLab option, not the Jupyter Option. (https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/jupyter-lab.png)
 6. Open `coral.ipynb`, found on the left side of the screen. If prompted, the kernel is `conda_tensorflow_p36`
 7. Run the first code block, which builds and deploys the necessary dependencies to an ECR image, used by the training instance.
 8. Run the second code block, which gets the execution role, used for communication between computers.
 9. Run the third code block, which gets the address of the ECR image made in the first step.
-10. Change the fourth code block to use your data. If your data is stored in a bucket called `my-bucket1`, then you must replace `s3://wpilib` with `s3://my-bucket1`. As a reminder, there should be only one `.tar` in your bucket.
+10. Change the fourth code block to use your data. You must replace `s3://wpilib` with `s3://<<your-bucket-name>>`. As a reminder, there should be only one `.tar` in your bucket.
 11. Run the fourth code block. This block will take roughly 45 minutes to train your model.
 12. Remember to stop the notebook after you are done running it to stop getting charged
 13. Go to the SageMaker main page in the AWS console. Open Training Jobs. Open the most recent job.
