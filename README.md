@@ -18,7 +18,7 @@ Training on AWS with the provided dataset should take 1-2 hours and cost roughly
  - IAM Permissions: Click `Create a new role` inside of the dropdown. It should have access to ANY S3 bucket.
  - GitHub repository: open the panel, then click on where it says `None`. Click `Clone a public repository to this notebook instance only`, then paste in this link: [https://github.com/GrantPerkins/CoralSagemaker.git](https://github.com/GrantPerkins/CoralSagemaker.git) ![newnotebook](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/new-notebook.png)
  - Now create the instance
-5. Open the notebook using the JupyterLab option, not the Jupyter Option. ![jupyterlab](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/jupyter-lab.png)
+5. Open the notebook using the JupyterLab option, not the Jupyter Option. ![jupyterlab](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/open-jupyter.png)
 6. Open `coral.ipynb`, found on the left side of the screen. If prompted, the kernel is `conda_tensorflow_p36`
 7. Run the first code block, which builds and deploys the necessary dependencies to an ECR image, used by the training instance.
 8. Run the second code block, which gets the execution role, used for communication between computers.
