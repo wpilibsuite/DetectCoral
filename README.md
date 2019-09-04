@@ -14,31 +14,38 @@ Training on AWS with the provided dataset should take 1-2 hours and cost roughly
 2. Create a new bucket by giving it a unique name. Hit next and then hit next again without changing anything on the second page. On the third page, make sure it has public read permissions if multiple accounts will be using this data. ![new bucket](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/new-bucket.png)
 - Once you've made the bucket, go into the bucket, then `Permissions` --> `Access Control List`. Then change the public access to allow `List objects` and `Read bucket permissions`. ![permissions](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/bucket-permissions.png)
 3. Upload the `.tar` file that you downloaded from Supervisely into the new S3 bucket. Click "Add files", then select the file, click "Next", then make sure it also has public read permissions if multiple accounts will be using this data. Keep the file properties "Standard", and then click "Upload" ![upload tar](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/upload-tar.png)
-4. Open SageMaker from the AWS console, and create a new notebook instance. ![search](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/search-sagemaker.png) The notebook instance should have the following characteristics:
+4. Open SageMaker from the AWS console, ![sage](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/search-sagemaker.png) and create a new notebook instance ![instance](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/create-instance.png) ![search](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/create-notebook.png) The notebook instance should have the following characteristics:
  - IAM Permissions: Click `Create a new role` inside of the dropdown. It should have access to ANY S3 bucket.
- - GitHub repository: open the panel, then click on where it says `None`. Click `Clone a public repository to this notebook instance only`, then paste in this link: [https://github.com/GrantPerkins/CoralSagemaker.git](https://github.com/GrantPerkins/CoralSagemaker.git) ![new notebook](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/new-notebook.png)
+ - GitHub repository: open the panel, then click on where it says `None`. Click `Clone a public repository to this notebook instance only`, then paste in this link: [https://github.com/GrantPerkins/CoralSagemaker.git](https://github.com/GrantPerkins/CoralSagemaker.git) ![newnotebook](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/new-notebook.png)
  - Now create the instance
-5. Open the notebook in JupyterLab
+5. Open the notebook using the JupyterLab option, not the Jupyter Option. ![jupyterlab](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/jupyter-lab.png)
 6. Open `coral.ipynb`, found on the left side of the screen. If prompted, the kernel is `conda_tensorflow_p36`
 7. Run the first code block, which builds and deploys the necessary dependencies to an ECR image, used by the training instance.
 8. Run the second code block, which gets the execution role, used for communication between computers.
 9. Run the third code block, which gets the address of the ECR image made in the first step.
-10. Change the fourth code block to use your data. If your data is stored in a bucket called `my-bucket1`, then you must replace `s3://wpilib` with `s3://my-bucket1`. As a reminder, there should be only one `.tar` in your bucket.
+10. Change the fourth code block to use your data. You must replace `s3://wpilib` with `s3://<<your-bucket-name>>`. As a reminder, there should be only one `.tar` in your bucket.
 11. Run the fourth code block. This block will take roughly 45 minutes to train your model.
 12. Remember to stop the notebook after you are done running it to stop getting charged
 13. Go to the SageMaker main page in the AWS console. Open Training Jobs. Open the most recent job.
 14. Once the model is done training (the job says `Completed`), scroll to the bottom inside the training job. Click on the link in the `Output` section, where it says `S3 model artifact`.
 15. Click on `model.tar.gz`. Click on `Download`.
 
-### Inference
+## Inference
 
 1. Go to the training job in SageMaker, scroll to the bottom, and find the output S3 location
 2. Download the the tar file in the bucket, and extract it. Notice the `output.tflite` file in the new directory. This is your new trained model.
+3. Setup your RasberryPI and Google Coral as described below.
+4. Plug the Pi's SD card into your computer, and drag `output.tflite` into the directory `SD_CARD:/home/pi`.
+5. Eject the SD card, plug it into your Raspberry Pi again, and turn it on. Connect your Pi to an HDMI monitor with a USB keyboard and mouse, or connect via SSH if it is connected to the same network as your computer.
+6. Run the python script, using the command `python3 object_detection.py --model output.tflite --team YOUR_TEAM_NUMBER`
+7. Real time labelling can be found on an MJPEG stream located at `http://frc-vision:1182`
+8. The information about the detected objects is put to Network Tables. View the **Network Tables** section for more information about usable output.
 
 #### Raspberry Pi Setup
 1. [Follow this guide](https://wpilib.screenstepslive.com/s/currentCS/m/85074/l/1027260-installing-the-image-to-your-microsd-card) in order to install the WPILib Raspberry Pi image. This will install an operating system and most of the WPILib software that you will use for machine learning. However, there are a few dependenc
 2. After successfully imaging your Pi, connect your Pi to an HDMI monitor with a USB keyboard and mouse, or connect via SSH if it is connected to the same network as your computer. PuTTY is a good tool for Windows to SSH.
-3. After logging in with the username `pi` and the password `raspberry`, run the following commands to install the proper dependencies used by the Google Coral.
+3. After logging in with the username `pi` and the password `raspberry`, first change the default password to protect your Rasberry Pi.
+4. Run the following commands to install the proper dependencies used by the Google Coral.
 ```bash
 sudo apt-get update
 
@@ -52,13 +59,9 @@ cd ~
 
 wget https://github.com/GrantPerkins/CoralSagemaker/blob/master/utils/object_detection.py
 ```
-4. You now have all dependencies necessary to run real-time inference. The last step is to run your model.
-5. Turn off your Raspberry Pi by running the command `sudo poweroff`. It is not recommended to simply unplug your Pi.
-6. Plug the Pi's SD card into your computer, and drag `output.tflite` into the directory `SD_CARD:/home/pi`.
-7. Eject the SD card, plug it into your Raspberry Pi again, and turn it on. Connect your Pi to an HDMI monitor with a USB keyboard and mouse, or connect via SSH if it is connected to the same network as your computer.
-8. Run the python script, using the command `python3 object_detection.py --model output.tflite --team YOUR_TEAM_NUMBER`
-9. Real time labelling can be found on an MJPEG stream located at `http://frc-vision:1182`
-10. The information about the detected objects is put to Network Tables. View the **Network Tables** section for more information about usable output.
+5. You now have all dependencies necessary to run real-time inference.
+6. When shutting down your Raspberry Pi run the command `sudo poweroff`. It is not recommended to simply unplug your Pi.
+
 
 #### Network Tables
 - The table containing all inference data is called `ML`.
