@@ -38,7 +38,7 @@ Training on AWS with the provided dataset should take 1-2 hours and cost roughly
 4. Plug the Pi's SD card into your computer, and drag `output.tflite` into the directory `SD_CARD:/home/pi`.
 5. Eject the SD card, plug it into your Raspberry Pi again, and turn it on. Connect your Pi to an HDMI monitor with a USB keyboard and mouse, or connect via SSH if it is connected to the same network as your computer.
 6. Run the python script, using the command `python3 object_detection.py --model output.tflite --team YOUR_TEAM_NUMBER`
-7. Real time labelling can be found on an MJPEG stream located at `http://frc-vision:1182`
+7. Real time labelling can be found on an MJPEG stream located at `http://frcvision.local:1182`
 8. The information about the detected objects is put to Network Tables. View the **Network Tables** section for more information about usable output.
 
 #### Raspberry Pi Setup
