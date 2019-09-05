@@ -66,7 +66,7 @@ sudo edgetpu_api/install.sh #NOTE: TYPE 'Y' when asked to run at maximum operati
 
 cd ~
 
-wget https://github.com/GrantPerkins/CoralSagemaker/blob/master/utils/object_detection.py
+wget https://raw.githubusercontent.com/GrantPerkins/CoralSagemaker/master/utils/object_detection.py
 ```
 7. You now have all dependencies necessary to run real-time inference.
 8. When shutting down your Raspberry Pi run the command `sudo poweroff`. It is not recommended to simply unplug your Pi.
