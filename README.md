@@ -11,21 +11,21 @@ First, download the official WPILib dataset. [Download the tar here.](https://gi
 Training on AWS with the provided dataset should take 1-2 hours and cost roughly $0.60. If you add more images or add new labeling classes the cost and time will be higher.
 #### Opening the AWS Console
 1. Open [AWS Educate](https://aws.amazon.com/education/awseducate/). Log in to your account.
-2. Open up your Classroom. ![classroom](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/classrooms.png)
-3. Go to your classroom, and click continue. ![openclassroom](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/open-classroom.png)
-4. Open the AWS Console. ![console](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/aws-console.png)
+2. Open up your Classroom. ![classroom](docs/classrooms.png)
+3. Go to your classroom, and click continue. ![openclassroom](docs/open-classroom.png)
+4. Open the AWS Console. ![console](docs/aws-console.png)
 
 #### Training with AWS
 
-1. Search S3 in the "Find Services" field. Open S3. ![search](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/search-s3.png) An S3 bucket is a cloud storage service provided by AWS which you will be using to store your .tar of labeled images and the trained model after you finish running through this guide.
-2. Create a new bucket by giving it a unique name. Hit next and then hit next again without changing anything on the second page. On the third page, make sure it has public read permissions if multiple accounts will be using this data. ![new bucket](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/new-bucket.png)
-- Once you've made the bucket, go into the bucket, then `Permissions` --> `Access Control List`. Then change the public access to allow `List objects` and `Read bucket permissions`. ![permissions](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/bucket-permissions.png)
-3. Upload the `.tar` file that you downloaded from Supervisely into the new S3 bucket. Click "Add files", then select the file, click "Next", then make sure it also has public read permissions if multiple accounts will be using this data. Keep the file properties "Standard", and then click "Upload" ![upload tar](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/upload-tar.png)
-4. Open SageMaker from the AWS console, ![sage](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/search-sagemaker.png) and create a new notebook instance ![instance](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/create-instance.png) ![search](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/create-notebook.png) The notebook instance should have the following characteristics:
+1. Search S3 in the "Find Services" field. Open S3. ![search](docs/search-s3.png) An S3 bucket is a cloud storage service provided by AWS which you will be using to store your .tar of labeled images and the trained model after you finish running through this guide.
+2. Create a new bucket by giving it a unique name. Hit next and then hit next again without changing anything on the second page. On the third page, make sure it has public read permissions if multiple accounts will be using this data. ![new bucket](docs/new-bucket.png)
+- Once you've made the bucket, go into the bucket, then `Permissions` --> `Access Control List`. Then change the public access to allow `List objects` and `Read bucket permissions`. ![permissions](docs/bucket-permissions.png)
+3. Upload the `.tar` file that you downloaded from Supervisely into the new S3 bucket. Click "Add files", then select the file, click "Next", then make sure it also has public read permissions if multiple accounts will be using this data. Keep the file properties "Standard", and then click "Upload" ![upload tar](docs/upload-tar.png)
+4. Open SageMaker from the AWS console, ![sage](docs/search-sagemaker.png) and create a new notebook instance ![instance](docs/create-instance.png) ![search](docs/create-notebook.png) The notebook instance should have the following characteristics:
  - IAM Permissions: Click `Create a new role` inside of the dropdown. It should have access to ANY S3 bucket.
- - GitHub repository: open the panel, then click on where it says `None`. Click `Clone a public repository to this notebook instance only`, then paste in this link: [https://github.com/GrantPerkins/CoralSagemaker.git](https://github.com/GrantPerkins/CoralSagemaker.git) ![newnotebook](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/new-notebook.png)
+ - GitHub repository: open the panel, then click on where it says `None`. Click `Clone a public repository to this notebook instance only`, then paste in this link: [https://github.com/GrantPerkins/CoralSagemaker.git](https://github.com/GrantPerkins/CoralSagemaker.git) ![newnotebook](docs/new-notebook.png)
  - Now create the instance
-5. Open the notebook using the JupyterLab option, not the Jupyter Option. ![jupyterlab](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/open-jupyter.png)
+5. Open the notebook using the JupyterLab option, not the Jupyter Option. ![jupyterlab](docs/open-jupyter.png)
 6. Open `coral.ipynb`, found on the left side of the screen. If prompted, the kernel is `conda_tensorflow_p36`
 7. Run the first code block, which builds and deploys the necessary dependencies to an ECR image, used by the training instance.
 8. Run the second code block, which gets the execution role, used for communication between computers.
@@ -50,7 +50,7 @@ Training on AWS with the provided dataset should take 1-2 hours and cost roughly
 
 #### Raspberry Pi Setup
 1. [Follow this guide](https://wpilib.screenstepslive.com/s/currentCS/m/85074/l/1027260-installing-the-image-to-your-microsd-card) in order to install the WPILib Raspberry Pi image. This will install an operating system and most of the WPILib software that you will use for machine learning. However, there are a few dependencies.
-2. After successfully imaging your Pi, plug the Pi into your computer over ethernet. Open `frcvision.local` and change the file system to writeable. ![write](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/writeable.png)
+2. After successfully imaging your Pi, plug the Pi into your computer over ethernet. Open `frcvision.local` and change the file system to writeable. ![write](docs/writeable.png)
 3. With the file system now editable, connect your Pi to an HDMI monitor with a USB keyboard and mouse, or connect via SSH if it is connected to the same network as your computer. PuTTY is a good tool for Windows to SSH.
 4. After logging in with the username `pi` and the password `raspberry`, first change the default password to protect your Rasberry Pi.
 5. Connect your Pi to the internet.
@@ -103,11 +103,11 @@ Machine Vison works by training an algorithm on many images with bounding boxes 
 2. Create a [supervise.ly](https://supervise.ly) account. This is a very nice tool for labelling data. After going to the [supervise.ly](https://supervise.ly) website, the Signup box is in the top right corner. Provide the necessary details, then click "CREATE AN ACCOUNT".
 3. (Optional) You can add other teammates to your Supervise.ly workspace by clicking 'Members' on the left and then 'INVITE' at the top.
 4. When first creating an account a workspace will be made for you. Click on the workspace to select it and begin working.
-5. Upload the official WPILib labeled data to your workspace. (Note: importing files to supervise.ly is only supported for Google Chrome and Mozilla Firefox) [Download the tar here](https://github.com/GrantPerkins/CoralSagemaker/releases/download/v1/WPILib.tar), extract it, then click 'IMPORT DATA' or 'UPLOAD' inside of your workspace. Change the import plugin to Supervisely, then drag in the extracted FOLDER.(Note: Some applications create two folders when extracting from a .tar file. If this happens, upload the nested folder.) Then, give the project a name, then click import. ![import](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/supervisely-import.png)
+5. Upload the official WPILib labeled data to your workspace. (Note: importing files to supervise.ly is only supported for Google Chrome and Mozilla Firefox) [Download the tar here](https://github.com/GrantPerkins/CoralSagemaker/releases/download/v1/WPILib.tar), extract it, then click 'IMPORT DATA' or 'UPLOAD' inside of your workspace. Change the import plugin to Supervisely, then drag in the extracted FOLDER.(Note: Some applications create two folders when extracting from a .tar file. If this happens, upload the nested folder.) Then, give the project a name, then click import. ![import](docs/supervisely-import.png)
 6. Upload your own video to your workspace. Click 'UPLOAD' when inside of your workspace, change your import plugin to video, drag in your video, give the project a name, and click import. The default configuration, seen in the picture below, is fine. 
-![upload](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/supervisely-custom-upload.png)
-7. Click into your newly import Dataset. Use the `rectangle tool` to draw appropriate boxes around the objects which you wish to label. Make sure to choose the right class when you are labelling. The class selector is in the top left of your screen. ![labeling](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/supervisely-labeling.png)
-8. Download your datasets from Supervise.ly. Click on the vertical three dots on the dataset, then "Download as", then select the `.json + images` option. ![json and images](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/supervisely-download.png)
+![upload](docs/supervisely-custom-upload.png)
+7. Click into your newly import Dataset. Use the `rectangle tool` to draw appropriate boxes around the objects which you wish to label. Make sure to choose the right class when you are labelling. The class selector is in the top left of your screen. ![labeling](docs/supervisely-labeling.png)
+8. Download your datasets from Supervise.ly. Click on the vertical three dots on the dataset, then "Download as", then select the `.json + images` option. ![json and images](docs/supervisely-download.png)
 
 ### Building and registering the container
 
