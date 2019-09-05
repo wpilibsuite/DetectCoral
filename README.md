@@ -42,10 +42,11 @@ Training on AWS with the provided dataset should take 1-2 hours and cost roughly
 8. The information about the detected objects is put to Network Tables. View the **Network Tables** section for more information about usable output.
 
 #### Raspberry Pi Setup
-1. [Follow this guide](https://wpilib.screenstepslive.com/s/currentCS/m/85074/l/1027260-installing-the-image-to-your-microsd-card) in order to install the WPILib Raspberry Pi image. This will install an operating system and most of the WPILib software that you will use for machine learning. However, there are a few dependenc
-2. After successfully imaging your Pi, connect your Pi to an HDMI monitor with a USB keyboard and mouse, or connect via SSH if it is connected to the same network as your computer. PuTTY is a good tool for Windows to SSH.
-3. After logging in with the username `pi` and the password `raspberry`, first change the default password to protect your Rasberry Pi.
-4. Run the following commands to install the proper dependencies used by the Google Coral.
+1. [Follow this guide](https://wpilib.screenstepslive.com/s/currentCS/m/85074/l/1027260-installing-the-image-to-your-microsd-card) in order to install the WPILib Raspberry Pi image. This will install an operating system and most of the WPILib software that you will use for machine learning. However, there are a few dependencies.
+2. After successfully imaging your Pi, plug the Pi into your computer over ethernet. Open `frcvision.local` and change the file system to writeable. ![write](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/writeable.png)
+3. With the file system now editable, connect your Pi to an HDMI monitor with a USB keyboard and mouse, or connect via SSH if it is connected to the same network as your computer. PuTTY is a good tool for Windows to SSH.
+4. After logging in with the username `pi` and the password `raspberry`, first change the default password to protect your Rasberry Pi.
+5. Run the following commands to install the proper dependencies used by the Google Coral.
 ```bash
 sudo apt-get update
 
@@ -59,8 +60,8 @@ cd ~
 
 wget https://github.com/GrantPerkins/CoralSagemaker/blob/master/utils/object_detection.py
 ```
-5. You now have all dependencies necessary to run real-time inference.
-6. When shutting down your Raspberry Pi run the command `sudo poweroff`. It is not recommended to simply unplug your Pi.
+6. You now have all dependencies necessary to run real-time inference.
+7. When shutting down your Raspberry Pi run the command `sudo poweroff`. It is not recommended to simply unplug your Pi.
 
 
 #### Network Tables
