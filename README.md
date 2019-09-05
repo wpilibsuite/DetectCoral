@@ -62,7 +62,7 @@ wget https://dl.google.com/coral/edgetpu_api/edgetpu_api_latest.tar.gz -O edgetp
 
 tar xzf edgetpu_api.tar.gz
 
-sudo edgetpu_api/install.sh
+sudo edgetpu_api/install.sh #NOTE: TYPE 'Y' when asked to run at maximum operating frequency
 
 cd ~
 
