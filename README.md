@@ -9,8 +9,15 @@ First, download the official WPILib dataset. [Download the tar here.](https://gi
 ### Training
 
 Training on AWS with the provided dataset should take 1-2 hours and cost roughly $0.60. If you add more images or add new labeling classes the cost and time will be higher.
+#### Opening the AWS Console
+1. Open [AWS Educate](https://aws.amazon.com/education/awseducate/). Log in to your account.
+2. Open up your Classroom. ![classroom](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/classrooms.png)
+3. Go to your classroom, and click continue. ![openclassroom](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/open-classroom.png)
+4. Open the AWS Console. ![console](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/aws-console.png)
 
-1. Go to the Amazon Web Services console website, and search S3 in the "Find Services" field. Open S3. ![search](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/search-s3.png) An S3 bucket is a cloud storage service provided by AWS which you will be using to store your .tar of labeled images and the trained model after you finish running through this guide.
+#### Training with AWS
+
+1. Search S3 in the "Find Services" field. Open S3. ![search](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/search-s3.png) An S3 bucket is a cloud storage service provided by AWS which you will be using to store your .tar of labeled images and the trained model after you finish running through this guide.
 2. Create a new bucket by giving it a unique name. Hit next and then hit next again without changing anything on the second page. On the third page, make sure it has public read permissions if multiple accounts will be using this data. ![new bucket](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/new-bucket.png)
 - Once you've made the bucket, go into the bucket, then `Permissions` --> `Access Control List`. Then change the public access to allow `List objects` and `Read bucket permissions`. ![permissions](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/bucket-permissions.png)
 3. Upload the `.tar` file that you downloaded from Supervisely into the new S3 bucket. Click "Add files", then select the file, click "Next", then make sure it also has public read permissions if multiple accounts will be using this data. Keep the file properties "Standard", and then click "Upload" ![upload tar](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/upload-tar.png)
@@ -46,7 +53,8 @@ Training on AWS with the provided dataset should take 1-2 hours and cost roughly
 2. After successfully imaging your Pi, plug the Pi into your computer over ethernet. Open `frcvision.local` and change the file system to writeable. ![write](https://github.com/GrantPerkins/CoralSagemaker/blob/master/docs/writeable.png)
 3. With the file system now editable, connect your Pi to an HDMI monitor with a USB keyboard and mouse, or connect via SSH if it is connected to the same network as your computer. PuTTY is a good tool for Windows to SSH.
 4. After logging in with the username `pi` and the password `raspberry`, first change the default password to protect your Rasberry Pi.
-5. Run the following commands to install the proper dependencies used by the Google Coral.
+5. Connect your Pi to the internet.
+6. Run the following commands to install the proper dependencies used by the Google Coral.
 ```bash
 sudo apt-get update
 
@@ -60,8 +68,8 @@ cd ~
 
 wget https://github.com/GrantPerkins/CoralSagemaker/blob/master/utils/object_detection.py
 ```
-6. You now have all dependencies necessary to run real-time inference.
-7. When shutting down your Raspberry Pi run the command `sudo poweroff`. It is not recommended to simply unplug your Pi.
+7. You now have all dependencies necessary to run real-time inference.
+8. When shutting down your Raspberry Pi run the command `sudo poweroff`. It is not recommended to simply unplug your Pi.
 
 
 #### Network Tables
