@@ -107,6 +107,10 @@ for (int i = 0; i < totalObjects; i++) {
 double angle = 0, distance = 0;
 if (index != -1) { // a cargo is detected
     double x1 = objects[index][0][0], x2 = objects[index][1][0];
+    /* The following equations were made using a spreadsheet and finding a trendline.
+     * They are designed to work with a Microsoft Lifecam 3000 with a 320x240 image output.
+     * If you are using different sized images or a different camera, you will/may need to create your own function.
+     */
     distance = (((x1 + x2)/2-160)/((x1 - x2)/19.5))/12;
     angle = (9093.75/(Math.pow((x2-x1),Math.log(54/37.41/29))))/12;
 }
