@@ -1,12 +1,8 @@
 import argparse
-import platform
-import subprocess
 from edgetpu.detection.engine import DetectionEngine
 from PIL import Image
 from PIL import ImageDraw
 import cscore
-import networktables
-import math
 import NetworkTablesInstance
 import numpy as np
 from time import time
