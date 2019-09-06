@@ -48,7 +48,7 @@ Training on AWS with the provided dataset should take 1-2 hours and cost roughly
 7. Real time labelling can be found on an MJPEG stream located at `http://frcvision.local:1182`
 8. The information about the detected objects is put to Network Tables. View the **Network Tables** section for more information about usable output.
 
-#### Raspberry Pi Setup
+### Raspberry Pi Setup
 1. [Follow this guide](https://wpilib.screenstepslive.com/s/currentCS/m/85074/l/1027260-installing-the-image-to-your-microsd-card) in order to install the WPILib Raspberry Pi image. This will install an operating system and most of the WPILib software that you will use for machine learning. However, there are a few dependencies.
 2. After successfully imaging your Pi, plug the Pi into your computer over ethernet. Open `frcvision.local` and change the file system to writeable. ![write](docs/writeable.png)
 3. With the file system now editable, connect your Pi to an HDMI monitor with a USB keyboard and mouse, or connect via SSH if it is connected to the same network as your computer. PuTTY is a good tool for Windows to SSH.
@@ -72,14 +72,16 @@ wget https://raw.githubusercontent.com/GrantPerkins/CoralSagemaker/master/utils/
 8. When shutting down your Raspberry Pi run the command `sudo poweroff`. It is not recommended to simply unplug your Pi.
 
 
-#### Network Tables
+### Network Tables
 - The table containing all inference data is called `ML`.
 - The following entries populate that table:
 1. `nb_boxes`     -> the number (double) of detected objects in the current frame.
-2. `boxes`        -> a double array containg the coordinates of every detected object. The coordinates are in the following format: [top_left__x1, top_left_y1, bottom_right_x1, bottom_right_y1, top_left_x2, top_left_y2, ... ]. There are four coordinates per box. A way to parse this array in Java is shown below.
+2. `boxes_names`  -> a string array of the class names of each object. These are in the same order as the coordinates.
+3. `boxes`        -> a double array containg the coordinates of every detected object. The coordinates are in the following format: [top_left__x1, top_left_y1, bottom_right_x1, bottom_right_y1, top_left_x2, top_left_y2, ... ]. There are four coordinates per box. A way to parse this array in Java is shown below.
 ```java
 NetworkTable table = NetworkTableInstance.getDefault().getTable("ML");
 int totalObjects = (int) table.getEntry("nb_boxes").getDouble(0);
+String names = table.getEntry("boxes_names").getStringArray(new String[totalObjects]);
 double[] boxArray = table.getEntry("boxes").getDoubleArray(totalObjects*4);
 double[][][] objects = new double[totalObjects][2][2]; // array of pairs of coordinates, each pair is an object
 for (int i = 0; i < totalObjects; i++) {
@@ -90,8 +92,27 @@ for (int i = 0; i < totalObjects; i++) {
     }
 }
 ```
-3. `boxes_names`  -> a string array of the class names of each object. These are in the same order as the coordinates.
 
+### Using these values
+Here is an example of how to use the bounding box coordinates to determine the angle and distance of the game piece relative to the robot.
+```java
+String target = "cargo"; // we want to find the first cargo in the array. We recommend sorting the array but width of gamepiece, to find the closest piece.
+int index = -1;
+for (int i = 0; i < totalObjects; i++) {
+    if (names[i].equals(cargo)) {
+        index = i;
+        break;
+    }
+}
+double angle = 0, distance = 0;
+if (index != -1) { // a cargo is detected
+    double x1 = objects[index][0][0], x2 = objects[index][1][0];
+    distance = (((x1 + x2)/2-160)/((x1 - x2)/19.5))/12;
+    angle = (9093.75/(Math.pow((x2-x1),Math.log(54/37.41/29))))/12;
+}
+drivetrain.turnTo(angle);
+drivetrain.driveFor(distance);
+```
 
 ## Details of procedures used above
 

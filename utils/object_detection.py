@@ -6,6 +6,7 @@ from PIL import Image
 from PIL import ImageDraw
 import cscore
 import networktables
+import math
 import NetworkTablesInstance
 import numpy as np
 from time import time
@@ -27,8 +28,8 @@ def log_object(obj, labels):
 """
 Math stuff for later
 0.0017*w**2-0.3868*w+26.252
-Distance? =(((x1 + x2)/2-160)/((x1 - x2)/19.5))/12
-Angle =(9093.75/POWER(E5-D5, LOG(54/37,41/29)))/12
+Distance =(((x1 + x2)/2-160)/((x1 - x2)/19.5))/12
+Angle = (9093.75/((x2-x1)**math.log(54/37.41/29)))/12
 """
 
 
