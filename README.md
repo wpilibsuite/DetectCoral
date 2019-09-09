@@ -80,14 +80,13 @@ wget https://raw.githubusercontent.com/GrantPerkins/CoralSagemaker/master/utils/
 ```java
 NetworkTable table = NetworkTableInstance.getDefault().getTable("ML");
 int totalObjects = (int) table.getEntry("nb_boxes").getDouble(0);
-String names = table.getEntry("boxes_names").getStringArray(new String[totalObjects]);
-double[] boxArray = table.getEntry("boxes").getDoubleArray(totalObjects*4);
+String[] names = table.getEntry("boxes_names").getStringArray(new String[totalObjects]);
+double[] boxArray = table.getEntry("boxes").getDoubleArray(new double[totalObjects*4]);
 double[][][] objects = new double[totalObjects][2][2]; // array of pairs of coordinates, each pair is an object
 for (int i = 0; i < totalObjects; i++) {
     for (int pair = 0; pair < 2; pair++) {
         for (int j = 0; j < 2; j++)
             objects[i][pair][j] = boxArray[totalObjects*4 + pair*2 + j];
-        }
     }
 }
 ```
