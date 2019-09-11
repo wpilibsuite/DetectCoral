@@ -16,10 +16,14 @@ cd /tensorflow/models/research
 echo "Downloading model"
 ./prepare_checkpoint_and_dataset.sh --network_type mobilenet_v2_ssd --train_whole_model false # > /dev/null 2>/dev/null
 
+./tar_to_record.sh
+
+classes=$(python3 labels.py)
+
+sed -i "s%NUM_CLASSES%${classes}%g" "$/tensorflow/models/research/pipeline.config"
+
 # Copy custom pipeline into docker
 cp pipeline.config /tensorflow/models/research/learn/ckpt/pipeline.config
-
-./tar_to_record.sh
 
 # Get number of epochs from SageMaker
 TRAIN_STEPS=$(python3 hyper.py)
