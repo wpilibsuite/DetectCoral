@@ -8,7 +8,7 @@ base="/opt/ml/input/data/training"
 f = []
 for file in glob.glob("**/**/**/**/*.json"):
     f.append(file)
-# print(len(f))
+
 random.shuffle(f)
 evals = len(f) // 10
 train_jsons = f[evals:]
@@ -17,16 +17,12 @@ eval_jsons = f[:evals]
 def make_csv(csv_path, files):
     with open(csv_path, "w+") as csv:
         csv.write("filename,width,height,class,xmin,ymin,xmax,ymax\n")
-        i = 0
+
         for filename in files:
             
-            if i % 100 == 0:pass
-#                 print(100*i/len(files), '% done')
-            i += 1
             path = base + '/' + filename
             filename = filename.split('/')
-#             print(filename)
-#             break
+            
             filename[3] = 'img'
             filename[4] = filename[4][:-5]
             with open(path, 'r') as file:
