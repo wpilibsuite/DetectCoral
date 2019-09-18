@@ -1,4 +1,6 @@
 #!/bin/bash
+set -x
+set -e
 
 # By Grant Perkins, 2019
 
@@ -18,9 +20,11 @@ echo "Downloading model"
 
 ./tar_to_record.sh
 
-classes=$(python3 labels.py)
+cd /opt/ml/input/data/training
+classes=$(python3 /tensorflow/models/research/labels.py)
+cd /tensorflow/models/research
 
-sed -i "s%NUM_CLASSES%${classes}%g" "$/tensorflow/models/research/pipeline.config"
+sed -i "s%NUM_CLASSES%${classes}%g" "./pipeline.config"
 
 # Copy custom pipeline into docker
 cp pipeline.config /tensorflow/models/research/learn/ckpt/pipeline.config
@@ -29,7 +33,7 @@ cp pipeline.config /tensorflow/models/research/learn/ckpt/pipeline.config
 TRAIN_STEPS=$(python3 hyper.py)
 
 echo "Beginning training on Docker image"
-./retrain_detection_model.sh --num_training_steps $TRAIN_STEPS --num_eval_steps 1 > /dev/null 2>&1
+./retrain_detection_model.sh --num_training_steps $TRAIN_STEPS --num_eval_steps 1 # > /dev/null 2>&1
 
 echo "Converting checkpoint to tflite"
 ./convert_checkpoint_to_edgetpu_tflite.sh --checkpoint_num $TRAIN_STEPS > /dev/null 2>&1
