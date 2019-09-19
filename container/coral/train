@@ -41,6 +41,8 @@ echo "Converting checkpoint to tflite"
 echo "Compiling model for Edge TPU"
 edgetpu_compiler ./learn/models/output_tflite_graph.tflite -o /opt/ml/model/ > /dev/null 2>&1
 
+cp /opt/ml/input/data/training/map.pbtxt /opt/ml/model/map.pbtxt
+
 rm /opt/ml/model/output_tflite_graph_edgetpu.log
 
 mv /opt/ml/model/output_tflite_graph_edgetpu.tflite /opt/ml/model/model.tflite
