@@ -2,7 +2,7 @@
 
 # Exit script on error.
 set -e
-
+set -x
 usage() {
   cat << END_OF_USAGE
   Downloads checkpoint and dataset needed for the tutorial.
@@ -15,7 +15,7 @@ usage() {
 END_OF_USAGE
 }
 
-network_type="mobilenet_v1_ssd"
+network_type="mobilenet_v2_ssd"
 train_whole_model="false"
 while [[ $# -gt 0 ]]; do
   case "$1" in
