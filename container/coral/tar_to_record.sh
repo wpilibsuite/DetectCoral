@@ -1,5 +1,4 @@
 #!/bin/bash
-set -x
 
 cd /opt/ml/input/data/training
 rm -rf out

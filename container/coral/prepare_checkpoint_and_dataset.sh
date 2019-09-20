@@ -2,7 +2,6 @@
 
 # Exit script on error.
 set -e
-set -x
 usage() {
   cat << END_OF_USAGE
   Downloads checkpoint and dataset needed for the tutorial.
