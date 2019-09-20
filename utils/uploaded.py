@@ -71,10 +71,14 @@ def main():
 
     if args.logging:
         print("Initializing ML engine")
+
+    model = tarfile.open("model.tar.gz")
+    model.extractall()
+    parser = PBTXTParser("map.pbtxt")
+    parser.parse()
     # Initialize engine.
     engine = DetectionEngine(args.model)
-    # TODO: call PBTXTParser.parse() and get_label()
-    labels = dict()
+    labels = parser.get_labels()
     """
     if args.logging:
         print("Connecting to Network Tables")
