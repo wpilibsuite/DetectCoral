@@ -7,6 +7,7 @@ from networktables import NetworkTablesInstance
 import numpy as np
 from time import time
 import json
+import tarfile
 
 WIDTH, HEIGHT = 320, 240
 
@@ -32,11 +33,11 @@ class PBTXTParser:
             for obj in self.file:
                 obj = [i for i in obj.split('\n') if i]
                 i = int(obj[1].split()[1])
-                name = obj[2].split()[1]
+                name = obj[2].split()[1][1:-1]
                 label_map.update({i: name})
             self.file = label_map
 
-    def get_label(self):
+    def get_labels(self):
         return self.file
 
 
