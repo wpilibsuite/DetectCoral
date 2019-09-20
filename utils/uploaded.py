@@ -9,7 +9,8 @@ from time import time
 import json
 import tarfile
 
-WIDTH, HEIGHT = 320, 240
+
+
 
 class PBTXTParser:
     def __init__(self, path):
@@ -48,7 +49,6 @@ def log_object(obj, labels):
     print('score = ', obj.score)
     box = obj.bounding_box.flatten().tolist()
     x1, y1, x2, y2 = box
-    print(abs(x1 - x2))
     print('box = ', box)
 
 
@@ -67,11 +67,13 @@ def main():
     parser.add_argument('--logging', help="Flag for logs", type=bool, default=True)
     args = parser.parse_args()
 
+    WIDTH, HEIGHT = 320, 240
+
     if args.logging:
         print("Initializing ML engine")
     # Initialize engine.
     engine = DetectionEngine(args.model)
-    #TODO: call PBTXTParser.parse() and get_label()
+    # TODO: call PBTXTParser.parse() and get_label()
     labels = dict()
     """
     if args.logging:
