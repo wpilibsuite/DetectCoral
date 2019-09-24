@@ -42,7 +42,7 @@ Training on AWS with the provided dataset should take 1-2 hours and cost roughly
 1. Go to the training job in SageMaker, scroll to the bottom, and find the output S3 location
 2. Download the the tar file in the bucket.
 3. Setup your RasberryPI and Google Coral as described below.
-4. FTP `model.tar.gx` into the home directory on the Pi.
+4. FTP `model.tar.gz` into the home directory on the Pi.
 5. Run the python script, using the command `python3 object_detection.py --team YOUR_TEAM_NUMBER`
 6. Real time labelling can be found on an MJPEG stream located at `http://frcvision.local:1182`
 7. The information about the detected objects is put to Network Tables. View the **Network Tables** section for more information about usable output.
