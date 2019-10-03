@@ -115,7 +115,7 @@ def main():
         draw = ImageDraw.Draw(frame)
 
         # Run inference.
-        ans = engine.DetectWithImage(frame, threshold=0.5, keep_aspect_ratio=True, relative_coord=False, top_k=10)
+        ans = engine.detect_with_image(frame, threshold=0.5, keep_aspect_ratio=True, relative_coord=False, top_k=10)
 
         # nb_boxes_entry.setNumber(len(ans))
         boxes = []
