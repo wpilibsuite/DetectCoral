@@ -4,7 +4,7 @@ This document describes the steps needed to use a provided set of labeled images
 
 ## How to Use
 
-First, download the official WPILib dataset. [Download the tar here.](https://github.com/wpilibsuite/CoralSagemaker/releases/download/v1/WPILib.tar) If you want to add your own images to this dataset go to the **Gathering Data** section below.
+First, download the official WPILib dataset. [Download the tar here.](https://github.com/wpilibsuite/CoralSagemaker/releases/download/v1/MLwpilib.tar) If you want to add your own images to this dataset go to the **Gathering Data** section below.
 
 ### Training
 
@@ -129,7 +129,7 @@ When you record your video, if you do not use the provided script, make sure you
 2. Create a [supervise.ly](https://supervise.ly) account. This is a very nice tool for labelling data. After going to the [supervise.ly](https://supervise.ly) website, the Signup box is in the top right corner. Provide the necessary details, then click "CREATE AN ACCOUNT".
 3. (Optional) You can add other teammates to your Supervise.ly workspace by clicking 'Members' on the left and then 'INVITE' at the top.
 4. When first creating an account a workspace will be made for you. Click on the workspace to select it and begin working.
-5. Upload the official WPILib labeled data to your workspace. (Note: importing files to supervise.ly is only supported for Google Chrome and Mozilla Firefox) [Download the tar here](https://github.com/wpilibsuite/CoralSagemaker/releases/download/v1/WPILib.tar), extract it, then click 'IMPORT DATA' or 'UPLOAD' inside of your workspace. Change the import plugin to Supervisely, then drag in the extracted FOLDER.(Note: Some applications create two folders when extracting from a .tar file. If this happens, upload the nested folder.) Then, give the project a name, then click import. ![import](docs/supervisely-import.png)
+5. Upload the official WPILib labeled data to your workspace. (Note: importing files to supervise.ly is only supported for Google Chrome and Mozilla Firefox) [Download the tar here](https://github.com/wpilibsuite/CoralSagemaker/releases/download/v1/MLwpilib.tar), extract it, then click 'IMPORT DATA' or 'UPLOAD' inside of your workspace. Change the import plugin to Supervisely, then drag in the extracted FOLDER.(Note: Some applications create two folders when extracting from a .tar file. If this happens, upload the nested folder.) Then, give the project a name, then click import. ![import](docs/supervisely-import.png)
 6. Upload your own video to your workspace. Click 'UPLOAD' when inside of your workspace, change your import plugin to video, drag in your video, give the project a name, and click import. The default configuration, seen in the picture below, is fine.<br> 
 ![upload](docs/supervisely-custom-upload.png)
 7. Click into your newly import Dataset. Use the `rectangle tool` to draw appropriate boxes around the objects which you wish to label. Make sure to choose the right class when you are labelling. The class selector is in the top left of your screen. ![labeling](docs/supervisely-labeling.png)
