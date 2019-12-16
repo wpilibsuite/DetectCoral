@@ -4,7 +4,7 @@ This document describes the steps needed to use a provided set of labeled images
 
 ## How to Use
 
-First, download the official WPILib dataset. [Download the tar here.](https://github.com/GrantPerkins/CoralSagemaker/releases/download/v1/WPILib.tar) If you want to add your own images to this dataset go to the **Gathering Data** section below.
+First, download the official WPILib dataset. [Download the tar here.](https://github.com/wpilibsuite/CoralSagemaker/releases/download/v1/WPILib.tar) If you want to add your own images to this dataset go to the **Gathering Data** section below.
 
 ### Training
 
@@ -23,7 +23,7 @@ Training on AWS with the provided dataset should take 1-2 hours and cost roughly
 3. Upload the `.tar` file that you downloaded from Supervisely into the new S3 bucket. Click "Add files", then select the file, click "Next", then make sure it also has public read permissions if multiple accounts will be using this data. Keep the file properties "Standard", and then click "Upload" ![upload tar](docs/upload-tar.png)
 4. Open SageMaker from the AWS console, ![sage](docs/search-sagemaker.png) and create a new notebook instance ![instance](docs/create-instance.png) ![search](docs/create-notebook.png) The notebook instance should have the following characteristics:
  - IAM Permissions: Click `Create a new role` inside of the dropdown. It should have access to ANY S3 bucket.
- - GitHub repository: open the panel, then click on where it says `None`. Click `Clone a public repository to this notebook instance only`, then paste in this link: [https://github.com/GrantPerkins/CoralSagemaker.git](https://github.com/GrantPerkins/CoralSagemaker.git) ![newnotebook](docs/new-notebook.png)
+ - GitHub repository: open the panel, then click on where it says `None`. Click `Clone a public repository to this notebook instance only`, then paste in this link: [https://github.com/wpilibsuite/CoralSagemaker.git](https://github.com/wpilibsuite/CoralSagemaker.git) ![newnotebook](docs/new-notebook.png)
  - Now create the instance
 5. Open the notebook using the JupyterLab option, not the Jupyter Option. ![jupyterlab](docs/open-jupyter.png)
 6. Open `coral.ipynb`, found on the left side of the screen. If prompted, the kernel is `conda_tensorflow_p36`
@@ -65,7 +65,7 @@ sudo edgetpu_api/install.sh #NOTE: TYPE 'Y' when asked to run at maximum operati
 
 cd ~
 
-wget https://raw.githubusercontent.com/GrantPerkins/CoralSagemaker/master/utils/object_detection.py
+wget https://raw.githubusercontent.com/wpilibsuite/CoralSagemaker/master/utils/object_detection.py
 ```
 7. You now have all dependencies necessary to run real-time inference.
 8. When shutting down your Raspberry Pi run the command `sudo poweroff`. It is not recommended to simply unplug your Pi.
@@ -129,7 +129,7 @@ When you record your video, if you do not use the provided script, make sure you
 2. Create a [supervise.ly](https://supervise.ly) account. This is a very nice tool for labelling data. After going to the [supervise.ly](https://supervise.ly) website, the Signup box is in the top right corner. Provide the necessary details, then click "CREATE AN ACCOUNT".
 3. (Optional) You can add other teammates to your Supervise.ly workspace by clicking 'Members' on the left and then 'INVITE' at the top.
 4. When first creating an account a workspace will be made for you. Click on the workspace to select it and begin working.
-5. Upload the official WPILib labeled data to your workspace. (Note: importing files to supervise.ly is only supported for Google Chrome and Mozilla Firefox) [Download the tar here](https://github.com/GrantPerkins/CoralSagemaker/releases/download/v1/WPILib.tar), extract it, then click 'IMPORT DATA' or 'UPLOAD' inside of your workspace. Change the import plugin to Supervisely, then drag in the extracted FOLDER.(Note: Some applications create two folders when extracting from a .tar file. If this happens, upload the nested folder.) Then, give the project a name, then click import. ![import](docs/supervisely-import.png)
+5. Upload the official WPILib labeled data to your workspace. (Note: importing files to supervise.ly is only supported for Google Chrome and Mozilla Firefox) [Download the tar here](https://github.com/wpilibsuite/CoralSagemaker/releases/download/v1/WPILib.tar), extract it, then click 'IMPORT DATA' or 'UPLOAD' inside of your workspace. Change the import plugin to Supervisely, then drag in the extracted FOLDER.(Note: Some applications create two folders when extracting from a .tar file. If this happens, upload the nested folder.) Then, give the project a name, then click import. ![import](docs/supervisely-import.png)
 6. Upload your own video to your workspace. Click 'UPLOAD' when inside of your workspace, change your import plugin to video, drag in your video, give the project a name, and click import. The default configuration, seen in the picture below, is fine.<br> 
 ![upload](docs/supervisely-custom-upload.png)
 7. Click into your newly import Dataset. Use the `rectangle tool` to draw appropriate boxes around the objects which you wish to label. Make sure to choose the right class when you are labelling. The class selector is in the top left of your screen. ![labeling](docs/supervisely-labeling.png)
