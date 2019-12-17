@@ -1,15 +1,49 @@
-import argparse
-from edgetpu.detection.engine import DetectionEngine
-from PIL import Image
-from PIL import ImageDraw
-import cscore
-from networktables import NetworkTablesInstance
 import numpy as np
 from time import time
 import json
-import tarfile
+import sys
+from edgetpu.detection.engine import DetectionEngine
+from PIL import Image
+from PIL import ImageDraw
+from cscore import CameraServer, VideoSource, UsbCamera, MjpegServer
+from networktables import NetworkTablesInstance
 
 
+def parseError(str, config_file):
+    """Report parse error."""
+    print("config error in '" + config_file + "': " + str, file=sys.stderr)
+
+
+def read_config(config_file):
+    """Read configuration file."""
+    team = -1
+
+    # parse file
+    try:
+        with open(config_file, "rt", encoding="utf-8") as f:
+            j = json.load(f)
+    except OSError as err:
+        print("could not open '{}': {}".format(config_file, err), file=sys.stderr)
+        return team
+
+    # top level must be an object
+    if not isinstance(j, dict):
+        parseError("must be JSON object", config_file)
+        return team
+
+    # team number
+    try:
+        team = j["team"]
+    except KeyError:
+        parseError("could not read team number", config_file)
+
+    # cameras
+    try:
+        cameras = j["cameras"]
+    except KeyError:
+        parseError("could not read cameras", config_file)
+
+    return team
 
 
 class PBTXTParser:
@@ -48,7 +82,6 @@ def log_object(obj, labels):
         print(labels[obj.label_id])
     print('score = ', obj.score)
     box = obj.bounding_box.flatten().tolist()
-    x1, y1, x2, y2 = box
     print('box = ', box)
 
 
@@ -60,55 +93,36 @@ Angle = (9093.75/((x2-x1)**math.log(54/37.41/29)))/12
 """
 
 
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--model', help='Path of the detection model.', default="model.tflite")
-    parser.add_argument('--team', help="Your FIRST team number", type=int, default=190)
-    parser.add_argument('--logging', help="Flag for logs", type=bool, default=True)
-    args = parser.parse_args()
-
+def main(config):
+    team = read_config(config)
     WIDTH, HEIGHT = 320, 240
 
-    if args.logging:
-        print("Initializing ML engine")
-
-    model = tarfile.open("model.tar.gz")
-    model.extractall()
-    parser = PBTXTParser("map.pbtxt")
-    parser.parse()
-    # Initialize engine.
-    engine = DetectionEngine(args.model)
-    labels = parser.get_labels()
-    """
-    if args.logging:
-        print("Connecting to Network Tables")
+    print("Connecting to Network Tables")
     ntinst = NetworkTablesInstance.getDefault()
-    ntinst.startClientTeam(args.team)
-    # integer, number of detected boxes at this curent moment
+    ntinst.startClientTeam(team)
+
+    """Format of these entries found in WPILib documentation."""
     nb_boxes_entry = ntinst.getTable("ML").getEntry("nb_boxes")
-    # double array, list of boxes in the following format:
-    # [topleftx1, toplefty1, bottomrightx1, bottomrighty1, topleftx2, toplefty2, ... ]
-    # there are four numbers per box.
     boxes_entry = ntinst.getTable("ML").getEntry("boxes")
-    # string array, list of class names of each box
     boxes_names_entry = ntinst.getTable("ML").getEntry("boxes_names")
 
-    if args.logging:
-        print("Starting camera server")
-    """
-    cs = cscore.CameraServer.getInstance()
+    print("Starting camera server")
+    cs = CameraServer.getInstance()
     camera = cs.startAutomaticCapture()
     camera.setResolution(WIDTH, HEIGHT)
     cvSink = cs.getVideo()
     img = np.zeros(shape=(HEIGHT, WIDTH, 3), dtype=np.uint8)
-
     output = cs.putVideo("MLOut", WIDTH, HEIGHT)
+
+    print("Initializing ML engine")
+    #engine = DetectionEngine("model.tflite")
+    parser = PBTXTParser("map.pbtxt")
+    parser.parse()
+    labels = parser.get_labels()
 
     start = time()
 
-    if args.logging:
-        print("Starting mainloop")
-    # Open image.
+    print("Starting ML mainloop")
     while True:
         t, img = cvSink.grabFrame(img)
         frame = Image.fromarray(img)
@@ -116,15 +130,15 @@ def main():
 
         # Run inference.
         ans = engine.detect_with_image(frame, threshold=0.5, keep_aspect_ratio=True, relative_coord=False, top_k=10)
+        nb_boxes_entry.setNumber(len(ans))
 
-        # nb_boxes_entry.setNumber(len(ans))
         boxes = []
         names = []
+
         # Display result.
         if ans:
             for obj in ans:
-                if args.logging:
-                    log_object(obj, labels)
+                log_object(obj, labels)
                 if labels:
                     names.append(labels[obj.label_id])
                 box = obj.bounding_box.flatten().tolist()
@@ -134,16 +148,15 @@ def main():
                 output.putFrame(np.array(frame))
 
         else:
-            if args.logging:
-                print('No object detected!')
+            print('No object detected!')
             output.putFrame(img)
-        # boxes_entry.setDoubleArray(boxes)
-        # boxes_names_entry.setStringArray(names)
-        if args.logging:
-            print("FPS:", 1 / (time() - start))
+        boxes_entry.setDoubleArray(boxes)
+        boxes_names_entry.setStringArray(names)
+        print("FPS:", 1 / (time() - start))
 
         start = time()
 
 
 if __name__ == '__main__':
-    main()
+    config_file = "/boot/frc.json"
+    main(config_file)

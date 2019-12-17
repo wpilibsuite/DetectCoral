@@ -41,35 +41,21 @@ Training on AWS with the provided dataset should take 1-2 hours and cost roughly
 
 1. Go to the training job in SageMaker, scroll to the bottom, and find the output S3 location
 2. Download the the tar file in the bucket.
-3. Setup your RasberryPI and Google Coral as described below.
-4. FTP `model.tar.gz` into the home directory on the Pi.
-5. Run the python script, using the command `python3 object_detection.py --team YOUR_TEAM_NUMBER`
+3. Setup your Rasberry Pi and Google Coral in **Raspberry Pi Setup**.
+4. Open the Raspberry Pi webdashboard at `http://frcvision.local`
+5. Switch to the `Application` tab on the left.
+6. Upload the previously downloaded `model.tar.gz` to the Pi by selecting the file in the `File Upload` box, and switching on `Extract .zip and .tar.gz files`
+![upload-model](docs/upload-model.png)
+5. Click upload.
+6. [Download the Python script which runs the model here.](utils/inference.py)
+7. Switch the `Vision Application COnfiguration` to `Uploaded Python File`, as shown below, and upload the downloaded script.
+![upload-py](docs/upload-py.png)
 6. Real time labelling can be found on an MJPEG stream located at `http://frcvision.local:1182`
 7. The information about the detected objects is put to Network Tables. View the **Network Tables** section for more information about usable output.
 
 ### Raspberry Pi Setup
 1. [Follow this guide](https://wpilib.screenstepslive.com/s/currentCS/m/85074/l/1027260-installing-the-image-to-your-microsd-card) in order to install the WPILib Raspberry Pi image. This will install an operating system and most of the WPILib software that you will use for machine learning. However, there are a few dependencies.
 2. After successfully imaging your Pi, plug the Pi into your computer over ethernet. Open `frcvision.local` and change the file system to writeable. ![write](docs/writeable.png)
-3. With the file system now editable, connect your Pi to an HDMI monitor with a USB keyboard and mouse, or connect via SSH if it is connected to the same network as your computer. PuTTY is a good tool for Windows to SSH.
-4. After logging in with the username `pi` and the password `raspberry`, first change the default password to protect your Rasberry Pi.
-5. Connect your Pi to the internet.
-6. Run the following commands to install the proper dependencies used by the Google Coral.
-```bash
-sudo apt-get update
-
-wget https://dl.google.com/coral/edgetpu_api/edgetpu_api_latest.tar.gz -O edgetpu_api.tar.gz --trust-server-names
-
-tar xzf edgetpu_api.tar.gz
-
-sudo edgetpu_api/install.sh #NOTE: TYPE 'Y' when asked to run at maximum operating frequency
-
-cd ~
-
-wget https://raw.githubusercontent.com/wpilibsuite/CoralSagemaker/master/utils/object_detection.py
-```
-7. You now have all dependencies necessary to run real-time inference.
-8. When shutting down your Raspberry Pi run the command `sudo poweroff`. It is not recommended to simply unplug your Pi.
-
 
 ### Network Tables
 - The table containing all inference data is called `ML`.
