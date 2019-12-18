@@ -37,7 +37,7 @@ Training on AWS with the provided dataset should take less than 15 minutes and c
 14. Once the model is done training (the job says `Completed`), scroll to the bottom inside the training job. Click on the link in the `Output` section, where it says `S3 model artifact`.
 15. Click on `model.tar.gz`. Click on `Download`.
 
-## Inference
+### Inference
 
 1. Go to the training job in SageMaker, scroll to the bottom, and find the output S3 location
 2. Download the the tar file in the bucket.
@@ -53,11 +53,11 @@ Training on AWS with the provided dataset should take less than 15 minutes and c
 6. Real time labelling can be found on an MJPEG stream located at `http://frcvision.local:1182`
 7. The information about the detected objects is put to Network Tables. View the **Network Tables** section for more information about usable output.
 
-### Raspberry Pi Setup
+#### Raspberry Pi Setup
 1. [Follow this guide](https://wpilib.screenstepslive.com/s/currentCS/m/85074/l/1027260-installing-the-image-to-your-microsd-card) in order to install the WPILib Raspberry Pi image. This will install an operating system and most of the WPILib software that you will use for machine learning. However, there are a few dependencies.
 2. After successfully imaging your Pi, plug the Pi into your computer over ethernet. Open `frcvision.local` and change the file system to writeable. ![write](docs/writeable.png)
 
-### Network Tables
+#### Network Tables
 - The table containing all inference data is called `ML`.
 - The following entries populate that table:
 1. `nb_boxes`     -> the number (double) of detected objects in the current frame.
@@ -77,7 +77,7 @@ for (int i = 0; i < totalObjects; i++) {
 }
 ```
 
-### Using these values
+##### Using these values
 Here is an example of how to use the bounding box coordinates to determine the angle and distance of the game piece relative to the robot.
 ```java
 String target = "cargo"; // we want to find the first cargo in the array. We recommend sorting the array but width of gamepiece, to find the closest piece.
