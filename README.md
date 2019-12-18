@@ -47,7 +47,7 @@ Training on AWS with the provided dataset should take less than 15 minutes and c
 6. Upload the previously downloaded `model.tar.gz` to the Pi by selecting the file in the `File Upload` box, and switching on `Extract .zip and .tar.gz files`
 ![upload-model](docs/upload-model.png)
 5. Click upload.
-6. [Download the Python script which runs the model here.](utils/inference.py)
+6. [Download the Python script which runs the model here.](https://github.com/wpilibsuite/CoralSagemaker/releases/download/v1/inference.py)
 7. Switch the `Vision Application COnfiguration` to `Uploaded Python File`, as shown below, and upload the downloaded script.
 ![upload-py](docs/upload-py.png)
 6. Real time labelling can be found on an MJPEG stream located at `http://frcvision.local:1182`
