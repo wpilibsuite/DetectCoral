@@ -13,10 +13,9 @@ rm -rf /tensorflow/models/research/learn/models
 cd /tensorflow/models/research
 
 # Download checkpoints for MobileNet v2 hosted by Google
-printf "\n"
-echo "Downloading model"
+echo ""
+printf ".\nDownloading model\n"
 ./prepare_checkpoint_and_dataset.sh --network_type mobilenet_v2_ssd --train_whole_model false  > /dev/null 2> /dev/null
-
 ./tar_to_record.sh
 
 cd /opt/ml/input/data/training
@@ -43,7 +42,7 @@ echo "Beginning training on Docker image"
 echo "Converting checkpoint to tflite"
 ./convert_checkpoint_to_edgetpu_tflite.sh --checkpoint_num $TRAIN_STEPS > /dev/null 2>&1
 
-echo "Compiling model for Edge TPU"
+printf "\n\nCompiling model for Edge TPU\n"
 edgetpu_compiler ./learn/models/output_tflite_graph.tflite -o /opt/ml/model/ > /dev/null 2>&1
 
 cp /opt/ml/input/data/training/map.pbtxt /opt/ml/model/map.pbtxt
