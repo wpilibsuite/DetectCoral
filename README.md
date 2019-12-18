@@ -47,7 +47,7 @@ Training on AWS with the provided dataset should take less than 15 minutes and c
 6. Upload the previously downloaded `model.tar.gz` to the Pi by selecting the file in the `File Upload` box, and switching on `Extract .zip and .tar.gz files`
 ![upload-model](docs/upload-model.png)
 5. Click upload.
-6. [Download the Python script which runs the model here.](utils/inference.py)
+6. [Download the Python script which runs the model here.](https://github.com/wpilibsuite/CoralSagemaker/releases/download/v1/inference.py)
 7. Switch the `Vision Application COnfiguration` to `Uploaded Python File`, as shown below, and upload the downloaded script.
 ![upload-py](docs/upload-py.png)
 6. Real time labelling can be found on an MJPEG stream located at `http://frcvision.local:1182`
@@ -60,8 +60,8 @@ Training on AWS with the provided dataset should take less than 15 minutes and c
 #### Network Tables
 - The table containing all inference data is called `ML`.
 - The following entries populate that table:
-1. `nb_boxes`     -> the number (double) of detected objects in the current frame.
-2. `boxes_names`  -> a string array of the class names of each object. These are in the same order as the coordinates.
+1. `nb_objects`     -> the number (double) of detected objects in the current frame.
+2. `object_classes`  -> a string array of the class names of each object. These are in the same order as the coordinates.
 3. `boxes`        -> a double array containg the coordinates of every detected object. The coordinates are in the following format: [top_left__x1, top_left_y1, bottom_right_x1, bottom_right_y1, top_left_x2, top_left_y2, ... ]. There are four coordinates per box. A way to parse this array in Java is shown below.
 ```java
 NetworkTable table = NetworkTableInstance.getDefault().getTable("ML");
