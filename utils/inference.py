@@ -102,9 +102,9 @@ def main(config):
     ntinst.startClientTeam(team)
 
     """Format of these entries found in WPILib documentation."""
-    nb_boxes_entry = ntinst.getTable("ML").getEntry("nb_boxes")
+    nb_objects_entry = ntinst.getTable("ML").getEntry("nb_objects")
     boxes_entry = ntinst.getTable("ML").getEntry("boxes")
-    boxes_names_entry = ntinst.getTable("ML").getEntry("boxes_names")
+    object_classes_entry = ntinst.getTable("ML").getEntry("object_classes")
 
     print("Starting camera server")
     cs = CameraServer.getInstance()
@@ -115,7 +115,7 @@ def main(config):
     output = cs.putVideo("MLOut", WIDTH, HEIGHT)
 
     print("Initializing ML engine")
-    #engine = DetectionEngine("model.tflite")
+    engine = DetectionEngine("model.tflite")
     parser = PBTXTParser("map.pbtxt")
     parser.parse()
     labels = parser.get_labels()
@@ -130,7 +130,7 @@ def main(config):
 
         # Run inference.
         ans = engine.detect_with_image(frame, threshold=0.5, keep_aspect_ratio=True, relative_coord=False, top_k=10)
-        nb_boxes_entry.setNumber(len(ans))
+        nb_objects_entry.setNumber(len(ans))
 
         boxes = []
         names = []
@@ -151,7 +151,7 @@ def main(config):
             print('No object detected!')
             output.putFrame(img)
         boxes_entry.setDoubleArray(boxes)
-        boxes_names_entry.setStringArray(names)
+        object_classes_entry.setStringArray(names)
         print("FPS:", 1 / (time() - start))
 
         start = time()
