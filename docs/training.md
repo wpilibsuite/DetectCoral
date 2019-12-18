@@ -28,3 +28,5 @@ Training on AWS with the provided dataset should take less than 15 minutes and c
 13. Go to the SageMaker main page in the AWS console. Open Training Jobs. Open the most recent job.
 14. Once the model is done training (the job says `Completed`), scroll to the bottom inside the training job. Click on the link in the `Output` section, where it says `S3 model artifact`.
 15. Click on `model.tar.gz`. Click on `Download`.
+
+## [Continue to Inference](inference.md)
