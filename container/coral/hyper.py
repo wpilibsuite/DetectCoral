@@ -10,4 +10,4 @@ if __name__ == "__main__":
         try:
             print(json.load(f)["epochs"])
         except:
-            print("Specify epochs in hyperparameters dictionary!", file=sys.stderr)
+            print(1000)

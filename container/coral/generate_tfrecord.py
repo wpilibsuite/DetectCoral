@@ -92,7 +92,7 @@ def main(_):
 
     writer.close()
     output_path = os.path.join(os.getcwd(), args.output_tfrecord)
-    print('Successfully created the TFRecords: {}'.format(output_path))
+    print(end='.\nSuccessfully created the TFRecords: {}'.format(output_path))
     import sys
     sys.exit()
 

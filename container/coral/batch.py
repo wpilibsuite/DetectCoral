@@ -10,4 +10,4 @@ if __name__ == "__main__":
         try:
             print(json.load(f)["batch_size"])
         except:
-            print("Specify epochs in hyperparameters dictionary!", file=sys.stderr)
+            print(32)

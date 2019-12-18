@@ -16,4 +16,4 @@ python /tensorflow/models/research/generate_tfrecord.py --input_csv=./tmp/eval.c
 
 python3 /tensorflow/models/research/parse_meta.py -out=map.pbtxt
 
-echo "Records generated."
+printf ".\nRecords generated"

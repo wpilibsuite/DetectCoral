@@ -13,8 +13,8 @@ rm -rf /tensorflow/models/research/learn/models
 cd /tensorflow/models/research
 
 # Download checkpoints for MobileNet v2 hosted by Google
-echo ""
-printf ".\nDownloading model\n"
+
+printf ".\nDownloading model"
 ./prepare_checkpoint_and_dataset.sh --network_type mobilenet_v2_ssd --train_whole_model false  > /dev/null 2> /dev/null
 ./tar_to_record.sh
 
@@ -31,18 +31,18 @@ BATCH_SIZE=$(python3 batch.py)
 
 sed -i "s%BATCH_SIZE_PARAM%${BATCH_SIZE}%g" "./pipeline.config"
 
-# cat pipeline.config
+printf ".\nHyperparameters parsed"
 
 # Copy custom pipeline into docker
 cp pipeline.config /tensorflow/models/research/learn/ckpt/pipeline.config
 
-echo "Beginning training on Docker image"
+printf ".\nBeginning training on Docker image"
 ./retrain_detection_model.sh --num_training_steps $TRAIN_STEPS --num_eval_steps 1 > /dev/null 2> /dev/null
 
-echo "Converting checkpoint to tflite"
+printf ".\nConverting checkpoint to tflite"
 ./convert_checkpoint_to_edgetpu_tflite.sh --checkpoint_num $TRAIN_STEPS > /dev/null 2>&1
 
-printf "\n\nCompiling model for Edge TPU\n"
+printf ".\nCompiling model for Edge TPU"
 edgetpu_compiler ./learn/models/output_tflite_graph.tflite -o /opt/ml/model/ > /dev/null 2>&1
 
 cp /opt/ml/input/data/training/map.pbtxt /opt/ml/model/map.pbtxt
