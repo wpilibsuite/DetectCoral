@@ -9,7 +9,7 @@
 ![upload-model](upload-model.png)
 7. Click upload.
 8. [Download the Python script which runs the model here.](https://github.com/wpilibsuite/CoralSagemaker/releases/download/v1/inference.py)
-9. Switch the `Vision Application COnfiguration` to `Uploaded Python File`, as shown below, and upload the downloaded script.
+9. Switch the `Vision Application Configuration` to `Uploaded Python File`, as shown below, and upload the downloaded script.
 ![upload-py](upload-py.png)
 10. Real time labelling can be found on an MJPEG stream located at `http://frcvision.local:1182`
 11. The information about the detected objects is put to Network Tables. View the **Network Tables** section for more information about usable output.
