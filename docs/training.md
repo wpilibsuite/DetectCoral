@@ -4,8 +4,9 @@ Training on AWS with the provided dataset should take less than 15 minutes and c
 #### Opening the AWS Console
 1. Open [AWS Educate](https://aws.amazon.com/education/awseducate/). Log in to your account.
 2. Open up your Classroom. ![classroom](classrooms.png)
-3. Go to your classroom, and click continue. ![openclassroom](open-classroom.png)
-4. Open the AWS Console. ![console](aws-console.png)
+3. Accept the Terms and Conditions, if presented.
+4. Go to your classroom, and click continue. ![openclassroom](open-classroom.png)
+5. Open the AWS Console. ![console](aws-console.png)
 
 #### Training with AWS
 

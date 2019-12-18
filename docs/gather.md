@@ -22,12 +22,13 @@ To use your dataset, you must save it in Amazon's version of the cloud.
 
 1. Open [AWS Educate](https://aws.amazon.com/education/awseducate/). Log in to your account.
 2. Open up your Classroom. ![classroom](classrooms.png)
-3. Go to your classroom, and click continue. ![openclassroom](open-classroom.png)
-4. Open the AWS Console. ![console](aws-console.png)
-5. Search S3 in the "Find Services" field. Open S3. ![search](search-s3.png) An S3 bucket is a cloud storage service provided by AWS which you will be using to store your .tar of labeled images and the trained model after you finish running through this guide.
-6. Create a new bucket by giving it a unique name. Hit next and then hit next again without changing anything on the second page. On the third page, make sure it has public read permissions if multiple accounts will be using this data. ![new bucket](new-bucket.png)
+3. Accept the Terms and Conditions, if presented.
+4. Go to your classroom, and click continue. ![openclassroom](open-classroom.png)
+5. Open the AWS Console. ![console](aws-console.png)
+6. Search S3 in the "Find Services" field. Open S3. ![search](search-s3.png) An S3 bucket is a cloud storage service provided by AWS which you will be using to store your .tar of labeled images and the trained model after you finish running through this guide.
+7. Create a new bucket by giving it a unique name. Hit next and then hit next again without changing anything on the second page. On the third page, make sure it has public read permissions if multiple accounts will be using this data. ![new bucket](new-bucket.png)
     - Once you've made the bucket, go into the bucket, then `Permissions` --> `Access Control List`. Then change the public access to allow `List objects` and `Read bucket permissions`. ![permissions](bucket-permissions.png)
-7. Upload the `.tar` file that you downloaded (or made with Supervise.ly) into the new S3 bucket. Click "Add files", then select the file, click "Next", then make sure it also has public read permissions if multiple accounts will be using this data. Keep the file properties "Standard", and then click "Upload" ![upload tar](upload-tar.png)
+8. Upload the `.tar` file that you downloaded (or made with Supervise.ly) into the new S3 bucket. Click "Add files", then select the file, click "Next", then make sure it also has public read permissions if multiple accounts will be using this data. Keep the file properties "Standard", and then click "Upload" ![upload tar](upload-tar.png)
 
 
 ## [Continue to Training](training.md)
