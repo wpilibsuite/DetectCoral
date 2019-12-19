@@ -46,7 +46,7 @@ def parse_line(line):
 
 def main():
     checkpoints = []
-    with open("../output.txt", 'r') as file:
+    with open("output.txt", 'r') as file:
         lines = file.readlines()
         checkpoint_nb = 0
         checkpoint = CheckpointAccuracy(checkpoint_nb)
