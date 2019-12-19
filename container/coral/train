@@ -14,8 +14,6 @@ cd /tensorflow/models/research
 
 # Download checkpoints for MobileNet v2 hosted by Google
 
-cp eval.proto ./object_detection/protos/eval.proto
-
 printf ".\nDownloading model"
 ./prepare_checkpoint_and_dataset.sh --network_type mobilenet_v2_ssd --train_whole_model false  > /dev/null 2> /dev/null
 ./tar_to_record.sh
