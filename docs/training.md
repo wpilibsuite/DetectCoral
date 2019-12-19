@@ -22,8 +22,8 @@ Training on AWS with the provided dataset should take less than 15 minutes and c
    - If the tab does not finish reloading, close the tab, and open the notebook in JupyterLab once again. It will work this time.
 4. If you created your own dataset by following the [Gathering](gathering.md) steps, then change the last line of the code to use your data. You must replace `estimator.fit(s3://wpilib)` with `estimator.fit(s3://<<your-bucket-name>>)`. As a reminder, there should be only one `.tar` in your bucket.
 5. Run the code block by clicking the play button at the top of your screen. This block will take roughly 15 minutes or less to train your model.
-6. Stop the notebook after you are done running it to stop getting charged. Do this by going back to the SageMaker tab, clicking on notebook instances, selecting the instance that is no longer needed, and selecting `Actions -> Stop`. ![stop](stop-instance.png)
-7. Go to the SageMaker main page in the AWS console. Open Training Jobs. Open the most recent job.
+6. Stop the notebook after you are done running it to stop getting charged. Do this by going back to the SageMaker tab, clicking on `Notebook instances` on the far left, selecting the instance that is no longer needed, and selecting `Actions -> Stop`. ![stop](stop-instance.png)
+7. Open `Training jobs` on the far left. Open the most recent job.
 8. Once the model is done training (the job says `Completed`), scroll to the bottom inside the training job. Click on the link in the `Output` section, where it says `S3 model artifact`.
 9. Click on `model.tar.gz`. Click on `Download`.
 
