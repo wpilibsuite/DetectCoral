@@ -13,6 +13,7 @@ rm -rf /tensorflow/models/research/learn/models
 cd /tensorflow/models/research
 
 # Download checkpoints for MobileNet v2 hosted by Google
+cp model_main.py ./object_detection/model_main.py
 
 printf ".\nDownloading model"
 ./prepare_checkpoint_and_dataset.sh --network_type mobilenet_v2_ssd --train_whole_model false  > /dev/null 2> /dev/null
