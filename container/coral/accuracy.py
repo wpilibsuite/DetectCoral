@@ -1,3 +1,5 @@
+from os import walk
+
 class Average:
     def __init__(self, value):
         self._value = value
@@ -6,7 +8,7 @@ class Average:
         return self._value
 
     def __str__(self):
-        return f"{self.name}: {self._value}"
+        return "{}: {}".format(self.name, self._value)
 
 class Precision(Average):
     def __init__(self, value):
@@ -46,21 +48,31 @@ def parse_line(line):
 
 def main():
     checkpoints = []
+    checkpoint_nbs = []
+    f = []
+    for (dirpath, dirnames, filenames) in walk("./learn/train/"):
+        for file in filenames:
+            if file.endswith(".meta"):
+                checkpoint_nbs.append(int(file[file.find('-')+1:file.rfind('.')]))
+    checkpoint_nbs = checkpoint_nbs[1:]
+    checkpoint_nbs.append(-1)
+    print(*checkpoint_nbs)
+
     with open("output.txt", 'r') as file:
         lines = file.readlines()
-        checkpoint_nb = 0
-        checkpoint = CheckpointAccuracy(checkpoint_nb)
+        i = 0
+        checkpoint = CheckpointAccuracy(checkpoint_nbs[i])
         for line in lines:
+            line = parse_line(line)
             if len(checkpoint.lines) == 12:
                 checkpoints.append(checkpoint)
-                checkpoint_nb += 1
-                checkpoint = CheckpointAccuracy(checkpoint_nb)
-            line = parse_line(line)
+                i += 1
+                checkpoint = CheckpointAccuracy(checkpoint_nbs[i])
             if type(line) != int:
                 checkpoint.lines.append(line)
     print("\nResults of training:")
     print(*checkpoints,sep='\n')
-    print(end="\nCheckpoint {} will be converted.".format(len(checkpoints) - 1))
+    print(end="\nCheckpoint {} will be converted.".format(checkpoint_nbs[-2]))
 
 
 if __name__ == "__main__":

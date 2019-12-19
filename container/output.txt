@@ -1,67 +1,136 @@
-2019-09-18 17:46:25 Starting - Starting the training job...
-2019-09-18 17:46:27 Starting - Launching requested ML instances......
-2019-09-18 17:47:29 Starting - Preparing the instances for training...
-2019-09-18 17:48:13 Downloading - Downloading input data
-2019-09-18 17:48:13 Training - Downloading the training image.........
-2019-09-18 17:49:48 Training - Training image download completed. Training in progress..+ set -e
-+ mkdir /tensorflow/models/research/learn
-+ mkdir /tensorflow/models/research/learn/ckpt
-+ rm -rf /tensorflow/models/research/learn/train
-+ rm -rf /tensorflow/models/research/learn/models
-+ cd /tensorflow/models/research
-+ echo 'Downloading model'
-Downloading model
-+ ./prepare_checkpoint_and_dataset.sh --network_type mobilenet_v2_ssd --train_whole_model false
-Preparing checkpoint
-+ ./tar_to_record.sh
-+ cd /opt/ml/input/data/training
-+ rm -rf out
-+ mkdir out
-+ mkdir tmp
-++ find . -name Mark.tar
-+ tar_file=./Mark.tar
-+ tar -xf ./Mark.tar -C ./out/
-+ python3 /tensorflow/models/research/json_to_csv.py
-+ python /tensorflow/models/research/generate_tfrecord.py --input_csv=./tmp/train.csv --output_tfrecord=train.record
-Successfully created the TFRecords: /opt/ml/input/data/training/train.record
-+ python /tensorflow/models/research/generate_tfrecord.py --input_csv=./tmp/eval.csv --output_tfrecord=eval.record
-Successfully created the TFRecords: /opt/ml/input/data/training/eval.record
-+ python3 /tensorflow/models/research/parse_meta.py -out=map.pbtxt
-+ echo 'Records generated.'
+
+WPILib ML Notebook
+Introduction
+
+By using this notebook, you can train a TensorFlow Lite model for use on a Raspberry Pi and Google Coral USB Accelerator. We've designed this process to be as simple as possible. If you find an issue with this notebook, please create a new issue report on our GitHub page, where you downloaded this notebook.
+Training
+
+    Download the WPILIB dataset as a .tar file here
+    Upload your .tar file to a new folder in an Amazon S3 bucket, or a brand new S3 bucket.
+    Create a new SageMaker notebook instance, and open the WPILib notebook.
+    Change estimator.fit() in the last code cell to use your new dataset, by specifying the folder in which the tar is stored.
+    Run the code block.
+    Training should take roughly 10 minutes and cost roughly $0.55 if using the GPU instance, or 45 minutes and cost roughly $0.45 if using the CPU instance. If you do not change anything in the notebook, other than the S3 location, it should absolutely not take longer than an hour.
+
+Notebook
+
+This step runs the training instance (default for GPU is a ml.p3.2xlarge and for the default is CPU is an ml.c4.2xlarge), and begins training with the data specified in fit()
+
+This section has lots of configurable values You need to change estimator.fit(...):to be the location of the data used for training. (the bucket you uploaded the .tar to) It should be in the format "s3://BUCKET-NAME"
+
+from sagemaker.estimator import Estimator
+
+from sagemaker import get_execution_role
+
+​
+
+​
+
+# Uses GPU by default, change to false to use CPU
+
+use_gpu = True
+
+​
+
+role = get_execution_role()
+
+​
+
+instance_type = None
+
+algorithm_name = None
+
+​
+
+if use_gpu:
+
+    instance_type = 'ml.p3.2xlarge'
+
+    algorithm_name = 'wpi-gpu'
+
+else:
+
+    instance_type = 'ml.c4.2xlarge'
+
+    algorithm_name = 'sagemaker-tf-wpi'
+
+​
+
+​
+
+"""
+
+Hyperparameters:
+
+    epochs -> int: number of training steps. Training time is proportional to this number. default = 1000
+
+    batch_size -> int: size of a batch of training images. default = 32
+
+"""
+
+hyperparameters = {'epochs': 1000,
+
+                   'batch_size': 32}
+
+​
+
+ecr_image = "249838237784.dkr.ecr.us-east-1.amazonaws.com/{}:latest".format(algorithm_name)
+
+​
+
+# The estimator object, using our notebook, training instance, the ECR image, and the specified training steps
+
+estimator = Estimator(role=role,
+
+                      train_instance_count=1,
+
+                      train_instance_type=instance_type,
+
+                      image_name=ecr_image,
+
+                      hyperparameters=hyperparameters)
+
+​
+
+# Change this bucket if you want to train with your own data. The WPILib bucket contains thousands of high quality labeled images.
+
+# s3://wpilib
+
+estimator.fit("s3://wpilib")
+
+2019-12-19 20:36:16 Starting - Starting the training job...
+2019-12-19 20:36:17 Starting - Launching requested ML instances......
+2019-12-19 20:37:21 Starting - Preparing the instances for training......
+2019-12-19 20:38:24 Downloading - Downloading input data
+2019-12-19 20:38:24 Training - Downloading the training image............
+
+2019-12-19 20:40:22 Training - Training image download completed. Training in progress.Downloading model.
+Successfully created the TFRecords: /opt/ml/input/data/training/train.record.
+Successfully created the TFRecords: /opt/ml/input/data/training/eval.record.
 Records generated.
-+ cd /opt/ml/input/data/training
-++ python3 /tensorflow/models/research/labels.py
-+ classes=7
-+ cd /tensorflow/models/research
-+ sed -i s%NUM_CLASSES%7%g ./pipeline.config
-+ cp pipeline.config /tensorflow/models/research/learn/ckpt/pipeline.config
-++ python3 hyper.py
-+ TRAIN_STEPS=500
-+ echo 'Beginning training on Docker image'
-Beginning training on Docker image
-+ ./retrain_detection_model.sh --num_training_steps 500 --num_eval_steps 1
-+ num_training_steps=500
-+ [[ 4 -gt 0 ]]
-+ case "$1" in
-+ num_training_steps=500
-+ shift 2
-+ [[ 2 -gt 0 ]]
-+ case "$1" in
-+ num_eval_steps=1
-+ shift 2
-+ [[ 0 -gt 0 ]]
-+ source /tensorflow/models/research/constants.sh
-++ declare -A ckpt_link_map
-++ declare -A ckpt_name_map
-++ declare -A config_filename_map
-++ ckpt_link_map["mobilenet_v1_ssd"]=http://download.tensorflow.org/models/object_detection/ssd_mobilenet_v1_quantized_300x300_coco14_sync_2018_07_18.tar.gz
-++ ckpt_link_map["mobilenet_v2_ssd"]=http://download.tensorflow.org/models/object_detection/ssd_mobilenet_v2_quantized_300x300_coco_2019_01_03.tar.gz
-++ ckpt_name_map["mobilenet_v1_ssd"]=ssd_mobilenet_v1_quantized_300x300_coco14_sync_2018_07_18
-++ ckpt_name_map["mobilenet_v2_ssd"]=ssd_mobilenet_v2_quantized_300x300_coco_2019_01_03
-++ config_filename_map["mobilenet_v1_ssd-true"]=pipeline_mobilenet_v1_ssd_retrain_whole_model.config
-++ config_filename_map["mobilenet_v1_ssd-false"]=pipeline_mobilenet_v1_ssd_retrain_last_few_layers.config
-++ config_filename_map["mobilenet_v2_ssd-true"]=pipeline_mobilenet_v2_ssd_retrain_whole_model.config
-++ config_filename_map["mobilenet_v2_ssd-false"]=pipeline_mobilenet_v2_ssd_retrain_last_few_layers.config
+Hyperparameters parsed.
+Beginning training on Docker imagecreating index...
+index created!
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *bbox*
+DONE (t=1.04s).
+Accumulating evaluation results...
+DONE (t=0.38s).
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.172
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.354
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.147
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.030
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.211
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.453
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.171
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.285
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.286
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.079
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.275
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.638
+peline_mobilenet_v2_ssd_retrain_last_few_layers.config
 ++ INPUT_TENSORS=normalized_input_image_tensor
 ++ OUTPUT_TENSORS=TFLite_Detection_PostProcess,TFLite_Detection_PostProcess:1,TFLite_Detection_PostProcess:2,TFLite_Detection_PostProcess:3
 ++ OBJ_DET_DIR=/tensorflow/models/research
@@ -70,7 +139,7 @@ Beginning training on Docker image
 ++ TRAIN_DIR=/tensorflow/models/research/learn/train
 ++ OUTPUT_DIR=/tensorflow/models/research/learn/models
 + mkdir /tensorflow/models/research/learn/train
-+ python object_detection/model_main.py --pipeline_config_path=/tensorflow/models/research/learn/ckpt/pipeline.config --model_dir=/tensorflow/models/research/learn/train --num_train_steps=500 --num_eval_steps=1
++ python object_detection/model_main.py --pipeline_config_path=/tensorflow/models/research/learn/ckpt/pipeline.config --model_dir=/tensorflow/models/research/learn/train --num_train_steps=1000 --num_eval_steps=1
 /tensorflow/models/research/object_detection/utils/visualization_utils.py:29: UserWarning: 
 This call to matplotlib.use() has no effect because the backend has already
 been chosen; matplotlib.use() must be called *before* pylab, matplotlib.pyplot,
@@ -98,7 +167,7 @@ The backend was *originally* set to 'TkAgg' by the following code:
   import matplotlib; matplotlib.use('Agg')  # pylint: disable=multiple-statements
 WARNING:tensorflow:Forced number of epochs for all eval validations to be 1.
 WARNING:tensorflow:Expected number of evaluation epochs is 1, but instead encountered `eval_on_train_input_config.num_epochs` = 0. Overwriting `num_epochs` to 1.
-WARNING:tensorflow:Estimator's model_fn (<function model_fn at 0x7fd449474578>) includes params argument, but params are not passed to Estimator.
+WARNING:tensorflow:Estimator's model_fn (<function model_fn at 0x7fedc0dc5938>) includes params argument, but params are not passed to Estimator.
 WARNING:tensorflow:num_readers has been reduced to 1 to match input file shards.
 WARNING:tensorflow:From /tensorflow/models/research/object_detection/builders/dataset_builder.py:86: parallel_interleave (from tensorflow.contrib.data.python.ops.interleave_ops) is deprecated and will be removed in a future version.
 Instructions for updating:
@@ -122,128 +191,30 @@ WARNING:root:Variable [BoxPredictor_4/ClassPredictor/weights] is available in ch
 WARNING:root:Variable [BoxPredictor_5/ClassPredictor/biases] is available in checkpoint, but has an incompatible shape with model variable. Checkpoint shape: [[546]], model variable shape: [[48]]. This variable will not be initialized from the checkpoint.
 WARNING:root:Variable [BoxPredictor_5/ClassPredictor/weights] is available in checkpoint, but has an incompatible shape with model variable. Checkpoint shape: [[1, 1, 128, 546]], model variable shape: [[1, 1, 128, 48]]. This variable will not be initialized from the checkpoint.
 WARNING:root:Variable [global_step] is not available in checkpoint
-2019-09-18 17:50:47.287947: I tensorflow/core/platform/cpu_feature_guard.cc:141] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 FMA
-creating index...
-index created!
-creating index...
-index created!
-Running per image evaluation...
-Evaluate annotation type *bbox*
-DONE (t=1.25s).
-Accumulating evaluation results...
-DONE (t=0.35s).
- Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.074
- Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.198
- Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.058
- Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.017
- Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.074
- Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.172
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.071
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.120
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.125
- Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.042
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.117
- Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.282
-creating index...
-index created!
-creating index...
-index created!
-Running per image evaluation...
-Evaluate annotation type *bbox*
-DONE (t=0.97s).
-Accumulating evaluation results...
-DONE (t=0.33s).
- Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.089
- Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.233
- Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.056
- Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.027
- Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.083
- Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.260
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.082
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.178
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.179
- Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.075
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.137
- Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.422
-creating index...
-index created!
-creating index...
-index created!
-Running per image evaluation...
-Evaluate annotation type *bbox*
-DONE (t=1.02s).
-Accumulating evaluation results...
-DONE (t=0.34s).
- Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.106
- Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.242
- Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.084
- Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.045
- Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.115
- Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.257
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.099
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.203
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.205
- Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.091
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.191
- Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.422
-creating index...
-index created!
-creating index...
-index created!
-Running per image evaluation...
-Evaluate annotation type *bbox*
-DONE (t=0.95s).
-Accumulating evaluation results...
-DONE (t=0.32s).
- Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.110
- Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.249
- Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.080
- Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.027
- Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.110
+2019-12-19 20:41:29.291538: I tensorflow/core/platform/cpu_feature_guard.cc:141] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 FMA
+2019-12-19 20:41:29.754002: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:964] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
+2019-12-19 20:41:29.754936: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1432] Found device 0 with properties: 
+name: Tesla V100-SXM2-16GB major: 7 minor: 0 memoryClockRate(GHz): 1.53
+pciBusID: 0000:00:1e.0
+totalMemory: 15.75GiB freeMemory: 15.44GiB
+2019-12-19 20:41:29.755055: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1511] Adding visible gpu devices: 0
+2019-12-19 20:41:31.202895: I tensorflow/core/common_runtime/gpu/gpu_device.cc:982] Device interconnect StreamExecutor with strength 1 edge matrix:
+2019-12-19 20:41:31.202942: I tensorflow/core/common_runtime/gpu/gpu_device.cc:988]      0 
+2019-12-19 20:41:31.202952: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1001] 0:   N 
+2019-12-19 20:41:31.203090: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1115] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 14940 MB memory) -> physical GPU (device: 0, name: Tesla V100-SXM2-16GB, pci bus id: 0000:00:1e.0, compute capability: 7.0)
+2019-12-19 20:46:08.295398: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1511] Adding visible gpu devices: 0
+2019-12-19 20:46:08.295463: I tensorflow/core/common_runtime/gpu/gpu_device.cc:982] Device interconnect StreamExecutor with strength 1 edge matrix:
+2019-12-19 20:46:08.295475: I tensorflow/core/common_runtime/gpu/gpu_device.cc:988]      0 
+2019-12-19 20:46:08.295483: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1001] 0:   N 
+2019-12-19 20:46:08.295568: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1115] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 14940 MB memory) -> physical GPU (device: 0, name: Tesla V100-SXM2-16GB, pci bus id: 0000:00:1e.0, compute capability: 7.0)
+2019-12-19 20:46:39.841737: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1511] Adding visible gpu devices: 0
+2019-12-19 20:46:39.841807: I tensorflow/core/common_runtime/gpu/gpu_device.cc:982] Device interconnect StreamExecutor with strength 1 edge matrix:
+2019-12-19 20:46:39.841819: I tensorflow/core/common_runtime/gpu/gpu_device.cc:988]      0 
+2019-12-19 20:46:39.841827: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1001] 0:   N 
+2019-12-19 20:46:39.841916: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1115] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 14940 MB memory) -> physical GPU (device: 0, name: Tesla V100-SXM2-16GB, pci bus id: 0000:00:1e.0, compute capability: 7.0)
 WARNING:tensorflow:From /usr/local/lib/python2.7/dist-packages/tensorflow/python/estimator/estimator.py:1044: calling add_meta_graph_and_variables (from tensorflow.python.saved_model.builder_impl) with legacy_init_op is deprecated and will be removed in a future version.
 Instructions for updating:
 Pass your op to the equivalent parameter main_op instead.
 WARNING:tensorflow:From /usr/local/lib/python2.7/dist-packages/tensorflow/python/estimator/estimator.py:1044: calling add_meta_graph_and_variables (from tensorflow.python.saved_model.builder_impl) with legacy_init_op is deprecated and will be removed in a future version.
 Instructions for updating:
 Pass your op to the equivalent parameter main_op instead.
- Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.292
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.098
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.175
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.177
- Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.086
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.157
- Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.393
-creating index...
-index created!
-creating index...
-index created!
-Running per image evaluation...
-Evaluate annotation type *bbox*
-DONE (t=0.97s).
-Accumulating evaluation results...
-DONE (t=0.32s).
- Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.126
- Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.288
- Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.093
- Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.041
- Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.125
- Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.373
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.112
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.201
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.202
- Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.091
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.194
- Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.470
-+ echo 'Converting checkpoint to tflite'
-+ ./convert_checkpoint_to_edgetpu_tflite.sh --checkpoint_num 500
-Converting checkpoint to tflite
-Compiling model for Edge TPU
-+ echo 'Compiling model for Edge TPU'
-+ edgetpu_compiler ./learn/models/output_tflite_graph.tflite -o /opt/ml/model/
-+ rm /opt/ml/model/output_tflite_graph_edgetpu.log
-+ mv /opt/ml/model/output_tflite_graph_edgetpu.tflite /opt/ml/model/model.tflite
-
-2019-09-18 18:35:37 Uploading - Uploading generated training model
-2019-09-18 18:35:37 Completed - Training job completed
-Training seconds: 2856
-Billable seconds: 2856
