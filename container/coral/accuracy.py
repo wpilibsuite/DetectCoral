@@ -54,25 +54,32 @@ def main():
         for file in filenames:
             if file.endswith(".meta"):
                 checkpoint_nbs.append(int(file[file.find('-')+1:file.rfind('.')]))
-    checkpoint_nbs = checkpoint_nbs[1:]
-    checkpoint_nbs.append(-1)
-    print(*checkpoint_nbs)
+    checkpoint_nbs.sort()
+    checkpoint_max = max(checkpoint_nbs)
+    if checkpoint_max > 100:
+        checkpoint_nbs = [i for i in range(100, checkpoint_max, 100)]
+        checkpoint_nbs.append(checkpoint_max)
 
-    with open("output.txt", 'r') as file:
-        lines = file.readlines()
-        i = 0
-        checkpoint = CheckpointAccuracy(checkpoint_nbs[i])
-        for line in lines:
-            line = parse_line(line)
-            if len(checkpoint.lines) == 12:
-                checkpoints.append(checkpoint)
-                i += 1
-                checkpoint = CheckpointAccuracy(checkpoint_nbs[i])
-            if type(line) != int:
-                checkpoint.lines.append(line)
-    print("\nResults of training:")
-    print(*checkpoints,sep='\n')
-    print(end="\nCheckpoint {} will be converted.".format(checkpoint_nbs[-2]))
+        with open("output.txt", 'r') as file:
+            lines = file.readlines()
+            i = 0
+            checkpoint = CheckpointAccuracy(checkpoint_nbs[i])
+            for line in lines:
+                line = parse_line(line)
+                if checkpoint != None and len(checkpoint.lines) == 12:
+                    checkpoints.append(checkpoint)
+                    i += 1
+                    try:
+                        checkpoint = CheckpointAccuracy(checkpoint_nbs[i])
+                    except IndexError:
+                        checkpoint = None
+                if type(line) != int:
+                    checkpoint.lines.append(line)
+        print("\nResults of training:")
+        print(*checkpoints,sep='\n')
+        print(end="\nCheckpoint {} will be converted.".format(checkpoint_max))
+    else:
+        print(end="\nWPILib advises that you train for more epochs. 500+ is recommended.")
 
 
 if __name__ == "__main__":

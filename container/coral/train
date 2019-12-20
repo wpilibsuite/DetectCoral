@@ -14,6 +14,7 @@ cd /tensorflow/models/research
 
 # Download checkpoints for MobileNet v2 hosted by Google
 cp model_main.py ./object_detection/model_main.py
+cp model_lib.py ./object_detection/model_lib.py
 
 printf ".\nDownloading model"
 ./prepare_checkpoint_and_dataset.sh --network_type mobilenet_v2_ssd --train_whole_model false  > /dev/null 2> /dev/null
@@ -39,9 +40,8 @@ cp pipeline.config /tensorflow/models/research/learn/ckpt/pipeline.config
 
 printf ".\nBeginning training on Docker image"
 ./retrain_detection_model.sh --num_training_steps $TRAIN_STEPS --num_eval_steps 100 > output.txt 2> output.txt
-python3 accuracy.py
 
-ls ./learn/train/
+python3 accuracy.py
 
 printf ".\nConverting checkpoint to tflite"
 ./convert_checkpoint_to_edgetpu_tflite.sh --checkpoint_num $TRAIN_STEPS > /dev/null 2>&1

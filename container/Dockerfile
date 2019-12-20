@@ -13,7 +13,7 @@
 # limitations under the License.
 # #==========================================================================
 
-FROM tensorflow/tensorflow:1.12.0-rc2-devel-gpu
+FROM tensorflow/tensorflow:1.12.0-rc2-devel-cpu
 
 # Get the tensorflow models research directory, and move it into tensorflow
 # source folder to match recommendation of installation
