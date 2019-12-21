@@ -9,10 +9,8 @@ f = []
 for file in glob.glob("**/**/**/**/*.json"):
     f.append(file)
 
-random.shuffle(f)
-evals = len(f) // 10
-train_jsons = f[evals:]
-eval_jsons = f[:evals]
+train_jsons = [f[i] for i in range(len(f)) if i%10>=3]
+eval_jsons = [f[i] for i in range(len(f)) if i%10<3]
 
 def make_csv(csv_path, files):
     with open(csv_path, "w+") as csv:
