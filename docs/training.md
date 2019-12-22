@@ -16,11 +16,11 @@ Training on AWS with the provided dataset should take less than 15 minutes and c
  - IAM Role: Click `Create a new role` inside of the dropdown. Let it have access to Any S3 bucket.
  - Git repositories: open the panel, then click on where it says `None`. Click `Clone a public Git repository to this notebook instance only`, then paste in this link: [https://github.com/wpilibsuite/CoralSagemaker.git](https://github.com/wpilibsuite/CoralSagemaker.git)
  - Create the instance
-2. After several minutes, the notebook will be "In Serivce". Open the notebook using the JupyterLab option. ![jupyterlab](open-jupyter.png)
+2. After several minutes, the notebook will be "In Service". Open the notebook using the JupyterLab option. ![jupyterlab](open-jupyter.png)
 3. Open the `CoralSagemaker` folder, and then `coral.ipynb`, found on the left side of the screen. We've noticed that the first time a notebook is opened, it doesn't work correctly. To fix this, follow these steps:
    - Reload the tab. Dismiss the error. When prompted, select the kernel `conda_amazonei_tensorflow_p36`
    - If the tab does not finish reloading, close the tab, and open the notebook in JupyterLab once again. It will work this time.
-4. If you created your own dataset by following the [Gathering](gathering.md) steps, then change the last line of the code to use your data. You must replace `estimator.fit(s3://wpilib)` with `estimator.fit(s3://<<your-bucket-name>>)`. As a reminder, there should be only one `.tar` in your bucket.
+4. If you [gathered additional data and made your own dataset](gathering.md) then make the following change. If you have only followed the instructions on this page, please continue to step 5. To use your own data and not WPILib's, replace `estimator.fit(s3://wpilib)` with `estimator.fit(s3://<<your-bucket-name>>)`. As a reminder, there should be only one `.tar` in your bucket.
 5. Run the code block by clicking the play button at the top of your screen. This block will take roughly 15 minutes or less to train your model.
 6. Stop the notebook after you are done running it to stop getting charged. Do this by going back to the SageMaker tab, clicking on `Notebook instances` on the far left, selecting the instance that is no longer needed, and selecting `Actions -> Stop`. ![stop](stop-instance.png)
 7. Open `Training jobs` on the far left. Open the most recent job.
