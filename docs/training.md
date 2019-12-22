@@ -1,6 +1,6 @@
 # Training
 
-Training on AWS with the provided dataset should take less than 15 minutes and cost roughly $0.60. If you add more images or add new labeling classes the cost and time will be higher.
+Training on AWS with the provided dataset should take about 2 hours and cost roughly $1. If you add more images or add new labeling classes the cost and time will be higher.
 #### Opening the AWS Console
 1. Open [AWS Educate](https://aws.amazon.com/education/awseducate/). Log in to your account.
 2. Open up your Classroom. ![classroom](classrooms.png)
