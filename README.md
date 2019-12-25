@@ -13,3 +13,8 @@ This document describes the steps needed to use a provided set of labeled images
 - [Use the data from your model](docs/using-data.md)
 
 - [How it all works](docs/how.md)
+
+### Hardware requirement
+
+- Raspberry Pi 3 or newer
+- [Google Coral USB Accelerator](https://coral.ai/products/accelerator/)
