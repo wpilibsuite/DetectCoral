@@ -137,7 +137,8 @@ def main(config):
                 boxes.extend(box)
                 # Draw a rectangle.
                 draw.rectangle(box, outline='green')
-                output.putFrame(np.array(frame))
+
+            output.putFrame(np.array(frame))
 
         else:
             print('No object detected!')
