@@ -84,7 +84,7 @@ def main(video):
                 boxes.extend(box)
                 # Draw a rectangle.
                 draw.rectangle(box, outline='green')
-                out.write(frame)
+            out.write(frame)
 
         else:
             print('No object detected!')
