@@ -3,8 +3,7 @@ from time import time
 import json
 import sys
 from edgetpu.detection.engine import DetectionEngine
-from PIL import Image
-from PIL import ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 from cscore import CameraServer, VideoSource, UsbCamera, MjpegServer
 from networktables import NetworkTablesInstance
 
@@ -88,6 +87,7 @@ def log_object(obj, labels):
 def main(config):
     team = read_config(config)
     WIDTH, HEIGHT = 320, 240
+    font = ImageFont.truetype('usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', 15)
 
     print("Connecting to Network Tables")
     ntinst = NetworkTablesInstance.getDefault()
@@ -133,10 +133,12 @@ def main(config):
                 log_object(obj, labels)
                 if labels:
                     names.append(labels[obj.label_id])
-                box = [round(i,3) for i in obj.bounding_box.flatten().tolist()]
+                box = [round(i, 3) for i in obj.bounding_box.flatten().tolist()]
                 boxes.extend(box)
                 # Draw a rectangle.
                 draw.rectangle(box, outline='green')
+                x, y, _, _ = box
+                draw.text((x, y - 30), labels[obj.label_id + 1] + "  " + str(obj.score), 'green', font)
 
             output.putFrame(np.array(frame))
 
