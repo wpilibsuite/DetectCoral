@@ -4,9 +4,9 @@ import json
 import sys
 from edgetpu.detection.engine import DetectionEngine
 from PIL import Image
-from PIL import ImageDraw
 from cscore import CameraServer, VideoSource, UsbCamera, MjpegServer
 from networktables import NetworkTablesInstance
+import cv2
 
 
 def parseError(str, config_file):
@@ -116,12 +116,10 @@ def main(config):
 
     print("Starting ML mainloop")
     while True:
-        t, img = cvSink.grabFrame(img)
-        frame = Image.fromarray(img)
-        draw = ImageDraw.Draw(frame)
+        t, frame = cvSink.grabFrame(img)
 
         # Run inference.
-        ans = engine.detect_with_image(frame, threshold=0.5, keep_aspect_ratio=True, relative_coord=False, top_k=10)
+        ans = engine.detect_with_image(Image.fromarray(frame), threshold=0.5, keep_aspect_ratio=True, relative_coord=False, top_k=10)
         nb_objects_entry.setNumber(len(ans))
 
         boxes = []
@@ -133,12 +131,19 @@ def main(config):
                 log_object(obj, labels)
                 if labels:
                     names.append(labels[obj.label_id])
-                box = [round(i,3) for i in obj.bounding_box.flatten().tolist()]
+                box = [round(i, 3) for i in obj.bounding_box.flatten().tolist()]
                 boxes.extend(box)
-                # Draw a rectangle.
-                draw.rectangle(box, outline='green')
+                xmin, ymin, xmax, ymax = map(int,box)
 
-            output.putFrame(np.array(frame))
+                label = '%s: %d%%' % (names[-1], int(obj.score * 100))  # Example: 'Cargo: 72%'
+                label_size, base_line = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.5, 2)
+                label_ymin = max(ymin, label_size[1] + 10)
+                cv2.rectangle(frame, (xmin, label_ymin - label_size[1] - 10),
+                              (xmin + label_size[0], label_ymin + base_line - 10), (255, 255, 255), cv2.FILLED)
+                cv2.putText(frame, label, (xmin, label_ymin - 7), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2)
+                cv2.rectangle(frame, (xmin, ymin), (xmax, ymax), (10, 255, 0), 4)
+
+            output.putFrame(frame)
 
         else:
             print('No object detected!')
