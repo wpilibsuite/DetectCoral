@@ -19,4 +19,4 @@ This document describes the steps needed to use a provided set of labeled images
 ### Hardware requirement
 
 - Raspberry Pi 3 or newer
-- [Google Coral USB Accelerator](https://coral.ai/products/accelerator/)
+- [Google Coral USB Accelerator](https://www.amazon.com/Google-Coral-Accelerator-coprocessor-Raspberry/dp/B07R53D12W)

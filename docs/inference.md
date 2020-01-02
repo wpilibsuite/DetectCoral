@@ -1,6 +1,6 @@
 ### Inference
 
-1. Acquire a Raspberry Pi 3 or newer, and a [Google Coral USB Accelerator](https://coral.ai/products/accelerator/)
+1. Acquire a Raspberry Pi 3 or newer, and a [Google Coral USB Accelerator](https://www.amazon.com/Google-Coral-Accelerator-coprocessor-Raspberry/dp/B07R53D12W)
 ![coral](coral.jpg)
 2. Go to the training job in SageMaker, scroll to the bottom, and find the output S3 location
 3. Download the the tar file in the bucket.
