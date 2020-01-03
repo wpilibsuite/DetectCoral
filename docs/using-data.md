@@ -18,6 +18,20 @@ The below `VisionSubsystem` Java class parses the data from NetworkTables and st
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
+/*----------------------------------------------------------------------------*/
+/* Copyright (c) 2018 FIRST. All Rights Reserved.                             */
+/* Open Source Software - may be modified and shared by FRC teams. The code   */
+/* must be accompanied by the FIRST BSD license file in the root directory of */
+/* the project.                                                               */
+/*----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------*/
+/* Copyright (c) 2018 FIRST. All Rights Reserved.                             */
+/* Open Source Software - may be modified and shared by FRC teams. The code   */
+/* must be accompanied by the FIRST BSD license file in the root directory of */
+/* the project.                                                               */
+/*----------------------------------------------------------------------------*/
+
 package frc.robot.subsystems;
 
 import edu.wpi.first.networktables.NetworkTable;
@@ -25,70 +39,174 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class VisionSubsystem extends SubsystemBase {
+  private NetworkTable table;
+  private int totalObjects = 0;
+  public Cargo[] cargo = new Cargo[0];
+  public Hatch[] hatches = new Hatch[0];
+  public int totalCargo, totalHatches;
+  private String[] classes;
+  private double[] boxes, box;
+
+  private abstract class Gamepiece {
+    public double distance;
+    public double xOffset;
+
     /**
-    * Represents a detected game object from the Coral
-    */
-    public class GameObject {
-        String name;
-        double heading;
-        double distance;
-        
-        /**
-        * Holds the data determined by Coral
-        * @param name
-        * @param heading
-        * @param distance
-        */
-        public GameObject(String name, double heading, double distance) {
-            this.name = name;
-            this.heading = heading;
-            this.distance = distance;
-        }
+     * Gets the relative angle of the game piece in radians
+     * @return the angle
+     */
+    public double getAngle() {
+      return Math.atan(xOffset / distance);
     }
-        
-    NetworkTable table;
-    int totalObjects;
-    GameObject[] gameObjects;
-    private String[] classes;
-    private double[] boxes, box;
-    
-    public VisionSubsystem() {
-        table = NetworkTableInstance.getDefault().getTable("ML");
-    }
-    
+  }
+
+  /**
+   * Represents a detected cargo from the Coral
+   */
+  public class Cargo extends Gamepiece{
+
     /**
-    * Periodically updates the list of detected objects with the data found on NetworkTables
-    */
-    @Override
-    public void periodic() {
-        totalObjects = (int) table.getEntry("nb_objects").getNumber(0);
-        gameObjects = new GameObject[totalObjects];
-        classes = table.getEntry("object_classes").getStringArray(new String[totalObjects]);
-        boxes = table.getEntry("boxes").getDoubleArray(new double[4 * totalObjects]);
-        for (int i = 0; i < totalObjects; i += 4) {
-            for (int j = 0; j < 4; j++) {
-                box[j] = boxes[i + j];
-            }
-            gameObjects[i] = new GameObject(classes[i], getHeading(box), getDistance(box));
-        }
+     * Holds the data determined by Coral
+     *
+     * @param box the array of points
+     */
+    public Cargo(double[] box) {
+      this.distance = 231.13 * Math.pow(box[3] - box[1], -1.303);
+      this.xOffset = (160 - ((box[0] + box[2]) / 2)) / (((box[3] - box[1]) / 13.0) * 39.37);
     }
-    
+  }
+
+  /**
+   * Represents a detected hatch from the Coral
+   */
+  public class Hatch extends Gamepiece{
+
     /**
-    * Gets the heading of the given object relative to the robot, in degrees
-    * @param box the bounding box of a detected object
-    * @return the heading of the detected object relative to the robot, in degrees
-    */
-    private double getHeading(double[] box) {
-        return 757.8125 / (Math.pow(Math.abs(box[2] - box[0]), -1.303));
+     * Holds the data determined by Coral
+     *
+     * @param box the array of points
+     */
+    public Hatch(double[] box) {
+      this.distance = 289.67 * Math.pow(box[3] - box[1], -1.131);
+      this.xOffset = (160 - ((box[0] + box[2]) / 2)) / (((box[3] - box[1]) / 19.5) * 39.37);
     }
-    
-    /**
-    * Gets the distance of the given object relative to the robot, in inches
-    * @param box the bounding box of a detected object
-    * @return the distance of the detected object relative to the robot, in inches
-    */
-    private double getDistance(double[] box) {
-        return (((box[0] + box[2]) / 2.0 - 160) / (Math.abs(box[2] - box[0]) / 19.5)) / 12.0;
+  }
+
+  public VisionSubsystem() {
+    table = NetworkTableInstance.getDefault().getTable("ML");
+  }
+
+  /**
+   * Periodically updates the list of detected objects with the data found on NetworkTables
+   * Also creates array of cargo and their relative position.
+   */
+  @Override
+  public void periodic() {
+    totalCargo = 0;
+    totalHatches = 0;
+    totalObjects = (int) table.getEntry("nb_objects").getDouble(0);
+    classes = table.getEntry("object_classes").getStringArray(new String[totalObjects]);
+    boxes = table.getEntry("boxes").getDoubleArray(new double[4 * totalObjects]);
+    // Count up number of cargo and hatches
+    for (String s : classes) {
+      if (s.equals("Cargo"))
+        totalCargo++;
+      if (s.equals("Hatchcover"))
+        totalHatches++;
     }
+
+    cargo = new Cargo[totalCargo];
+    hatches = new Hatch[totalHatches];
+    int cargoIndex = 0;
+    int hatchIndex = 0;
+
+    // Generate arrays of Cargo and Hatch objects
+    for (int i = 0; i < totalObjects; i += 4) {
+      box = new double[4];
+      for (int j = 0; j < 4; j++) {
+        box[j] = boxes[i + j];
+      }
+      if (classes[i].equals("Cargo")) {
+        cargo[cargoIndex] = new Cargo(box);
+        cargoIndex++;
+      }
+      if (classes[i].equals("Hatchcover")) {
+        hatches[hatchIndex] = new Hatch(box);
+        hatchIndex++;
+      }
+    }
+  }
+}
+```
+
+Using the arrays created by the `VisionSubsystem`, one can make a simple command to turn to face a game piece. In this example, a hatch is used. One thing to note is the ~15fps of inference attained by a Google Coral is not fast enough for PID input directly, however calculating the relative heading of a game piece and then turning to that heading works accurately.
+```java
+package frc.robot.commands;
+
+import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj2.command.PIDCommand;
+import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
+
+/**
+ * Command that turns the robot to face the first detected hatch
+ */
+public class TurnToHatchCommand extends PIDCommand {
+  private VisionSubsystem visionSubsystem;
+  private DriveSubsystem driveSubsystem;
+
+  /**
+   * PIDCommand uses relative hatch angle at time of initialization, not construction.
+   * Turn is based on gyro.
+   * @param driveSubsystem the drive subsystem
+   * @param visionSubsystem the vision subsystem
+   */
+  public TurnToHatchCommand(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem) {
+    super(
+        // Tune these values for your chassis
+        new PIDController(1, 0, 0),
+        // Gets the heading of the robot in radians as PID input
+        () -> driveSubsystem.getGyroAngle().getRadians(),
+        // 0 setpoint at construction, immediately overwritten at time of init
+        0,
+        // Turns with output
+        (double value) -> driveSubsystem.drive(0, value, true),
+        // Required subsystems
+        driveSubsystem,
+        visionSubsystem
+    );
+    this.driveSubsystem = driveSubsystem;
+    this.visionSubsystem = visionSubsystem;
+    // Set tolerance for PID
+    getController().setTolerance(10, 5);
+    // Using gyro heading in Radians, so continuous input
+    getController().enableContinuousInput(-Math.PI, Math.PI);
+  }
+
+  /**
+   * Sets setpoint at init
+   */
+  @Override
+  public void initialize() {
+    super.initialize();
+    getController().setSetpoint(getHatchAngle());
+  }
+
+  @Override
+  public boolean isFinished() {
+    return getController().atSetpoint();
+  }
+
+  /**
+   * Gets the angle of the hatch if there is one
+   * @return angle of hatch
+   */
+  public double getHatchAngle() {
+    if (visionSubsystem.totalHatches > 0) {
+      return visionSubsystem.hatches[0].getAngle();
+    }
+    // return current drivetrain angle if no hatch detected, so no turning
+    return driveSubsystem.getGyroAngle().getRadians();
+  }
 }
 ```
