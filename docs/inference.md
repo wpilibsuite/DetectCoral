@@ -1,4 +1,4 @@
-### Inference
+# Inference with the Google Coral
 
 1. Acquire a Raspberry Pi 3 or newer, and a [Google Coral USB Accelerator](https://www.amazon.com/Google-Coral-Accelerator-coprocessor-Raspberry/dp/B07R53D12W)
 ![coral](coral.jpg)
@@ -11,10 +11,10 @@
 8. Upload the previously downloaded `model.tar.gz` to the Pi by selecting the file in the `File Upload` box, and switching on `Extract .zip and .tar.gz files`
 ![upload-model](upload-model.png)
 9. Click upload.
-10. [Download the Python script which runs the model here.](https://github.com/wpilibsuite/CoralSagemaker/releases/download/v1/inference.py)
+10. [Download the Python script which runs the model here.](https://raw.githubusercontent.com/wpilibsuite/DetectCoral/master/utils/inference.py)
 11. Switch the `Vision Application Configuration` to `Uploaded Python File`, as shown below, and upload the downloaded script.
 ![upload-py](upload-py.png)
 12. Real time labelling can be found on an MJPEG stream located at `http://frcvision.local:1182`
 13. The information about the detected objects is put to Network Tables. View the **Network Tables** section for more information about usable output.
 
-## [Continue to Using Data](using-data.md)
+#### [Continue to Using Data](using-data.md)
