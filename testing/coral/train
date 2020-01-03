@@ -1,5 +1,4 @@
 #!/bin/bash
-set -x
 #ls -R -a /opt/ml/input/data/
 cd /work/
 mkdir model
@@ -14,10 +13,9 @@ cp $video $name
 
 # Untar model
 cd /work/model
-tar -xvf model.tar.gz
+tar -xf model.tar.gz
 cd ..
-
-python3 --version
+echo "Starting annotation of video. This will take a while. Average FPS: ~7"
 
 # Annotate video
 python3 test.py --modeldir=model --video=$name --graph=unoptimized.tflite

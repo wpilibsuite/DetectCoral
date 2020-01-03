@@ -35,8 +35,9 @@ sed -i "s%BATCH_SIZE_PARAM%${BATCH_SIZE}%g" "./pipeline.config"
 
 printf ".\nHyperparameters parsed"
 
-# Copy custom pipeline into docker
+# Copy custom pipeline
 cp pipeline.config /tensorflow/models/research/learn/ckpt/pipeline.config
+
 
 printf ".\nBeginning training on Docker image"
 ./retrain_detection_model.sh --num_training_steps $TRAIN_STEPS --num_eval_steps 100 > output.txt 2> output.txt
@@ -49,6 +50,9 @@ printf ".\nConverting checkpoint to tflite"
 ./convert_checkpoint_to_edgetpu_tflite.sh --checkpoint_num $TRAIN_STEPS > /dev/null 2>&1
 cp ./learn/models/output_tflite_graph.tflite /opt/ml/model/unoptimized.tflite
 
+mkdir /opt/ml/model/logs
+
+cp -a /tensorflow/models/research/learn/train/. /opt/ml/model/logs/
 
 printf ".\nCompiling model for Edge TPU"
 edgetpu_compiler ./learn/models/output_tflite_graph.tflite -o /opt/ml/model/ > /dev/null 2>&1

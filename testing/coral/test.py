@@ -136,7 +136,7 @@ while (video.isOpened()):
     start = time()
     # Acquire frame and resize to expected shape [1xHxWx3]
     ret, frame = video.read()
-    if ret is None:
+    if not ret or ret is None:
         break
     frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
     frame_resized = cv2.resize(frame_rgb, (width, height))
@@ -154,10 +154,6 @@ while (video.isOpened()):
     boxes = interpreter.get_tensor(output_details[0]['index'])[0]  # Bounding box coordinates of detected objects
     classes = interpreter.get_tensor(output_details[1]['index'])[0]  # Class index of detected objects
     scores = interpreter.get_tensor(output_details[2]['index'])[0]  # Confidence of detected objects
-    # num = interpreter.get_tensor(output_details[3]['index'])[0]  # Total number of detected objects (inaccurate and not needed)
-    if flag:
-        print("Classes", classes)
-        flag = False
 
     # Loop over all detections and draw detection box if confidence is above minimum threshold
     for i in range(len(scores)):
@@ -183,11 +179,10 @@ while (video.isOpened()):
                         2)  # Draw label text
 
     # All the results have been drawn on the frame, so it's time to display it.
-    if frames % 50 == 0:
+    if frames % 1000 == 0:
         print("Completed", frames, "frames. FPS:", (1 / (time() - start)))
     frames += 1
     out.write(frame)
 print("Done.")
 # Clean up
 video.release()
-cv2.destroyAllWindows()
