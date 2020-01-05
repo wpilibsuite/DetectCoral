@@ -1,48 +1,18 @@
 from os import walk
 
-class Average:
-    def __init__(self, value):
-        self._value = value
-        self.name = None
-    def get(self):
-        return self._value
-
-    def __str__(self):
-        return "{}: {}".format(self.name, self._value)
-
-class Precision(Average):
-    def __init__(self, value):
-        super(Precision, self).__init__(value)
+class Precision:
+    def __init__(self, value, num):
+        self.value = value
         self.name = "Average Precision"
+        self.num = num
+    
+    def __str__(self):
+        return "    Precision at epoch {}: {:.1f}%".format(self.num, self.value*100)
 
-class Recall(Average):
-    def __init__(self, value):
-        super(Recall, self).__init__(value)
-        self.name = "Average Recall"
-
-class CheckpointAccuracy:
-    def __init__(self, checkpoint_nb):
-        self.number = checkpoint_nb
-        self.lines = []
-
-    def __repr__(self):
-        precision = []
-        recall = []
-        for line in self.lines:
-            if type(line) == Precision:
-                precision.append(line.get())
-            else:
-                recall.append(line.get())
-        precision = sum(precision) / len(precision)
-        recall = sum(recall) / len(recall)
-        accuracy = (precision * recall * 100) / (precision + recall)
-        return "    Checkpoint {} accuracy: {:.3f}%".format(self.number, accuracy)
-
-def parse_line(line):
-    if "Precision" in line or "Recall" in line:
-        metric_type = Precision if "Precision" in line else Recall
+def parse_line(line, index):
+    if "Precision" in line:
         value = float(line[-6:-1])
-        return metric_type(value)
+        return Precision(value, index)
     else:
         return 0
 
@@ -50,31 +20,34 @@ def main():
     checkpoints = []
     checkpoint_nbs = []
     f = []
+
     for (dirpath, dirnames, filenames) in walk("./learn/train/"):
         for file in filenames:
             if file.endswith(".meta"):
                 checkpoint_nbs.append(int(file[file.find('-')+1:file.rfind('.')]))
+     
     checkpoint_nbs.sort()
     checkpoint_max = max(checkpoint_nbs)
+    
+    checkpoint_max = 1000
+    i = 0
+    
     if checkpoint_max > 100:
         checkpoint_nbs = [i for i in range(100, checkpoint_max, 100)]
         checkpoint_nbs.append(checkpoint_max)
+        
 
         with open("output.txt", 'r') as file:
             lines = file.readlines()
-            i = 0
-            checkpoint = CheckpointAccuracy(checkpoint_nbs[i])
             for line in lines:
-                line = parse_line(line)
-                if checkpoint != None and len(checkpoint.lines) == 12:
-                    checkpoints.append(checkpoint)
-                    i += 1
-                    try:
-                        checkpoint = CheckpointAccuracy(checkpoint_nbs[i])
-                    except IndexError:
-                        checkpoint = None
-                if type(line) != int:
-                    checkpoint.lines.append(line)
+                try:
+                    index = checkpoint_nbs[i]
+                except IndexError:
+                    break
+                parsed = parse_line(line, index)
+                if type(parsed) == Precision and "IoU=0.50      | area=   all " in line:
+                    i+=1
+                    checkpoints.append(parsed)
         print("\nResults of training:")
         print(*checkpoints,sep='\n')
         print(end="\nCheckpoint {} will be converted.".format(checkpoint_max))

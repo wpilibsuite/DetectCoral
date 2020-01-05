@@ -50,9 +50,6 @@ printf ".\nConverting checkpoint to tflite"
 ./convert_checkpoint_to_edgetpu_tflite.sh --checkpoint_num $TRAIN_STEPS > /dev/null 2>&1
 cp ./learn/models/output_tflite_graph.tflite /opt/ml/model/unoptimized.tflite
 
-mkdir /opt/ml/model/logs
-
-cp -a /tensorflow/models/research/learn/train/. /opt/ml/model/logs/
 
 printf ".\nCompiling model for Edge TPU"
 edgetpu_compiler ./learn/models/output_tflite_graph.tflite -o /opt/ml/model/ > /dev/null 2>&1
