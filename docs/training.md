@@ -16,10 +16,11 @@ Training on AWS with the provided dataset should take about 2 hours and cost rou
    - If the tab does not finish reloading, close the tab, and open the notebook in JupyterLab once again. It will work this time.
 5. Replace `estimator.fit(s3://wpilib)` with `estimator.fit(s3://<<your-bucket-name>>)`. If you could not access Supervisely in earlier steps, do not replace the bucket's name.
 6. Run the code block by clicking the play button at the top of your screen. This block could take up to two hours to train your model depending on the value of `epochs` in the `hyperparameters` dictionary.
-7. Go back to SageMaker. Open `Training jobs` on the far left. Open the most recent training job.
-8. Once the model is done training (the job says `Completed`), scroll to the bottom inside the training job. Click on the link in the `Output` section, where it says `S3 model artifact`.
-9. Click on `model.tar.gz`. Click on `Download`.
-10. Stop the notebook now that the training job is completed. Do this by going back to the SageMaker tab, clicking on `Notebook instances` on the far left, selecting the instance that is no longer needed, and selecting `Actions -> Stop`. ![stop](stop-instance.png)
+7. Once the code block finishes running, the precision for each epoch is outputted. [Go to this page](accuracy.md) to understand the meaning of these values.
+8. Go back to SageMaker. Open `Training jobs` on the far left. Open the most recent training job.
+9. Once the model is done training (the job says `Completed`), scroll to the bottom inside the training job. Click on the link in the `Output` section, where it says `S3 model artifact`.
+10. Click on `model.tar.gz`. Click on `Download`.
+11. Stop the notebook now that the training job is completed. Do this by going back to the SageMaker tab, clicking on `Notebook instances` on the far left, selecting the instance that is no longer needed, and selecting `Actions -> Stop`. ![stop](stop-instance.png)
 
 If you would like to see how your model performs before you put it on a Raspberry Pi and Google Coral, [go to the Testing Your Model steps.](testing.md)
 
