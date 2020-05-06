@@ -1,41 +1,31 @@
-# Copyright 2018 The TensorFlow Authors. All Rights Reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-# #==========================================================================
+FROM tensorflow/tensorflow:devel
 
-FROM tensorflow/tensorflow:1.12.0-rc2-devel
-
+RUN cd/ & mkdir tensorflow
 # Get the tensorflow models research directory, and move it into tensorflow
 # source folder to match recommendation of installation
 RUN git clone https://github.com/tensorflow/models.git && \
     mv models /tensorflow/models
+    
+RUN apt-get update && apt-get install -y --no-install-recommends nginx curl
+
+
 
 # Install the Tensorflow Object Detection API from here
 # https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/installation.md
 
 # Install object detection api dependencies
-RUN apt-get update -qq > /dev/null && \
-    apt-get install -y python python-tk python3 python3-pip -qq > /dev/null
-
-RUN apt-get update -qq > /dev/null && \
-    apt-get install -y --no-install-recommends nginx curl -qq > /dev/null
-
-RUN pip install Cython contextlib2  pillow lxml jupyter matplotlib pandas -q && \
-    python3 -m pip install pandas -q
+RUN apt-get update && \
+    apt-get install -y python python-tk
+RUN pip install Cython && \
+    pip install contextlib2 && \
+    pip install pillow && \
+    pip install lxml && \
+    pip install jupyter && \
+    pip install matplotlib
 
 # Get protoc 3.0.0, rather than the old version already in the container
-RUN curl -s -OL "https://github.com/google/protobuf/releases/download/v3.0.0/protoc-3.0.0-linux-x86_64.zip" > /dev/null && \
-    unzip protoc-3.0.0-linux-x86_64.zip -d proto3 > /dev/null && \
+RUN curl -OL "https://github.com/google/protobuf/releases/download/v3.0.0/protoc-3.0.0-linux-x86_64.zip" && \
+    unzip protoc-3.0.0-linux-x86_64.zip -d proto3 && \
     mv proto3/bin/* /usr/local/bin && \
     mv proto3/include/* /usr/local/include && \
     rm -rf proto3 protoc-3.0.0-linux-x86_64.zip
@@ -57,27 +47,20 @@ ENV PYTHONPATH $PYTHONPATH:/tensorflow/models/research:/tensorflow/models/resear
 
 # Install wget (to make life easier below) and editors (to allow people to edit
 # the files inside the container)
-RUN apt-get update -qq > /dev/null && \
-    apt-get install -y wget vim emacs nano -qq > /dev/null
+RUN apt-get update && \
+    apt-get install -y wget vim emacs nano
+
+RUN apt-get install -y apt-transport-https ca-certificates
 
 ARG work_dir=/tensorflow/models/research
 # Get object detection transfer learning scripts.
 ARG scripts_link="http://storage.googleapis.com/cloud-iot-edge-pretrained-models/docker/obj_det_scripts.tgz"
 RUN cd ${work_dir} && \
-    wget -q -O obj_det_scripts.tgz ${scripts_link} && \
-    tar zxf obj_det_scripts.tgz
+    wget -O obj_det_scripts.tgz ${scripts_link} && \
+    tar zxvf obj_det_scripts.tgz
 
-RUN apt-get install -y apt-transport-https ca-certificates
-
-RUN curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - && \
-    echo "deb https://packages.cloud.google.com/apt coral-edgetpu-stable main" | tee /etc/apt/sources.list.d/coral-edgetpu.list && \
-    apt-get update && \
-    apt-get install -y edgetpu
-
+ENV PATH="/tensorflow/models/research:${PATH}"
 # Copy WPILib scripts into docker image
 COPY /coral /tensorflow/models/research
 
-# Add train to path for SageMaker to find
-ENV PATH $PATH:/tensorflow/models/research
-
-WORKDIR ${work_dir}
+WORKDIR /tensorflow/models/research
