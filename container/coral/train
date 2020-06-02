@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e -x
+# set -e -x
 # By Grant Perkins, 2019
 
 # Make directories used in training
@@ -30,7 +30,6 @@ sed -i "s%NUM_CLASSES%${classes}%g" "./pipeline.config"
 
 # Get number of epochs from SageMaker
 TRAIN_STEPS=$(python3 hyper.py)
-TRAIN_STEPS=1000
 
 BATCH_SIZE=$(python3 batch.py)
 
@@ -43,7 +42,7 @@ cp pipeline.config /tensorflow/models/research/learn/ckpt/pipeline.config
 
 
 printf ".\nBeginning training on Docker image"
-./retrain_detection_model.sh --num_training_steps $TRAIN_STEPS --num_eval_steps 100 #> output.txt 2> output.txt
+./retrain_detection_model.sh --num_training_steps $TRAIN_STEPS --num_eval_steps 100 > output.txt 2> output.txt
 
 python3 accuracy.py > accuracy.txt
 cat accuracy.txt
@@ -55,7 +54,7 @@ cp ./learn/models/output_tflite_graph.tflite /opt/ml/model/unoptimized.tflite
 
 
 printf ".\nCompiling model for Edge TPU"
-edgetpu_compiler ./learn/models/output_tflite_graph.tflite -o /opt/ml/model/ # > /dev/null 2>&1
+edgetpu_compiler ./learn/models/output_tflite_graph.tflite -o /opt/ml/model/  > /dev/null 2>&1
 
 cp /opt/ml/input/data/training/map.pbtxt /opt/ml/model/map.pbtxt
 
