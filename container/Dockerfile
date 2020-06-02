@@ -1,4 +1,4 @@
-FROM tensorflow/tensorflow:1.12.0-rc2-devel-gpu
+FROM tensorflow/tensorflow:1.12.0-rc2-devel
 
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -65,14 +65,20 @@ RUN apt-get install -y apt-transport-https ca-certificates
 ARG work_dir=/tensorflow/models/research
 # Get object detection transfer learning scripts.
 ARG scripts_link="http://storage.googleapis.com/cloud-iot-edge-pretrained-models/docker/obj_det_scripts.tgz"
+
 RUN cd ${work_dir} && \
     wget -O obj_det_scripts.tgz ${scripts_link} && \
     tar zxvf obj_det_scripts.tgz
+
+RUN curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - && \
+    echo "deb https://packages.cloud.google.com/apt coral-edgetpu-stable main" | tee /etc/apt/sources.list.d/coral-edgetpu.list && \
+    apt-get update && \
+    apt-get install edgetpu-compiler -y
 
 ENV PATH="/tensorflow/models/research:${PATH}"
 # Copy WPILib scripts into docker image
 COPY /coral /tensorflow/models/research
 
-RUN cd /tensorflow/models/research && mv hyperparameters.json /opt/ml/input/config/hyperparameters.json && ./train
+RUN cd /tensorflow/models/research && mv hyperparameters.json /opt/ml/input/config/hyperparameters.json
 
 WORKDIR /tensorflow/models/research
