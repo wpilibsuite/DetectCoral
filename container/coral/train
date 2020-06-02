@@ -1,5 +1,5 @@
 #!/bin/bash
-
+set -e -x
 # By Grant Perkins, 2019
 
 # Make directories used in training
@@ -11,6 +11,8 @@ rm -rf /tensorflow/models/research/learn/train
 rm -rf /tensorflow/models/research/learn/models
 
 cd /tensorflow/models/research
+
+ls /opt/ml/input/data/training
 
 # Download checkpoints for MobileNet v2 hosted by Google
 cp model_main.py ./object_detection/model_main.py

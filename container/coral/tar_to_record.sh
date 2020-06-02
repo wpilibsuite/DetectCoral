@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e -x
+
 cd /opt/ml/input/data/training
 rm -rf out
 mkdir out

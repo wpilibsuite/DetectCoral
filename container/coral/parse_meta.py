@@ -7,7 +7,7 @@ def get_labels():
     for file in glob.glob("**/**/meta.json"):
         f = file
     with open(f, 'r') as meta:
-        return [label["title"] for label in json.loads(meta.readlines()[0])["classes"]]
+        return [label["title"] for label in json.load(meta)["classes"]]
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

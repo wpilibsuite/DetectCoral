@@ -1,4 +1,4 @@
-FROM tensorflow/tensorflow:1.12.0-rc2-devel
+FROM tensorflow/tensorflow:1.12.0-rc2-devel-gpu
 
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -10,7 +10,14 @@ RUN git clone https://github.com/tensorflow/models.git && \
     mv models /tensorflow/models
     
 RUN apt-get update && apt-get install -y --no-install-recommends nginx curl
+RUN apt-get install wget
 
+RUN mkdir -p /opt/ml/input/data/training && \
+ mkdir -p /opt/ml/model/ && \
+cd /opt/ml/input/data/training && \
+wget https://github.com/GrantPerkins/DetectCoral/releases/download/v1.0.1/RawData.tar -q
+
+RUN mkdir -p /opt/ml/input/config/
 
 
 # Install the Tensorflow Object Detection API from here
@@ -25,7 +32,7 @@ RUN pip install Cython && \
     pip install lxml && \
     pip install jupyter && \
     pip install matplotlib
-
+RUN cd /
 # Get protoc 3.0.0, rather than the old version already in the container
 RUN curl -OL "https://github.com/google/protobuf/releases/download/v3.0.0/protoc-3.0.0-linux-x86_64.zip" && \
     unzip protoc-3.0.0-linux-x86_64.zip -d proto3 && \
@@ -65,5 +72,7 @@ RUN cd ${work_dir} && \
 ENV PATH="/tensorflow/models/research:${PATH}"
 # Copy WPILib scripts into docker image
 COPY /coral /tensorflow/models/research
+
+RUN cd /tensorflow/models/research && mv hyperparameters.json /opt/ml/input/config/hyperparameters.json && ./train
 
 WORKDIR /tensorflow/models/research
