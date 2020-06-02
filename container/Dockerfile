@@ -1,9 +1,12 @@
-FROM tensorflow/tensorflow:devel
+FROM tensorflow/tensorflow:1.12.0-rc2-devel
 
-RUN cd/ & mkdir tensorflow
+ARG DEBIAN_FRONTEND=noninteractive
+
+RUN cd / & mkdir tensorflow
 # Get the tensorflow models research directory, and move it into tensorflow
 # source folder to match recommendation of installation
 RUN git clone https://github.com/tensorflow/models.git && \
+    (cd models && git checkout f788046ca876a8820e05b0b48c1fc2e16b0955bc) && \
     mv models /tensorflow/models
     
 RUN apt-get update && apt-get install -y --no-install-recommends nginx curl
