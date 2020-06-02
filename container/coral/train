@@ -3,7 +3,6 @@ set -e -x
 # By Grant Perkins, 2019
 
 # Make directories used in training
-mkdir /tensorflow/models/research/learn
 mkdir /tensorflow/models/research/learn/ckpt
 
 # Remove directories created during training
