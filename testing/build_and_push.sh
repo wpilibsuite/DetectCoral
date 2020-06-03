@@ -1,4 +1,4 @@
-algorithm_name=wpi-cpu-local
+algorithm_name=wpi-test
 
 cd container
 
