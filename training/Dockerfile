@@ -15,7 +15,7 @@ RUN apt-get install wget
 RUN mkdir -p /opt/ml/input/data/training && \
  mkdir -p /opt/ml/model/ && \
 cd /opt/ml/input/data/training && \
-wget https://github.com/GrantPerkins/DetectCoral/releases/download/v1.0.1/RawData.tar -q
+wget https://github.com/GrantPerkins/DetectCoral/releases/download/v1.0.2/full_data.tar -q
 
 RUN mkdir -p /opt/ml/input/config/
 
