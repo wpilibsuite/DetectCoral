@@ -81,4 +81,16 @@ COPY /coral /tensorflow/models/research
 
 RUN cd /tensorflow/models/research && mv hyperparameters.json /opt/ml/input/config/hyperparameters.json
 
+RUN mkdir -p /tensorflow/models/research/learn && \
+    mkdir -p /tensorflow/models/research/learn/ckpt && \
+
+    rm -rf /tensorflow/models/research/learn/train && \
+    rm -rf /tensorflow/models/research/learn/models && \
+
+    cd /tensorflow/models/research && \
+
+
+    ./prepare_checkpoint_and_dataset.sh --network_type mobilenet_v2_ssd --train_whole_model false  && \
+    ./tar_to_record.sh
+
 WORKDIR /tensorflow/models/research

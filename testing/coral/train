@@ -1,12 +1,11 @@
 #!/bin/bash
-#ls -R -a /opt/ml/input/data/
 cd /work/
 mkdir model
 # Move model to right place
-cp /opt/ml/input/data/model/model.tar.gz /work/model/model.tar.gz
+cp /opt/ml/model/model.tar.gz /work/model/model.tar.gz
 
 # Teams can use any name of video, any type of video, so I need to know what it is somehow
-cd /opt/ml/input/data/video
+cd /opt/ml/input/data/training
 video=$(find -name *)
 name=$(python3 /work/extension.py --file $video)
 cp $video $name

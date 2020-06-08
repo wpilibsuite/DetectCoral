@@ -1,26 +1,7 @@
 #!/bin/bash
 set -e -x
-# By Grant Perkins, 2019
+# By Grant Perkins, 2020
 
-# Make directories used in training
-mkdir -p /tensorflow/models/research/learn
-mkdir -p /tensorflow/models/research/learn/ckpt
-
-# Remove directories created during training
-rm -rf /tensorflow/models/research/learn/train
-rm -rf /tensorflow/models/research/learn/models
-
-cd /tensorflow/models/research
-
-ls /opt/ml/input/data/training
-
-# Download checkpoints for MobileNet v2 hosted by Google
-cp model_main.py ./object_detection/model_main.py
-cp model_lib.py ./object_detection/model_lib.py
-
-printf ".\nDownloading model"
-./prepare_checkpoint_and_dataset.sh --network_type mobilenet_v2_ssd --train_whole_model false  > /dev/null 2> /dev/null
-./tar_to_record.sh
 
 cd /opt/ml/input/data/training
 classes=$(python3 /tensorflow/models/research/labels.py)
@@ -62,3 +43,5 @@ cp /opt/ml/input/data/training/map.pbtxt /opt/ml/model/map.pbtxt
 rm /opt/ml/model/output_tflite_graph_edgetpu.log
 
 mv /opt/ml/model/output_tflite_graph_edgetpu.tflite /opt/ml/model/model.tflite
+
+tar -czf model.tar.gz /opt/ml/model/model.tflite /opt/ml/model/map.pbtxt /opt/ml/model/unoptimized.tflite

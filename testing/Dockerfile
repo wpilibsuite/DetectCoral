@@ -1,8 +1,15 @@
 from jjanzic/docker-python3-opencv
 
+ARG DEBIAN_FRONTEND=noninteractive
+
+RUN pwd
 RUN mkdir work
 
 ARG work_dir=/work
+
+RUN mkdir -p /opt/ml/input/data/training && \
+ mkdir  -p /opt/ml/model/ && \
+ mkdir  -p /opt/ml/input/data/model
 
 RUN apt-get update -qq > /dev/null && \
     apt-get install -y python python-tk python3 python3-pip -qq > /dev/null
@@ -19,9 +26,14 @@ RUN apt-get update && apt-get -y install cmake protobuf-compiler
     
 RUN pip3 install tensorflow
 
+RUN cd /opt/ml/input/data/training && \
+wget https://github.com/GrantPerkins/DetectCoral/releases/download/v1.0.2/Kevin-stitched-video.mp4
+
 COPY /coral /work
 
 # Add train to path for SageMaker to find
 ENV PATH $PATH:/work
 
 WORKDIR ${work_dir}
+
+RUN echo "done building"
