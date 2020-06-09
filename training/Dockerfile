@@ -91,6 +91,6 @@ RUN mkdir -p /tensorflow/models/research/learn && \
 
 
     ./prepare_checkpoint_and_dataset.sh --network_type mobilenet_v2_ssd --train_whole_model false  && \
-    ./tar_to_record.sh
+    python -c 'import tar_to_record; tar_to_record.convert()'
 
 WORKDIR /tensorflow/models/research

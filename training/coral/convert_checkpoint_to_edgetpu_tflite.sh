@@ -31,11 +31,8 @@ done
 
 source "$PWD/constants.sh"
 
+rm -rf "${OUTPUT_DIR}"
 mkdir "${OUTPUT_DIR}"
-
-echo "GENERATING label file..."
-echo "0 hatch" >> "${OUTPUT_DIR}/labels.txt"
-echo "1 cargo" >> "${OUTPUT_DIR}/labels.txt"
 
 echo $ckpt_number
 

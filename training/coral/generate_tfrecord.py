@@ -21,7 +21,6 @@ from parse_meta import get_labels
 from PIL import Image
 from object_detection.utils import dataset_util
 from collections import namedtuple, OrderedDict
-import argparse
 
 
 def class_text_to_int(label, labels):
@@ -74,16 +73,11 @@ def create_tf_example(group, path, labels):
     return tf_example
 
 
-def main(_):
+def main(input_csv,output_tfrecord):
 
-     # Taking command line arguments from users
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-in', '--input_csv', help='define the input xml file', type=str, required=True)
-    parser.add_argument('-out', '--output_tfrecord', help='define the output file ', type=str, required=True)
-    args = parser.parse_args()
-    writer = tf.python_io.TFRecordWriter(args.output_tfrecord)
-    path = os.getcwd()
-    examples = pd.read_csv(args.input_csv)
+    writer = tf.python_io.TFRecordWriter(output_tfrecord)
+    path = '/opt/ml/input/data/training/'
+    examples = pd.read_csv(input_csv)
     grouped = split(examples, 'filename')
     labels = get_labels()
     for group in grouped:
@@ -91,12 +85,5 @@ def main(_):
         writer.write(tf_example.SerializeToString())
 
     writer.close()
-    output_path = os.path.join(os.getcwd(), args.output_tfrecord)
-    print(end='.\nSuccessfully created the TFRecords: {}'.format(output_path))
-    import sys
-    sys.exit()
-
-
-
-if __name__ == '__main__':
-    tf.app.run()
+    print(end='.\nSuccessfully created the TFRecords: {}'.format(path))
+ 
