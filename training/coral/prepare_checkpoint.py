@@ -13,8 +13,9 @@ def prepare_checkpoint(network_type):
     CKPT_DIR = '/tensorflow/models/research/learn/ckpt/'
 
     modelname = ckpt_name_map[network_type]+'.tar.gz'
-    with tarfile.open(modelname) as model:
-        model.extractall(CKPT_DIR)
+    model = tarfile.open(modelname)
+    model.extractall(CKPT_DIR)
+    model.close()
 
 if __name__ == "__main__":
     import argparse
