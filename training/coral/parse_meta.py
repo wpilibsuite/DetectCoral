@@ -2,6 +2,7 @@ import json
 import argparse
 import glob
 
+
 def get_labels():
     f = None
     for file in glob.glob("/opt/ml/input/data/training/**/**/meta.json"):
@@ -14,4 +15,4 @@ def get_labels():
 def main(output_pbtxt):
     with open(output_pbtxt, 'w+') as pbtxt:
         for i, label in enumerate(get_labels()):
-            pbtxt.write("item {\n\nid: %s\n\nname: \"%s\"\n}\n\n"% (i+1, label))
+            pbtxt.write("item {\n\nid: %s\n\nname: \"%s\"\n}\n\n" % (i + 1, label))
