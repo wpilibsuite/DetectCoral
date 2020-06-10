@@ -23,7 +23,7 @@ while [[ $# -gt 0 ]]; do
       shift 2 ;;
     --train_whole_model)
       train_whole_model=$2
-      shift 2;;
+      shift 2 ;;
     --help)
       usage
       exit 0 ;;
