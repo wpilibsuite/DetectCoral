@@ -4,7 +4,6 @@ import tarfile
 #may be called before the train script, but the default model is
 #downloaded to the research directory upon buiding the image
 
-
 def prepare_checkpoint(network_type):
 
     #eventually this will be global dictionary
@@ -13,14 +12,16 @@ def prepare_checkpoint(network_type):
     CKPT_DIR = '/tensorflow/models/research/learn/ckpt/'
 
     modelname = ckpt_name_map[network_type]+'.tar.gz'
+
     model = tarfile.open(modelname)
     model.extractall(CKPT_DIR)
     model.close()
 
 if __name__ == "__main__":
+
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument('-net', '--network_type', help='network type', type=str, required=True)
     args = parser.parse_args()
-
+    
     prepare_checkpoint(args.network_type)
