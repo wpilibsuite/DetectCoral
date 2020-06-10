@@ -13,9 +13,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends nginx curl
 RUN apt-get install wget
 
 RUN mkdir -p /opt/ml/input/data/training && \
- mkdir -p /opt/ml/model/ && \
-cd /opt/ml/input/data/training && \
-wget https://github.com/GrantPerkins/DetectCoral/releases/download/v1.0.2/full_data.tar -q
+    mkdir -p /opt/ml/model/ && \
+    cd /opt/ml/input/data/training && \
+    wget https://github.com/GrantPerkins/DetectCoral/releases/download/v1.0.2/full_data.tar -q
 
 RUN mkdir -p /opt/ml/input/config/
 
@@ -32,9 +32,10 @@ RUN pip install Cython && \
     pip install lxml && \
     pip install jupyter && \
     pip install matplotlib
-RUN cd /
+
 # Get protoc 3.0.0, rather than the old version already in the container
-RUN curl -OL "https://github.com/google/protobuf/releases/download/v3.0.0/protoc-3.0.0-linux-x86_64.zip" && \
+RUN cd / && \
+    curl -OL "https://github.com/google/protobuf/releases/download/v3.0.0/protoc-3.0.0-linux-x86_64.zip" && \
     unzip protoc-3.0.0-linux-x86_64.zip -d proto3 && \
     mv proto3/bin/* /usr/local/bin && \
     mv proto3/include/* /usr/local/include && \
@@ -83,14 +84,10 @@ RUN cd /tensorflow/models/research && mv hyperparameters.json /opt/ml/input/conf
 
 RUN mkdir -p /tensorflow/models/research/learn && \
     mkdir -p /tensorflow/models/research/learn/ckpt && \
-
     rm -rf /tensorflow/models/research/learn/train && \
     rm -rf /tensorflow/models/research/learn/models && \
-
     cd /tensorflow/models/research && \
-
-
     ./prepare_checkpoint_and_dataset.sh --network_type mobilenet_v2_ssd --train_whole_model false  && \
-    ./tar_to_record.sh
+    python tar_to_record.py
 
 WORKDIR /tensorflow/models/research
