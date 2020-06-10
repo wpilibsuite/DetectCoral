@@ -5,7 +5,7 @@ import tarfile
 #downloaded to the research directory upon buiding the image
 
 
-def prepare_checkpoint(network_type, train_whole_model):
+def prepare_checkpoint(network_type):
 
     #eventually this will be global dictionary
     ckpt_name_map = {}
@@ -20,7 +20,6 @@ if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument('-net', '--network_type', help='network type', type=str, required=True)
-    parser.add_argument('-twm', '--train_whole_model', help='train the whole model?', type=bool, required=True)
     args = parser.parse_args()
 
-    prepare_checkpoint(args.network_type, args.train_whole_model)
+    prepare_checkpoint(args.network_type)

@@ -87,7 +87,7 @@ RUN mkdir -p /tensorflow/models/research/learn && \
     rm -rf /tensorflow/models/research/learn/train && \
     rm -rf /tensorflow/models/research/learn/models && \
     cd /tensorflow/models/research && \
-    ./prepare_checkpoint_and_dataset.sh --network_type mobilenet_v2_ssd --train_whole_model false  && \
+    python prepare_checkpoint.py --network_type mobilenet_v2_ssd --train_whole_model False  && \
     python tar_to_record.py
 
 WORKDIR /tensorflow/models/research
