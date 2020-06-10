@@ -69,12 +69,11 @@ def create_tf_example(group, path, labels):
         'image/object/bbox/ymax': dataset_util.float_list_feature(ymaxs),
         'image/object/class/text': dataset_util.bytes_list_feature(classes_text),
         'image/object/class/label': dataset_util.int64_list_feature(classes),
-        }))
+    }))
     return tf_example
 
 
-def main(input_csv,output_tfrecord):
-
+def main(input_csv, output_tfrecord):
     writer = tf.python_io.TFRecordWriter(output_tfrecord)
     path = '/opt/ml/input/data/training/'
     examples = pd.read_csv(input_csv)
@@ -86,4 +85,3 @@ def main(input_csv,output_tfrecord):
 
     writer.close()
     print(end='.\nSuccessfully created the TFRecords: {}'.format(path))
- 
