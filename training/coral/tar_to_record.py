@@ -1,26 +1,27 @@
 import sys, os, glob, shutil, tarfile
 import json_to_csv, generate_tfrecord, parse_meta
+from os.path import join
 
 if __name__ == "__main__":
     outputpath = '/opt/ml/input/data/training'
-    shutil.rmtree(outputpath + '/out', ignore_errors=True)
-    os.mkdir(outputpath + '/out')
-    os.mkdir(outputpath + '/tmp')
+    shutil.rmtree(join(outputpath,'out'), ignore_errors=True)
+    shutil.rmtree(join(outputpath,'tmp'), ignore_errors=True)
+    os.mkdir(join(outputpath,'out'))
+    os.mkdir(join(outputpath,'tmp'))
 
-    tar_file = glob.glob(outputpath + "/*.tar")[0]
+    tar_file = glob.glob(join(outputpath,"*.tar"))[0]
+    shutil.copy(tar_file, join(outputpath,'data.tar'))
     print(tar_file)
-    shutil.copy(tar_file, outputpath + '/data.tar')
 
-    tar_file = tarfile.open(outputpath + '/data.tar')
-    tar_file.extractall(outputpath + '/out/')  # specify which folder to extract to
-    tar_file.close()
+    with tarfile.open(join(outputpath,'data.tar')) as tar_file:
+        tar_file.extractall(join(outputpath,'out'))
 
     json_to_csv.main()
 
-    generate_tfrecord.main(outputpath + '/tmp/train.csv', outputpath + '/train.record')
+    generate_tfrecord.main(join(outputpath,'tmp/train.csv'), join(outputpath,'train.record'))
 
-    generate_tfrecord.main(outputpath + '/tmp/eval.csv', outputpath + '/eval.record')
+    generate_tfrecord.main(join(outputpath,'tmp/eval.csv'), join(outputpath,'eval.record'))
 
-    parse_meta.main(outputpath + '/map.pbtxt')
+    parse_meta.main(join(outputpath,'map.pbtxt'))
 
     print(".\nRecords generated")
