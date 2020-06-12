@@ -5,9 +5,7 @@ import labels, sed, modularized_model_main
 
 import subprocess  # << the goal is to get rid of the need for this
 
-
 def main():
-    research_dir = '/tensorflow/models/research'
 
     classes = labels.get()
 
@@ -18,14 +16,14 @@ def main():
 
     sed.replace_words('BATCH_SIZE_PARAM', str(BATCH_SIZE), "pipeline.config")
 
-    shutil.copy('pipeline.config', research_dir + '/learn/ckpt/pipeline.config')
+    shutil.copy('pipeline.config','learn/ckpt/pipeline.config')
 
-    shutil.rmtree(research_dir + '/learn/train', ignore_errors=True)
-    os.mkdir(research_dir + '/learn/train')
+    shutil.rmtree('learn/train', ignore_errors=True)
+    os.mkdir('learn/train')
 
     modularized_model_main.main(
-        pipeline_config_path=research_dir + '/learn/ckpt/pipeline.config',
-        model_dir=research_dir + '/learn/train',
+        pipeline_config_path='learn/ckpt/pipeline.config',
+        model_dir='learn/train',
         num_train_steps=TRAIN_STEPS)
 
     # here we should write the class tags of
@@ -41,9 +39,10 @@ def main():
     print('\ncompiling model for edge TPU')
     subprocess.check_call("edgetpu_compiler ./learn/models/output_tflite_graph.tflite -o /opt/ml/model/", shell=True)
 
-    subprocess.call(
-        'tar -czf /opt/ml/model/model.tar.gz /opt/ml/model/output_tflite_graph_edgetpu.tflite /opt/ml/input/data/training/map.pbtxt /opt/ml/model/unoptimized.tflite',
-        shell=True)
+    with tarfile.open('/opt/ml/model/model.tar.gz','w:gz') as model:
+        model.add('/opt/ml/model/output_tflite_graph_edgetpu.tflite',arcname='model.tflite')
+        model.add('/opt/ml/input/data/training/map.pbtxt',arcname='map.pbtxt')
+        model.add('/opt/ml/model/unoptimized.tflite',arcname='unoptimized.tflite')
 
     print('All done.')
 
