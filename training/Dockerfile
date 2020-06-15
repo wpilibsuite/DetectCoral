@@ -90,4 +90,10 @@ RUN mkdir -p /tensorflow/models/research/learn && \
     wget -q -O "ssd_mobilenet_v2_quantized_300x300_coco_2019_01_03.tar.gz" "http://download.tensorflow.org/models/object_detection/ssd_mobilenet_v2_quantized_300x300_coco_2019_01_03.tar.gz" && \
     python prepare_checkpoint.py --network_type mobilenet_v2_ssd
 
+#prepare web gui stuff
+RUN pip install flask && \
+    pip install flask-wtf
+
 WORKDIR /tensorflow/models/research
+ENTRYPOINT ["python"]
+CMD ["train_gui.py"]

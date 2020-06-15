@@ -12,7 +12,7 @@ done
 echo ${DIR}
 
 mkdir -p $DIR
-docker run --name wpi \
-       -d -p 5000:5000 \
+docker run --entrypoint "/bin/bash" --name wpi \
+       -it -p 5000:5000 \
        --mount type=bind,src=${DIR},dst=/opt/ml/model \
        wpi-cpu-local
