@@ -1,12 +1,22 @@
   
 from flask import Flask, render_template, redirect, url_for, request
-import subprocess
+import subprocess, glob, argparse, os
 app = Flask(__name__)
+
+#the available models/link maps etc should soon be in a container-wide json or something
+pretrainedmodels=['mobilenet_v2_ssd']
+reserve_dataset_path = '/opt/ml/input/data/training/full_data.tar'
+mountpath = '/opt/ml/model/'
+
+def list_datasets():
+    datasets = [reserve_dataset_path]
+    datasets += glob.glob(os.path.join(mountpath,'*.tar'))
+    return datasets
 
 @app.route("/", methods=['GET', 'POST'])
 @app.route("/home", methods=['GET', 'POST'])
 def home():
-    return render_template('prepare.html')
+    return render_template('prepare.html',pretrainedmodels=pretrainedmodels,datasets=list_datasets())
 
 @app.route("/training", methods=['GET', 'POST'])
 def train():
@@ -18,11 +28,13 @@ def train():
             subprocess.Popen(['python','train.py',
                             '-n',request.form['name'],
                             '-s',request.form['train_steps'],
-                            '-b',request.form['batch_size']])
+                            '-b',request.form['batch_size'],
+                            '-ptm',request.form['pretrainedmodel'],
+                            '-dsp',request.form['dataset']])
 
         with open('status.txt', 'r') as status:
-            lines = status.readlines()
-            state = lines[0]
+            state = status.readlines()[0]
+
         return render_template('training.html', content=state)
 
     else:
