@@ -13,6 +13,6 @@ echo ${DIR}
 
 mkdir -p $DIR
 docker run --name wpi \
-       -d -p 5000:5000 \
+       --rm -d -p 5000:5000 \
        --mount type=bind,src=${DIR},dst=/opt/ml/model \
        wpi-cpu-local
