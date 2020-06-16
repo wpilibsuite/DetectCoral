@@ -9,7 +9,6 @@ import tensorflow as tf
 from object_detection import model_hparams
 from object_detection import model_lib
 
-
 def main(
         model_dir,
         pipeline_config_path,
