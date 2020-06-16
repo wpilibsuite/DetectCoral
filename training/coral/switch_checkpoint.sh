@@ -17,6 +17,6 @@ rm -rf learn/models
 
 ckpt_link="${ckpt_link_map[${network_type}]}"
 ckpt_name="${ckpt_name_map[${network_type}]}"
+echo switching pretrained model to $ckpt_name
 wget -q -O "${ckpt_name}.tar.gz" "$ckpt_link"
 python prepare_checkpoint.py --network_type ${network_type}
-python tar_to_record.py
