@@ -2,8 +2,6 @@ import sys, os, glob, shutil, tarfile
 import json_to_csv, generate_tfrecord, parse_meta
 from os.path import join
 
-reserve_dataset_path = '/opt/ml/input/data/training/full_data.tar'
-
 def main(datasetpath, outputpath):
     
     shutil.rmtree(join(outputpath,'out'), ignore_errors=True)
@@ -11,14 +9,10 @@ def main(datasetpath, outputpath):
     os.mkdir(join(outputpath,'out'))
     os.mkdir(join(outputpath,'tmp'))
 
-    tar_file = reserve_dataset_path
-    datasetlist = glob.glob(join(datasetpath,'*.tar'))
-    if len(datasetlist) != 0:
-        tar_file = datasetlist[0]
-    print(tar_file)
+    print(datasetpath)
 
     try:
-        shutil.copy(tar_file, join(outputpath,'data.tar'))
+        shutil.copy(datasetpath, join(outputpath,'data.tar'))
     except:
         print('unable to retrieve the dataset tar file.')
         sys.exit(1)
