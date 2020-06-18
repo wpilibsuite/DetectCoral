@@ -94,6 +94,6 @@ RUN mkdir -p /tensorflow/models/research/learn && \
 RUN pip install flask && \
     pip install flask-wtf
 
-WORKDIR /tensorflow/models/research
+WORKDIR /tensorflow/models/research/
 ENTRYPOINT ["python"]
-CMD ["train_gui.py"]
+CMD ["./gui/train_gui.py"]
