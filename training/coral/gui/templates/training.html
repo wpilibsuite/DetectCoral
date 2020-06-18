@@ -1,0 +1,32 @@
+<html>
+<body style="background-color: black;color: white; text-align: center;">
+    <br>
+    {% for line in content %}
+        <p>{{ line }}</p>
+    {% endfor %}
+
+    <a href='localhost:6006'>
+        <button>
+        Tensorboard
+        </button>
+    </a>
+    <br>
+    <br>
+
+    <form action="/training" method="post">
+        <input type="submit" value="refresh status" />
+    </form>
+
+    <div>
+        <img src="{{url_for('static',filename='plott.png')}}" align="middle" />
+    </div>
+    <br><br>
+
+    <a href='/home'>
+        <button>
+        New Train Job
+        </button>
+    </a>
+
+</body>
+</html>
