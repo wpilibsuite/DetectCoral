@@ -18,8 +18,9 @@ def main(
         sample_1_of_n_eval_on_train_examples=5,
         hparams_overrides=None,
         checkpoint_dir=None,
-        run_once=False):
-    config = tf.estimator.RunConfig(model_dir=model_dir, save_checkpoints_steps=100)
+        run_once=False,
+        eval_period = 100):
+    config = tf.estimator.RunConfig(model_dir=model_dir, save_checkpoints_steps=eval_period)
 
     train_and_eval_dict = model_lib.create_estimator_and_inputs(
         run_config=config,
