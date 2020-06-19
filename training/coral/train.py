@@ -35,17 +35,17 @@ def main(name, steps, batch, premodel, data_set_path, steps_per_eval=100):
     shutil.rmtree('learn/train', ignore_errors=True)
     os.mkdir('learn/train')
 
+    # here we should write the class tags of
+    # /opt/ml/input/data/training/Raw Data/meta.json to a labelmap file.
+    with open('labels.txt', 'w') as labelfile:
+        labelfile.writelines(['0 powercell'])
+
     logstatus('training the model')
     modularized_model_main.main(
         pipeline_config_path='learn/ckpt/pipeline.config',
         model_dir='learn/train',
         num_train_steps=TRAIN_STEPS,
         eval_period=steps_per_eval)
-
-    # here we should write the class tags of
-    # /opt/ml/input/data/training/Raw Data/meta.json to a labelmap file.
-    with open('labels.txt', 'w') as labelfile:
-        labelfile.writelines(['0 powercell'])
 
     logstatus('converting model to tflite')
     subprocess.check_call("./convert_checkpoint_to_edgetpu_tflite.sh --checkpoint_num %s" % (str(TRAIN_STEPS)),

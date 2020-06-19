@@ -22,9 +22,16 @@
     </div>
     <br><br>
 
+    <form action="/training" method="post">
+        <button type="submit" name="finish" value="finish" onclick="return confirm('Are you sure you want to stop the train job and save the current checkpoint?');">
+            Export Current Model
+        </button>
+    </form>
+
+    <br>
     <a href='/home'>
         <button>
-        New Train Job
+        Return to Main Page
         </button>
     </a>
 
