@@ -1,5 +1,6 @@
 #adapted from program by Tom Runia
 
+import shutil
 import numpy as np
 import matplotlib as mpl
 mpl.use('Agg')
@@ -21,8 +22,12 @@ def plot_tensorflow_log(path):
     accumulator = EventAccumulator(path, tf_size_guidance)
     accumulator.Reload()
 
-    precision = accumulator.Scalars('DetectionBoxes_Precision/mAP')
-    recall = accumulator.Scalars('DetectionBoxes_Recall/AR@100')
+    try:
+        precision = accumulator.Scalars('DetectionBoxes_Precision/mAP')
+        recall = accumulator.Scalars('DetectionBoxes_Recall/AR@100')
+    except:
+        shutil.copyfile('gui/static/placeholder.png','gui/static/plott.png')
+        return
 
     steps = len(precision)
 
@@ -43,5 +48,3 @@ def plot_tensorflow_log(path):
 
     plt.legend(handles=legend_elements, loc='upper right', frameon=True)
     plt.savefig('/tensorflow/models/research/gui/static/plott.png')
-
-    return steps
