@@ -21,6 +21,11 @@ def copy_checkpoint(epoch,name):
 def main(epoch, output_path, output_name):
 
     copy_checkpoint(epoch, output_name)
+    if not os.path.exists(output_path):
+        os.mkdir(output_path)
+    export_time = datetime.datetime.now().strftime('%c').replace(' ','-').replace(':','-')
+    output_path = join(output_path,'%s-%s'%(output_name,export_time))
+    os.mkdir(output_path)
 
     logstatus('converting model to tflite')
     subprocess.check_call("./convert_checkpoint_to_edgetpu_tflite.sh --checkpoint_num %s" % (epoch), shell=True)

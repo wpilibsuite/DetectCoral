@@ -62,7 +62,8 @@ def home():
         if 'tboard' in request.form:
             trainjob['tensorboard'] = subprocess.Popen(['tensorboard','--logdir','learn/train'])
 
-        current_epoch = 0
+        shutil.rmtree('learn/train/', ignore_errors=True)
+        os.mkdir('learn/train/')
         exportjob = {'process' : None}
         trainjob['process'] = subprocess.Popen(['python','train.py',
             '-ptm', trainjob['checkpoint'],
