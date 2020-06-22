@@ -4,9 +4,6 @@ mpl.use('Agg')
 import os, shutil, fileinput, tarfile, subprocess
 import labels, sed, modularized_model_main, tar_to_record, export
 from os.path import join
-ckpt_name_map={}
-ckpt_name_map["mobilenet_v1_ssd"]="ssd_mobilenet_v1_quantized_300x300_coco14_sync_2018_07_18"
-ckpt_name_map["mobilenet_v2_ssd"]="ssd_mobilenet_v2_quantized_300x300_coco_2019_01_03"
 
 outputdir = '/opt/ml/model/finished-models'
 trainpath = 'learn/train/'
