@@ -106,6 +106,8 @@ def train():
         ckpts = glob.glob('learn/train/model.ckpt-*.meta')
         if len(ckpts) != 0:
             current_epoch = max([int(re.split('learn/train/model.ckpt-|.meta',ckpt)[1]) for ckpt in ckpts])
+        else:
+            current_epoch = 0
 
         log = glob.glob('learn/train/eval_0/*')
         log_loader.plot_tensorflow_log(log, selected_data)
