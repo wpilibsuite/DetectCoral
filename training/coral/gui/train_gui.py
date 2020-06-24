@@ -18,6 +18,7 @@ exportjob = {'process' : None}
 tag_list = []
 current_epoch = 0
 selected_data = 'none'
+lightmode = False
 
 for directory in ['checkpoints','datasets','finished-models']:
     if not os.path.exists(join(mountpath,directory)):
@@ -26,7 +27,7 @@ for directory in ['checkpoints','datasets','finished-models']:
 @app.route("/", methods=['GET', 'POST'])
 @app.route("/home", methods=['GET', 'POST'])
 def home():
-    global trainjob, exportjob, current_epoch
+    global trainjob, exportjob, current_epoch, lightmode
 
     datasets = glob.glob(join(mountpath,'datasets/*.tar'))
     datasets.append(reserve_dataset_path)
@@ -36,6 +37,10 @@ def home():
 
     if request.method == 'POST':
         
+        if 'switchcolor' in request.form:
+            lightmode = [True,False][lightmode] #toggle
+            return redirect(url_for('home'))
+
         if trainjob['process']:
             return redirect(url_for('train'))
 
@@ -75,13 +80,17 @@ def home():
 
         return redirect(url_for('train'))
 
-    return render_template('prepare.html',pretrainedmodels=ckpts,datasets=datasets)
+    return render_template('prepare.html',pretrainedmodels=ckpts,datasets=datasets,lightmode=lightmode)
 
 @app.route("/training", methods=['GET', 'POST'])
 def train():
-    global trainjob, exportjob, current_epoch, tag_list, selected_data
+    global trainjob, exportjob, current_epoch, tag_list, selected_data, lightmode
 
     if request.method == "POST":
+
+        if 'switchcolor' in request.form:
+            lightmode = [True,False][lightmode] #toggle
+
         if 'finish' in request.form and exportjob['process'] is None:
             trainjob['process'].terminate()
             exportjob['process'] = subprocess.Popen(['python','export.py',
@@ -110,11 +119,11 @@ def train():
             current_epoch = 0
 
         log = glob.glob('learn/train/eval_0/*')
-        log_loader.plot_tensorflow_log(log, selected_data)
+        log_loader.plot_tensorflow_log(log, selected_data, lightmode)
         tag_list = log_loader.retrieve_tags()
 
     state.append('epoch %s out of %s'%(current_epoch, int(trainjob['epochs'])))
-    return render_template('training.html', content=state, data=tag_list, selected_data=selected_data)
+    return render_template('training.html', content=state, data=tag_list, selected_data=selected_data, lightmode=lightmode)
 
 if __name__ == '__main__':
     app.run(debug=True,host='0.0.0.0',port=5000)

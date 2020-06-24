@@ -1,5 +1,9 @@
 <html>
-<body style="background-color: black;color: white; text-align: center;">
+{% if lightmode %}
+    <body style="background-color: white;color: black; text-align: center;">
+{% else %}
+    <body style="background-color: black;color: white; text-align: center;">
+{% endif %}
     <form action="/home" method="post">
 
         <p>Model Name:</p>
@@ -31,5 +35,14 @@
         
         <p><input type="submit" value="go" /></p>
         </form>
+
+        <br><br>
+
+        <form action="/home" method="post">
+            <button type="submit" name="switchcolor" value="switchcolor">
+                Toggle Color Theme
+            </button>
+        </form>
+
 </body>
 </html>

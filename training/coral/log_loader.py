@@ -15,10 +15,17 @@ def retrieve_tags():
     else:
         return []
 
-def plot_tensorflow_log(log, tag1):
+def plot_tensorflow_log(log, tag1, lightmode):
     global accumulator
 
-    plt.style.use('dark_background')
+    if lightmode:
+        plt.style.use('classic')
+    else:
+        plt.style.use('dark_background')
+
+    plt.clf()
+    plt.cla()
+    plt.close()
 
     tf_size_guidance = {
         'compressedHistograms': 10,
@@ -48,11 +55,12 @@ def plot_tensorflow_log(log, tag1):
 
             plt.savefig('/tensorflow/models/research/gui/static/plott.png')
 
-            plt.clf()
-            plt.cla()
-            plt.close()
             return
             
-    shutil.copyfile('gui/static/placeholder.png','gui/static/plott.png')
+    if lightmode:
+        shutil.copyfile('gui/static/placeholderLight.png','gui/static/plott.png')
+    else:
+        shutil.copyfile('gui/static/placeholderDark.png','gui/static/plott.png')
+
 
 
