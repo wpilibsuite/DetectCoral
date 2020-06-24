@@ -4,8 +4,17 @@
 {% else %}
     <body style="background-color: black;color: white; text-align: center;">
 {% endif %}
-    <form action="/home" method="post">
+<br>
 
+    {% if inprogress %}
+    <p>There is a job currently in progress:&emsp; 
+    <a href='/training'>
+        <button>Monitor</button>
+    </a></p>
+    {% endif %}
+
+    <form action="/home" method="post">
+        
         <p>Model Name:</p>
         <p><input type="text" name="name" value="model" /></p>
 

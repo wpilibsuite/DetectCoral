@@ -35,21 +35,26 @@ def home():
     ckpts = os.listdir(join(mountpath,'checkpoints'))
     ckpts += [dir for dir in os.listdir(ckptpath) if os.path.isdir(join(ckptpath,dir))]
 
+    inprogress = False
+    if trainjob['process'] or exportjob['process']:
+        inprogress = True
+
     if request.method == 'POST':
         
         if 'switchcolor' in request.form:
             lightmode = [True,False][lightmode] #toggle
             return redirect(url_for('home'))
 
-        if trainjob['process']:
-            return redirect(url_for('train'))
-
         with open('status.txt','w') as status:
             status.write('starting the train job')
 
-        if trainjob['tensorboard'] is not None:
-            trainjob['tensorboard'].terminate()
-
+        if trainjob['tensorboard']:
+            if trainjob['tensorboard'].poll is None:
+                trainjob['tensorboard'].terminate()
+        if trainjob['process']:
+            if trainjob['process'].poll() is None:
+                trainjob['process'].terminate()
+                
         trainjob = {
             'process' : None,
             'checkpoint' : request.form['pretrainedmodel'],
@@ -80,7 +85,7 @@ def home():
 
         return redirect(url_for('train'))
 
-    return render_template('prepare.html',pretrainedmodels=ckpts,datasets=datasets,lightmode=lightmode)
+    return render_template('prepare.html',pretrainedmodels=ckpts,datasets=datasets,lightmode=lightmode, inprogress=inprogress)
 
 @app.route("/training", methods=['GET', 'POST'])
 def train():
