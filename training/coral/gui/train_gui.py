@@ -115,17 +115,15 @@ def train():
     with open('status.txt', 'r') as status:
         state = status.readlines()
 
-    if trainjob['process'] is not None:
+    ckpts = glob.glob('learn/train/model.ckpt-*.meta')
+    if len(ckpts) != 0:
+        current_epoch = max([int(re.split('learn/train/model.ckpt-|.meta',ckpt)[1]) for ckpt in ckpts])
+    else:
+        current_epoch = 0
 
-        ckpts = glob.glob('learn/train/model.ckpt-*.meta')
-        if len(ckpts) != 0:
-            current_epoch = max([int(re.split('learn/train/model.ckpt-|.meta',ckpt)[1]) for ckpt in ckpts])
-        else:
-            current_epoch = 0
-
-        log = glob.glob('learn/train/eval_0/*')
-        log_loader.plot_tensorflow_log(log, selected_data, lightmode)
-        tag_list = log_loader.retrieve_tags()
+    log = glob.glob('learn/train/eval_0/*')
+    log_loader.plot_tensorflow_log(log, selected_data, lightmode)
+    tag_list = log_loader.retrieve_tags()
 
     state.append('epoch %s out of %s'%(current_epoch, int(trainjob['epochs'])))
     return render_template('training.html', content=state, data=tag_list, selected_data=selected_data, lightmode=lightmode)
