@@ -1,0 +1,67 @@
+<html>
+{% if lightmode %}
+    <body style="background-color: white;color: black; text-align: center;">
+{% else %}
+    <body style="background-color: black;color: white; text-align: center;">
+{% endif %}
+    <br>
+    {% for line in content %}
+        <p>{{ line }}</p>
+    {% endfor %}
+
+    <a href='localhost:6006'>
+        <button>
+        Tensorboard
+        </button>
+    </a>
+    <br>
+    <br>
+
+    <form action="/training" method="post">
+    <input type="submit" value="refresh status" />
+
+    <div>
+        <img src="{{url_for('static',filename='plott.png')}}" align="middle" />
+    </div>
+    <label for="graphselect">Data to Plot: </label>
+    <select name="graphselect" id="graphselect">
+        <option value="none">None</option>
+        {% for tag in data %}
+            {% if selected_data == tag %}
+            <option value={{ tag }} selected>{{ tag }}</option>
+            {% else %}
+            <option value={{ tag }}>{{ tag }}</option>
+            {% endif %}
+        {% endfor %}
+    </select>
+    </form>
+
+    <br><br>
+    <form action="/training" method="post">
+        <button type="submit" name="finish" value="finish" onclick="return confirm('Are you sure you want to stop the train job and save the current checkpoint?');">
+            Export Current Model
+        </button>
+    </form>
+    <form action="/training" method="post">
+        <button type="submit" name="copy" value="copy">
+            Copy Current Checkpoint
+        </button>
+    </form>
+    
+    <br>
+    <a href='/home'>
+        <button>
+        Return to Main Page
+        </button>
+    </a>
+
+    <br><br>
+
+    <form action="/training" method="post">
+        <button type="submit" name="switchcolor" value="switchcolor">
+            Toggle Color Theme
+        </button>
+    </form>
+
+</body>
+</html>
