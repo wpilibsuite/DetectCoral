@@ -1,4 +1,4 @@
-# DetectCoral
+# WPILib-ML Docs -- LOCAL TRAINING ONLY
 
 This document describes the steps needed to use a provided set of labeled images and make a trained model to deploy on a RasberryPi with a Google Coral. The basic steps are: gather new data, train your model, and run inference on a coprocessor.
 
