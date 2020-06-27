@@ -1,4 +1,4 @@
-FROM tensorflow/tensorflow:1.12.0-rc2-devel
+FROM tensorflow/tensorflow:1.12.0-rc2-devel-gpu
 
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -18,7 +18,6 @@ RUN mkdir -p /opt/ml/input/data/training && \
     wget https://github.com/GrantPerkins/DetectCoral/releases/download/v1.0.2/full_data.tar -q
 
 RUN mkdir -p /opt/ml/input/config/
-
 
 # Install the Tensorflow Object Detection API from here
 # https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/installation.md
