@@ -9,6 +9,7 @@ import tensorflow as tf
 from object_detection import model_hparams
 from object_detection import model_lib
 
+
 def main(
         model_dir,
         pipeline_config_path,
@@ -19,7 +20,7 @@ def main(
         hparams_overrides=None,
         checkpoint_dir=None,
         run_once=False,
-        eval_period = 100):
+        eval_period=100):
     config = tf.estimator.RunConfig(model_dir=model_dir, save_checkpoints_steps=eval_period)
 
     train_and_eval_dict = model_lib.create_estimator_and_inputs(

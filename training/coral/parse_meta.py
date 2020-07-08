@@ -8,7 +8,6 @@ def get_labels():
     for file in glob.glob("/opt/ml/input/data/training/**/**/meta.json"):
         f = file
     with open(f, 'r') as meta:
-        # return [label["title"] for label in json.loads(meta.readlines()[0])["classes"]]
         return [label["title"] for label in json.load(meta)["classes"]]
 
 

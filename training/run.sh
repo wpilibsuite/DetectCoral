@@ -12,7 +12,7 @@ done
 echo ${DIR}
 
 mkdir -p $DIR
-docker run --name wpi \
-       --rm -d -p 5000:5000 -p 6006:6006 \
+docker run --gpus all --name wpi \
+       -p 5000:5000 -p 6006:6006\
        --mount type=bind,src=${DIR},dst=/opt/ml/model \
        wpi-cpu-local
