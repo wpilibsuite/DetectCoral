@@ -3,3 +3,7 @@
 settings.json
 /.idea/
 /__pycache__/
+/mount
+/mobilenet/**/mount/
+/mobilenet/full_data.tar
+/mobilenet/ssd_mobilenet_v2_quantized_300x300_coco_2019_01_03.tar.gz

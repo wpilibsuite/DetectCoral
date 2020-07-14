@@ -1,0 +1,10 @@
+{
+  "model": "mobilenetv2",
+  "name": "model",
+  "dataset-path": "/opt/ml/model/full_data.tar",
+  "epochs": 200,
+  "batch-size": 32,
+  "eval-frequency": 100,
+  "checkpoint": "ssd_mobilenet_v2_quantized_300x300_coco_2019_01_03",
+  "percent-eval": 30
+}
