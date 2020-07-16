@@ -1,0 +1,10 @@
+{
+  "model": "mobilenetv2",
+  "name": "model",
+  "dataset-path": "/opt/ml/model/full_data.tar",
+  "epochs": 200,
+  "batch-size": 32,
+  "eval-frequency": 100,
+  "checkpoint": "default",
+  "percent-eval": 30
+}

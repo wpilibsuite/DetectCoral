@@ -11,11 +11,10 @@ while [[ $# -gt 0 ]]; do
 done
 
 mkdir -p $DIR
-cp ../hyperparameters.json ./mount/hyperparameters.json
+cp ../../hyperparameters.json ./mount/hyperparameters.json
 cp ../dataset/mount/eval.record ./mount/eval.record
 cp ../dataset/mount/train.record ./mount/train.record
 cp ../dataset/mount/map.pbtxt ./mount/map.pbtxt
-cp ../ssd_mobilenet_v2_quantized_300x300_coco_2019_01_03.tar.gz ./mount/ssd_mobilenet_v2_quantized_300x300_coco_2019_01_03.tar.gz
 
 docker rm train
 docker run --gpus all --name train \

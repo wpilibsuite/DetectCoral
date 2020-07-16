@@ -11,7 +11,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 mkdir -p $DIR
-cp ../hyperparameters.json ./mount/hyperparameters.json
+cp ../../hyperparameters.json ./mount/hyperparameters.json
 cp -R ../training/mount/train/ ./mount/train/
 cp ../dataset/mount/map.pbtxt ./mount/map.pbtxt
 cp ../training/mount/pipeline.config ./mount/pipeline.config

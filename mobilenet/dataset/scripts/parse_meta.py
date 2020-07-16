@@ -4,7 +4,7 @@ import glob
 
 def get_labels():
     f = None
-    for file in glob.glob("/opt/ml/model/**/**/meta.json"):
+    for file in glob.glob("/home/**/**/meta.json"):
         f = file
     with open(f, 'r') as meta:
         return [label["title"] for label in json.load(meta)["classes"]]

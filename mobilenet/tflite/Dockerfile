@@ -8,7 +8,9 @@ RUN curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - &
     mkdir -p /tensorflow/models/research/learn/ckpt && \
     mkdir -p /opt/ml/model/checkpoints/ && \
     rm -rf /tensorflow/models/research/learn/train && \
-    rm -rf /tensorflow/models/research/learn/models
+    rm -rf /tensorflow/models/research/learn/models && \
+    cd /tensorflow/models/research/ && \
+    wget "https://github.com/wpilibsuite/DetectCoral/releases/download/v2/tflite_graph.pb"
 
 COPY scripts /tensorflow/models/research/
 WORKDIR /tensorflow/models/research/

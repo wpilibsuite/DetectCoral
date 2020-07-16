@@ -29,7 +29,8 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-source "$PWD/constants.sh"
+OUTPUT_DIR="/tensorflow/models/research/learn/models"
+
 
 rm -rf "${OUTPUT_DIR}"
 mkdir "${OUTPUT_DIR}"
@@ -45,11 +46,11 @@ python object_detection/export_tflite_ssd_graph.py \
 
 echo "CONVERTING frozen graph to TF Lite file..."
 tflite_convert \
-  --output_file="${OUTPUT_DIR}/output_tflite_graph.tflite" \
+  --output_file="/tensorflow/models/research/learn/models/output_tflite_graph.tflite" \
   --graph_def_file="/tensorflow/models/research/tflite_graph.pb" \
   --inference_type=QUANTIZED_UINT8 \
-  --input_arrays="${INPUT_TENSORS}" \
-  --output_arrays="${OUTPUT_TENSORS}" \
+  --input_arrays="normalized_input_image_tensor" \
+  --output_arrays="TFLite_Detection_PostProcess,TFLite_Detection_PostProcess:1,TFLite_Detection_PostProcess:2,TFLite_Detection_PostProcess:3" \
   --mean_values=128 \
   --std_dev_values=128 \
   --input_shapes=1,300,300,3 \

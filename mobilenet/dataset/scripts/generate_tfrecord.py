@@ -75,7 +75,7 @@ def create_tf_example(group, path, labels):
 
 def main(input_csv, output_tfrecord):
     writer = tf.python_io.TFRecordWriter(output_tfrecord)
-    path = '/opt/ml/model/'
+    path = '/home/'
     examples = pd.read_csv(input_csv)
     grouped = split(examples, 'filename')
     labels = get_labels()

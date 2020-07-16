@@ -5,7 +5,7 @@ import glob
 
 def main(percent_eval):
     f = []
-    for file in glob.glob("/opt/ml/model/**/**/**/**/*.json"):
+    for file in glob.glob("/home/**/**/**/**/*.json"):
         f.append(file)
 
     train_jsons = [f[i] for i in range(len(f)) if i % 100 >= percent_eval]
@@ -19,7 +19,7 @@ def main(percent_eval):
 
                 # path = base + '/' + filename
                 path = filename
-                filename = filename.split('model/')[1]
+                filename = filename.split('home/')[1]
                 filename = filename.split('/')
                 # print filename
                 filename[3] = 'img'
@@ -35,5 +35,5 @@ def main(percent_eval):
                                  x1, y1, x2, y2]
                         csv.write(",".join(map(str, entry)) + '\n')
 
-    make_csv("/opt/ml/model/tmp/train.csv", train_jsons)
-    make_csv("/opt/ml/model/tmp/eval.csv", eval_jsons)
+    make_csv("/home/tmp/train.csv", train_jsons)
+    make_csv("/home/tmp/eval.csv", eval_jsons)
