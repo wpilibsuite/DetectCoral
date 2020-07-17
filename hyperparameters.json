@@ -4,7 +4,7 @@
   "dataset-path": "/opt/ml/model/full_data.tar",
   "epochs": 200,
   "batch-size": 32,
-  "eval-frequency": 100,
+  "eval-frequency": 50,
   "checkpoint": "default",
   "percent-eval": 30
 }
