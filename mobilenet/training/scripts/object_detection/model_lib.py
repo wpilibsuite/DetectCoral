@@ -675,7 +675,7 @@ def create_estimator_and_inputs(run_config,
 
     # Read export_to_tpu from hparams if not passed.
     if export_to_tpu is None:
-        export_to_tpu = hparams.get('export_to_tpu', False)
+        export_to_tpu = hparams.get_total('export_to_tpu', False)
     tf.logging.info('create_estimator_and_inputs: use_tpu %s, export_to_tpu %s',
                     use_tpu, export_to_tpu)
     model_fn = model_fn_creator(detection_model_fn, configs, hparams, use_tpu,

@@ -9,7 +9,16 @@ from tensorboard.backend.event_processing.event_accumulator import EventAccumula
 
 
 class EvalJSONifier(threading.Thread):
+    """
+    Thread for converting evaluation binaries to json
+    """
+
     def __init__(self, last_epoch):
+        """
+        Initializes the thread
+        Args:
+            last_epoch: the epoch to kill the thread on
+        """
         threading.Thread.__init__(self)
         self.daemon = True
         self.tf_size_guidance = {
@@ -23,7 +32,11 @@ class EvalJSONifier(threading.Thread):
         self.precision = OrderedDict()
 
     def run(self):
-        print("Thread starting")
+        """
+        Runs when EvalJSONifier().start() is called. Every 10 seconds, checks to see if JSON is updated.
+        Returns:
+            None
+        """
         accumulator = None
         log = []
         step = -1
@@ -36,7 +49,7 @@ class EvalJSONifier(threading.Thread):
                 step, value = int(mAP[-1].step), float(mAP[-1].value)
                 if step not in self.precision.keys():
                     self.precision[step] = value
-                    with open("/opt/ml/model/metrics.json",'w') as file:
+                    with open("/opt/ml/model/metrics.json", 'w') as file:
                         json.dump({"precision": self.precision}, file)
             else:
                 log = glob.glob(self.log_path)

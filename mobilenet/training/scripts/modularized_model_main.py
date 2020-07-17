@@ -18,6 +18,20 @@ def main(
         sample_1_of_n_eval_on_train_examples=5,
         hparams_overrides=None,
         eval_period=100):
+    """
+    Creates an estimator for training and evaluation
+    Args:
+        model_dir: directory to save checkpoints and evaluation data
+        pipeline_config_path: location of pipeline.config
+        num_train_steps: number of epochs
+        sample_1_of_n_eval_examples: unsure
+        sample_1_of_n_eval_on_train_examples: unsure
+        hparams_overrides: unsure
+        eval_period: how frequently to evaluate, in terms of epochs
+
+    Returns:
+        None
+    """
     config = tf.estimator.RunConfig(model_dir=model_dir, save_checkpoints_steps=eval_period)
 
     train_and_eval_dict = model_lib.create_estimator_and_inputs(
