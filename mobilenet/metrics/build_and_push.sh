@@ -1,4 +1,4 @@
-name=yolo-base
+name=wpilib-ml-metrics
 
 name_with_tag="gcperkins/${name}:latest"
 

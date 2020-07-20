@@ -39,8 +39,7 @@ def main():
     sed.replace_words('BATCH_SIZE_PARAM', str(BATCH_SIZE), "pipeline.config")
     shutil.copy('pipeline.config', '/opt/ml/model/pipeline.config')
 
-    # tensorboard runs at http://localhost:6006
-    subprocess.Popen(['tensorboard', '--logdir', '/opt/ml/model/train'])
+
 
     # start a new thread which JSON-ifies the evaluation binaries
     json_thread = EvalJSONifier(TRAIN_STEPS)

@@ -1,4 +1,4 @@
-DIR=$PWD/mount
+DIR=$PWD/../training/mount
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --mount)
@@ -11,10 +11,10 @@ while [[ $# -gt 0 ]]; do
 done
 
 mkdir -p $DIR
-cp ../../full_data.tar ./mount/full_data.tar
-docker rm yolo-dataset
-docker run --gpus all --entrypoint "/bin/bash" -it --name yolo-dataset \
+
+docker rm metrics
+docker run --gpus all --name metrics \
        -p 5000:5000 -p 6006:6006\
        --mount type=bind,src=${DIR},dst=/opt/ml/model \
-       gcperkins/yolo-dataset:latest
+       gcperkins/wpilib-ml-metrics:latest
 # --entrypoint "/bin/bash" -it
