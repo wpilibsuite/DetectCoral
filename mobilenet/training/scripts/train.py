@@ -26,13 +26,15 @@ def main():
     CHECKPOINT = data["checkpoint"]
 
     shutil.rmtree(TRAIN_PATH, ignore_errors=True)
-    os.mkdir(TRAIN_PATH)
+
+    if not os.path.exists(TRAIN_PATH):
+        os.mkdir(TRAIN_PATH)
 
     # transfer learning with checkpoints other than default checkpoint
     if CHECKPOINT != "default":
         sed.replace_words(
             '/tensorflow/models/research/start_ckpt/model.ckpt',
-            '/opt/ml/model/train/model.ckpt-%s' % (CHECKPOINT), "pipeline.config")
+            '/opt/ml/model/%s' % (CHECKPOINT), "pipeline.config")
 
     nb_classes = labels.get_total()
     sed.replace_words('NUM_CLASSES', str(nb_classes), "pipeline.config")
