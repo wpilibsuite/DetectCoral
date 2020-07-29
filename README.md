@@ -1,42 +1,56 @@
-# WPILib-ML Docs
+# WPILib-ML Docs -- LOCAL TRAINING ONLY
 
 This document describes the steps needed to use a provided set of labeled images and make a trained model to deploy on a RasberryPi with a Google Coral. The basic steps are: gather new data, train your model, and run inference on a coprocessor.
 
-## How to Use
+## What You Will Need For Local Training:
 
-First, download the official WPILib dataset. [Download the tar here.](https://github.com/GrantPerkins/CoralSagemaker/releases/download/v1/WPILib.tar) If you want to add your own images to this dataset go to the **Gathering Data** section below.
+1. Docker. This is a program need to run the scripts in a virtual machine set up for them. There are some differences in the version of Docker you are using, so see the **Notes on using Docker** section for more info.
 
-### Training
+2. A dataset. The docker container will come with a powercell dataset, but see the **Gathering Data** section to learn how to create your own.
 
-Training on AWS with the provided dataset should take 1-2 hours and cost roughly $0.60. If you add more images or add new labeling classes the cost and time will be higher.
-#### Opening the AWS Console
-1. Open [AWS Educate](https://aws.amazon.com/education/awseducate/). Log in to your account.
-2. Open up your Classroom. ![classroom](docs/classrooms.png)
-3. Go to your classroom, and click continue. ![openclassroom](docs/open-classroom.png)
-4. Open the AWS Console. ![console](docs/aws-console.png)
+### Notes on using Docker
 
-#### Training with AWS
+Depending on your operating system, you will be using different versions of docker. One important thing to keep in mind is that certain versions of docker (such as Docker Toolbox, using VirtualBox), requre additional steps to allocate enough ram for the training, and connect the network ports to allow the GUI to control the container.
 
-1. Search S3 in the "Find Services" field. Open S3. ![search](docs/search-s3.png) An S3 bucket is a cloud storage service provided by AWS which you will be using to store your .tar of labeled images and the trained model after you finish running through this guide.
-2. Create a new bucket by giving it a unique name. Hit next and then hit next again without changing anything on the second page. On the third page, make sure it has public read permissions if multiple accounts will be using this data. ![new bucket](docs/new-bucket.png)
-- Once you've made the bucket, go into the bucket, then `Permissions` --> `Access Control List`. Then change the public access to allow `List objects` and `Read bucket permissions`. ![permissions](docs/bucket-permissions.png)
-3. Upload the `.tar` file that you downloaded from Supervisely into the new S3 bucket. Click "Add files", then select the file, click "Next", then make sure it also has public read permissions if multiple accounts will be using this data. Keep the file properties "Standard", and then click "Upload" ![upload tar](docs/upload-tar.png)
-4. Open SageMaker from the AWS console, ![sage](docs/search-sagemaker.png) and create a new notebook instance ![instance](docs/create-instance.png) ![search](docs/create-notebook.png) The notebook instance should have the following characteristics:
- - IAM Permissions: Click `Create a new role` inside of the dropdown. It should have access to ANY S3 bucket.
- - GitHub repository: open the panel, then click on where it says `None`. Click `Clone a public repository to this notebook instance only`, then paste in this link: [https://github.com/GrantPerkins/CoralSagemaker.git](https://github.com/GrantPerkins/CoralSagemaker.git) ![newnotebook](docs/new-notebook.png)
- - Now create the instance
-5. Open the notebook using the JupyterLab option, not the Jupyter Option. ![jupyterlab](docs/open-jupyter.png)
-6. Open `coral.ipynb`, found on the left side of the screen. If prompted, the kernel is `conda_tensorflow_p36`
-7. Run the first code block, which builds and deploys the necessary dependencies to an ECR image, used by the training instance.
-8. Run the second code block, which gets the execution role, used for communication between computers.
-9. Run the third code block, which gets the address of the ECR image made in the first step.
-10. Change the fourth code block to use your data. You must replace `s3://wpilib` with `s3://<<your-bucket-name>>`. As a reminder, there should be only one `.tar` in your bucket.
-11. Run the fourth code block. This block will take roughly 45 minutes to train your model.
-12. Remember to stop the notebook after you are done running it to stop getting charged
-13. Go to the SageMaker main page in the AWS console. Open Training Jobs. Open the most recent job.
-14. Once the model is done training (the job says `Completed`), scroll to the bottom inside the training job. Click on the link in the `Output` section, where it says `S3 model artifact`.
-15. Click on `model.tar.gz`. Click on `Download`.
+## Training
 
+### 1. Build the image:
+The first thing that you must do is build the docker image. This is easilly done by running the script "build.sh" (type ". build.sh" from the command prompt) from within the training/ folder in this repository. If you would like to permanently alter some of the training scripts, such as the default settings, this must be done before the image is built. 
+    
+### 2. Run the container:
+Now that you have built the image, you must use the image by running a docker container from that image. This is done by running the script "run.sh" (type ". run.sh" from the command prompt) from within the training/ folder. This script will automatically start the GUI server from within the container, and you will not have access to the inside. If you would like to have access to the inside of the container, to make changes, run the scripts manually and monitor the output, run the script "devrun.sh" from within the training/ folder instead. Right now, this is not reccomended.
+    
+### 3. Access the GUI:
+If the container has been started with "run.sh", a web-based GUI will be running in the container. To access it, open a web browser and type "localhost:5000" into the URL bar. It may take a moment for the server to start, but if it still wont connect to the GUI after a minute, you may need to open up port 5000 on the container manually. This will differ based on the version of docker you are using. 
+
+### 4. Prepare the train job:
+
+- model name: This is the name given to the checkpoints and finalized models generated.
+
+- desired dataset: This is the dataset used to train the model. There will be a default dataset, but you will most likely want to add your own. Follow the guide in the **Gathering Data** section, and place the resulting .tar file in the directry mount/datasets/, which will be in the folder that you ran "run.sh" from (the training/ folder). After that, refresh the GUI page and you should see your dataset on the list.
+
+- model to retrain: Here you will select the model that you wish to retrain. If you have not yet saved any checkpoints, or placed your own in the mount/checkpoints/ directory, then you should only see the famous mobilnet V2 that has been downloaded with the image.
+
+- training steps: amount of times the the retraining program will retrain the model with the dataset. More steps USUALLY means a better model.
+
+- batch size: this is how many peices of your dataset the retraining program will use on each training step. More is definitely better, but it is slower, and your container may run out of memory and kill the training job. You can allocate more memory to your container if you need it.
+
+- steps before periodic evalution: The amount of training steps that it takes before one evaluation step to occur. The evaluation step measures the checkpoint's preformance, and temporarilly saves it. This is where all of your information comes from during trainjob, including the current train step that it is on. You will only be able to graph the preformance and save the checkpoints from the evaluation steps, so it is best to choose this number based on how much you want to monitor things during training. For example, if you have this set to 100, and your job is doing 100 train steps in total, you will not see a graph, or be able to save/export the model until the last training step is done.
+
+- start tensorboard: Tensorboard is a seperate web application running from your local host, that will let you examine data from each evaluation step in very great detail. Definitly check this box if you really want to analize your model.
+
+### 5. Retrain:
+
+Press "go", and the retraining will commence inside the container. You will be taken to a new page for monitoring and controlling the train job. Right now you must manually press the refresh button to recieve new data. At the top will be a few words about whats happening, and information on which epoch of the retraining you are on (this must be a multiple of the eval rate right now). It will take some time to get everython ready and start actually training, but eventually after the first evaluation you will be able to select data from the dropdown menu under the empy graph. Refresh the page and you should see the plotted data. 
+
+You have the option to "Copy Current Checkpoint" which does exactly what it says. The latest checkpoint will be saved to the mount/checkpoints/ directory. You will see that checkpoint on the main preparation page, and can launch a new train job from it.
+
+You also have the option to stop the train job whenever you want, and convert the latest checkpoint to a model that is ready to run on the Coral TPU chip. First the checkpoint will be saved as if you pressed the copy button, then the training will, stop, and the TPU conversion will begin.
+
+### 6. Get your model:
+
+When the conversion has completed, whether you stopped the training or it finished, the model will be in the mount/finished-models/ directory in the folder that you started the container from. You will find a folder labelled with the name of the model and the time of completion. Inside it there will be a .tar.gz file which has an unoptimized .tflite model, and a .tflite model that is ready for the Coral edge TPU.
+    
 ## Inference
 
 1. Go to the training job in SageMaker, scroll to the bottom, and find the output S3 location

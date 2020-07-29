@@ -1,0 +1,1 @@
+wget "https://github.com/wpilibsuite/DetectCoral/releases/download/v2/full_data.tar"

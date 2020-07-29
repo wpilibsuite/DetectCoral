@@ -1,5 +1,10 @@
 .ipynb_checkpoints
 */.ipynb_checkpoints/*
-
+settings.json
 /.idea/
 /__pycache__/
+/mount
+/**/**/mount/
+/full_data.tar
+/mobilenet/training/scripts/ssd_mobilenet_v2_quantized_300x300_coco_2019_01_03.tar.gz
+/test/
