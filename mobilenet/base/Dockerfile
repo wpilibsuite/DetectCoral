@@ -6,13 +6,12 @@ RUN cd / & mkdir tensorflow && \
     git clone https://github.com/tensorflow/models.git && \
     (cd models && git checkout f788046ca876a8820e05b0b48c1fc2e16b0955bc) && \
     mv models /tensorflow/models
-    
+
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends nginx curl wget python python-tk apt-transport-https ca-certificates && \
-    pip install Cython && \
-    pip install contextlib2 && \
-    pip install pillow && \
-    pip install matplotlib && \
+    apt-get install -y --no-install-recommends nginx curl wget python python-tk apt-transport-https ca-certificates  \
+        build-essential cmake unzip yasm pkg-config libswscale-dev libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev \
+        libjasper-dev libavformat-dev libhdf5-dev libpq-dev && \
+    pip install Cython contextlib2 pillow matplotlib numpy hdf5storage h5py scipy && \
     mkdir -p /opt/ml/input/data/training && \
     mkdir -p /opt/ml/model/
 
