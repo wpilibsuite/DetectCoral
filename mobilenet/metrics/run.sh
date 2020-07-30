@@ -13,8 +13,8 @@ done
 mkdir -p $DIR
 
 docker rm metrics
-docker run --gpus all --name metrics --entrypoint "/bin/bash" -it \
-       -p 5000:5000 -p 6006:6006\
+docker run --name metrics \
+      -p 6006:6006 \
        --mount type=bind,src=${DIR},dst=/opt/ml/model \
        gcperkins/wpilib-ml-metrics:latest
 # --entrypoint "/bin/bash" -it

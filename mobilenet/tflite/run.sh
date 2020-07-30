@@ -16,7 +16,7 @@ cp -R ../training/mount/train/ ./mount/train/
 cp ../dataset/mount/map.pbtxt ./mount/map.pbtxt
 cp ../training/mount/pipeline.config ./mount/pipeline.config
 docker rm tflite
-docker run --gpus all --name tflite \
+docker run --name tflite \
        --mount type=bind,src=${DIR},dst=/opt/ml/model \
        gcperkins/wpilib-ml-tflite:latest
 # --entrypoint "/bin/bash" -it

@@ -7,7 +7,7 @@ RUN cd / & mkdir tensorflow && \
     (cd models && git checkout f788046ca876a8820e05b0b48c1fc2e16b0955bc) && \
     mv models /tensorflow/models
 
-RUN pt-get update && \
+RUN apt-get update && \
     apt-get install -y --no-install-recommends nginx curl wget python python-tk apt-transport-https ca-certificates  \
         build-essential cmake unzip yasm pkg-config libswscale-dev libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev \
         libjasper-dev libavformat-dev libhdf5-dev libpq-dev && \

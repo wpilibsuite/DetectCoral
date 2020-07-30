@@ -1,13 +1,11 @@
 #!/usr/bin/env python2.7
 import os
 import shutil
-import subprocess
 
 import labels
 import modularized_model_main
 import parse_hyperparams
 import sed
-from log_parser import EvalJSONifier
 
 
 def main():
@@ -41,18 +39,12 @@ def main():
     sed.replace_words('BATCH_SIZE_PARAM', str(BATCH_SIZE), "pipeline.config")
     shutil.copy('pipeline.config', '/opt/ml/model/pipeline.config')
 
-
-
-    # start a new thread which JSON-ifies the evaluation binaries
-    json_thread = EvalJSONifier(TRAIN_STEPS)
-    json_thread.start()
     # call the API for retraining
     modularized_model_main.main(
         pipeline_config_path='pipeline.config',
         model_dir=TRAIN_PATH,
         num_train_steps=TRAIN_STEPS,
         eval_period=EVAL_FREQ)
-    json_thread.join()
 
 
 if __name__ == "__main__":
