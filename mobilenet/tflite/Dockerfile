@@ -1,7 +1,8 @@
 FROM gcperkins/wpilib-ml-base
 
 ENV OPENCV_VERSION="3.4.1"
-RUN cd / && \
+RUN set -e -x && \
+    cd / && \
     wget https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip && \
     unzip ${OPENCV_VERSION}.zip && \
     mkdir /opencv-${OPENCV_VERSION}/cmake_binary && \
@@ -19,11 +20,10 @@ RUN cd / && \
         -DBUILD_TESTS=OFF \
         -DBUILD_PERF_TESTS=OFF \
         -DCMAKE_BUILD_TYPE=RELEASE \
-        -DCMAKE_INSTALL_PREFIX=$(python -c "import sys; print sys.prefix") \
+        -DCMAKE_INSTALL_PREFIX=$(python -c "import sys; print sys.prefix ") \
         -DPYTHON_EXECUTABLE=$(which python) \
-        -DPYTHON_INCLUDE_DIR=$(python -c "from distutils.sysconfig import get_python_inc; print get_python_inc() ") \
+        -DPYTHON_INCLUDE_DIR=$(python -c "from distutils.sysconfig import get_python_inc; print get_python_inc()") \
         -DPYTHON_PACKAGES_PATH=$(python -c "from distutils.sysconfig import get_python_lib; print get_python_lib()") .. && \
-    make && \
     make install && \
     rm /${OPENCV_VERSION}.zip && \
     rm -r /opencv-${OPENCV_VERSION}

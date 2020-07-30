@@ -1,5 +1,7 @@
+from __future__ import print_function
 import subprocess
 import tarfile
+import test
 from os.path import join
 
 import parse_hyperparams
@@ -20,6 +22,10 @@ def main():
         model.add(join(model_dir, second_export), arcname="model.tflite")
         model.add(model_dir + "map.pbtxt", arcname="map.pbtxt")
         model.add(unoptimized, arcname="unoptimized.tflite")
+
+    if data["test"]:
+        video_path = data["test-video"]
+        test.main(video_path)
 
 
 if __name__ == "__main__":

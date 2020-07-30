@@ -18,7 +18,6 @@ cp ../dataset/mount/map.pbtxt ./mount/map.pbtxt
 
 docker rm train
 docker run --gpus all --name train \
-       -p 5000:5000 -p 6006:6006\
        --mount type=bind,src=${DIR},dst=/opt/ml/model \
        gcperkins/wpilib-ml-train:latest
 # --entrypoint "/bin/bash" -it
