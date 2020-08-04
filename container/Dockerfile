@@ -57,11 +57,6 @@ RUN apt-get install -y apt-transport-https ca-certificates
 
 ARG work_dir=/tensorflow/models/research
 # Get object detection transfer learning scripts.
-ARG scripts_link="http://storage.googleapis.com/cloud-iot-edge-pretrained-models/docker/obj_det_scripts.tgz"
-
-RUN cd ${work_dir} && \
-    wget -O obj_det_scripts.tgz ${scripts_link} && \
-    tar zxvf obj_det_scripts.tgz
 
 RUN curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - && \
     echo "deb https://packages.cloud.google.com/apt coral-edgetpu-stable main" | tee /etc/apt/sources.list.d/coral-edgetpu.list && \
