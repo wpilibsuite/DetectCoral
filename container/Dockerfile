@@ -12,13 +12,6 @@ RUN git clone https://github.com/tensorflow/models.git && \
 RUN apt-get update && apt-get install -y --no-install-recommends nginx curl
 RUN apt-get install wget
 
-RUN mkdir -p /opt/ml/input/data/training && \
- mkdir -p /opt/ml/model/ && \
-cd /opt/ml/input/data/training && \
-wget https://github.com/GrantPerkins/DetectCoral/releases/download/v1.0.1/RawData.tar -q
-
-RUN mkdir -p /opt/ml/input/config/
-
 
 # Install the Tensorflow Object Detection API from here
 # https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/installation.md
@@ -64,11 +57,6 @@ RUN apt-get install -y apt-transport-https ca-certificates
 
 ARG work_dir=/tensorflow/models/research
 # Get object detection transfer learning scripts.
-ARG scripts_link="http://storage.googleapis.com/cloud-iot-edge-pretrained-models/docker/obj_det_scripts.tgz"
-
-RUN cd ${work_dir} && \
-    wget -O obj_det_scripts.tgz ${scripts_link} && \
-    tar zxvf obj_det_scripts.tgz
 
 RUN curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - && \
     echo "deb https://packages.cloud.google.com/apt coral-edgetpu-stable main" | tee /etc/apt/sources.list.d/coral-edgetpu.list && \
@@ -79,6 +67,5 @@ ENV PATH="/tensorflow/models/research:${PATH}"
 # Copy WPILib scripts into docker image
 COPY /coral /tensorflow/models/research
 
-RUN cd /tensorflow/models/research && mv hyperparameters.json /opt/ml/input/config/hyperparameters.json
 
 WORKDIR /tensorflow/models/research
