@@ -119,7 +119,8 @@ def main(config):
         t, frame = cvSink.grabFrame(img)
 
         # Run inference.
-        ans = engine.detect_with_image(Image.fromarray(frame), threshold=0.5, keep_aspect_ratio=True, relative_coord=False, top_k=10)
+        ans = engine.detect_with_image(Image.fromarray(frame), threshold=0.5, keep_aspect_ratio=True,
+                                       relative_coord=False, top_k=10)
         nb_objects_entry.setNumber(len(ans))
 
         boxes = []
@@ -133,7 +134,7 @@ def main(config):
                     names.append(labels[obj.label_id])
                 box = [round(i, 3) for i in obj.bounding_box.flatten().tolist()]
                 boxes.extend(box)
-                xmin, ymin, xmax, ymax = map(int,box)
+                xmin, ymin, xmax, ymax = map(int, box)
 
                 label = '%s: %d%%' % (names[-1], int(obj.score * 100))  # Example: 'Cargo: 72%'
                 label_size, base_line = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.5, 2)

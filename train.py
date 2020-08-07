@@ -6,7 +6,6 @@ role = get_execution_role()
 instance_type = 'ml.m5.xlarge'
 algorithm_name = 'wpi-cpu'
 
-
 """
 Hyperparameters:
     epochs -> int: number of training steps. Training time is proportional to this number. default = 1000

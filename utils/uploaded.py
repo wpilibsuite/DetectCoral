@@ -10,8 +10,6 @@ import json
 import tarfile
 
 
-
-
 class PBTXTParser:
     def __init__(self, path):
         self.path = path

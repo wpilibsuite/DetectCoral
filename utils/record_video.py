@@ -6,6 +6,8 @@ Records an mp4 using OpenCV, using the specified device, writing video to the ou
 
 We chose to have our FPS be 25, so that there were noticeable frame-to-frame differences. This ensures that labelling is not redundant.
 """
+
+
 def record(device, output):
     WIDTH, HEIGHT, FPS = 640, 480, 25
     cap = cv2.VideoCapture(device)

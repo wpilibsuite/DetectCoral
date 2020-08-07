@@ -1,8 +1,14 @@
 from __future__ import print_function
+
+import SimpleHTTPServer
+import SocketServer
+
 import cv2
 import numpy as np
 from time import time
 import tensorflow as tf
+
+from mjpegstreamer import MJPEGServer
 
 
 class PBTXTParser:
@@ -49,6 +55,10 @@ def test_video(video_path, interpreter, labels):
     fps = video.get(cv2.CAP_PROP_FPS)
     fourcc = cv2.VideoWriter_fourcc(*'XVID')
     out = cv2.VideoWriter("/opt/ml/model/inference.avi", fourcc, fps, (int(image_width), int(image_height)))
+
+    server = MJPEGServer(image_width, image_height)
+    server.start()
+    print("MJPEG server started")
 
     floating_model = (input_details[0]['dtype'] == np.float32)
     while video.isOpened():
@@ -109,7 +119,9 @@ def test_video(video_path, interpreter, labels):
         if frames % 1000 == 0:
             print("Completed", frames, "frames. FPS:", (1 / (time() - start)))
         frames += 1
+        # print("frame sent")
         out.write(frame)
+        server.set_image(frame)
     video.release()
 
 

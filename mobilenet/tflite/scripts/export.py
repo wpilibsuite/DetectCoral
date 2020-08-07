@@ -18,7 +18,7 @@ def main():
     export_dir = join(model_dir, data["export-dir"])
     subprocess.check_call("./convert_checkpoint_to_edgetpu_tflite.sh --checkpoint_num %s" % epoch, shell=True)
     subprocess.check_call("edgetpu_compiler %s -o %s" % (unoptimized, model_dir), shell=True)
-
+    #
     with tarfile.open(join(export_dir, output_name + ".tar.gz"), 'w:gz') as model:
         model.add(join(model_dir, second_export), arcname="model.tflite")
         model.add(model_dir + "map.pbtxt", arcname="map.pbtxt")

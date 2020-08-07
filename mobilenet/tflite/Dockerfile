@@ -38,10 +38,10 @@ RUN curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - &
     rm -rf /tensorflow/models/research/learn/train && \
     rm -rf /tensorflow/models/research/learn/models && \
     cd /tensorflow/models/research/ && \
+    pip install pillow && \
     wget "https://github.com/wpilibsuite/DetectCoral/releases/download/v2/tflite_graph.pb" && \
     wget "https://github.com/wpilibsuite/DetectCoral/releases/download/v2/testing.mp4"
 
 COPY scripts /tensorflow/models/research/
 WORKDIR /tensorflow/models/research/
-ENTRYPOINT ["python"]
-CMD ["export.py"]
+CMD ["python", "-u", "export.py"]
