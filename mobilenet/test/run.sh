@@ -16,7 +16,7 @@ cp ../../params/testparameters.json ./mount/testparameters.json
 cp ../tflite/mount/model.tar.gz ./mount/model.tar.gz
 cp ../dataset/mount/map.pbtxt ./mount/map.pbtxt
 
-docker rm tflite
+docker rm test
 docker run --name test \
         -p 5000:5000 \
         --mount type=bind,src=${DIR},dst=/opt/ml/model \
