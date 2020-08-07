@@ -1,43 +1,14 @@
 from __future__ import print_function
 
-import SimpleHTTPServer
-import SocketServer
-
 import cv2
 import numpy as np
 from time import time
 import tensorflow as tf
+import parse_hyperparams
+from pbtxt import PBTXTParser
+import tarfile
 
 from mjpegstreamer import MJPEGServer
-
-
-class PBTXTParser:
-    def __init__(self, path):
-        self.path = path
-        self.file = None
-
-    def parse(self):
-        with open(self.path, 'r') as f:
-            self.file = ''.join([i.replace('item', '') for i in f.readlines()])
-            blocks = []
-            obj = ""
-            for i in self.file:
-                if i == '}':
-                    obj += i
-                    blocks.append(obj)
-                    obj = ""
-                else:
-                    obj += i
-            self.file = blocks
-            label_map = []
-            for obj in self.file:
-                obj = [i for i in obj.split('\n') if i]
-                name = obj[2].split()[1][1:-1]
-                label_map.append(name)
-            self.file = label_map
-
-    def get_labels(self):
-        return self.file
 
 
 def test_video(video_path, interpreter, labels):
@@ -125,14 +96,24 @@ def test_video(video_path, interpreter, labels):
     video.release()
 
 
-def main(video_path):
+def main():
+    model_dir = "/opt/ml/model/"
+    data = parse_hyperparams.parse(model_dir + "testparameters.json")
+    video_path = data["test-video"]
+    model_path = data["model-tar"]
+    tar = tarfile.open(model_path)
+    tar.extractall("/tensorflow/models/research/")
+
     parser = PBTXTParser("/opt/ml/model/map.pbtxt")
     parser.parse()
     labels = parser.file
 
     interpreter = tf.contrib.lite.Interpreter(
-        model_path="/tensorflow/models/research/learn/models/output_tflite_graph.tflite")
+        model_path="/tensorflow/models/research/unoptimized.tflite")
     interpreter.allocate_tensors()
     test_video(video_path, interpreter, labels)
 
     print("Done.")
+
+if __name__ == '__main__':
+    main()

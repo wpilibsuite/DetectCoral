@@ -2,7 +2,5 @@
   "model": "mobilenetv2",
   "name": "model",
   "epochs": 200,
-  "test-video": "/tensorflow/models/research/testing.mp4",
-  "test": true,
   "export-dir": "/opt/ml/model/"
 }

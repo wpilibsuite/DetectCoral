@@ -6,7 +6,5 @@
   "batch-size": 32,
   "eval-frequency": 50,
   "checkpoint": "default",
-  "percent-eval": 30,
-  "test-video": "/tensorflow/models/research/testing.mp4",
-  "test": true
+  "percent-eval": 30
 }

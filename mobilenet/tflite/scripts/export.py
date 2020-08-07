@@ -24,10 +24,6 @@ def main():
         model.add(model_dir + "map.pbtxt", arcname="map.pbtxt")
         model.add(unoptimized, arcname="unoptimized.tflite")
 
-    if data["test"]:
-        video_path = data["test-video"]
-        test.main(video_path)
-
 
 if __name__ == "__main__":
     main()

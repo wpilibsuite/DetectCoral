@@ -1,4 +1,5 @@
 DIR=$PWD/mount
+
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --mount)
@@ -11,13 +12,13 @@ while [[ $# -gt 0 ]]; do
 done
 
 mkdir -p $DIR
-cp ../../params/exportparameters.json ./mount/exportparameters.json
-cp -R ../training/mount/train/ ./mount/train/
+cp ../../params/testparameters.json ./mount/testparameters.json
+cp ../tflite/mount/model.tar.gz ./mount/model.tar.gz
 cp ../dataset/mount/map.pbtxt ./mount/map.pbtxt
-cp ../training/mount/pipeline.config ./mount/pipeline.config
+
 docker rm tflite
-docker run --name tflite \
+docker run --name test \
         -p 5000:5000 \
         --mount type=bind,src=${DIR},dst=/opt/ml/model \
-        gcperkins/wpilib-ml-tflite:latest
+        gcperkins/wpilib-ml-test:latest
 # --entrypoint "/bin/bash" -it

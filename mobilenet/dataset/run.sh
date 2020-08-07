@@ -11,7 +11,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 mkdir -p $DIR
-cp ../../hyperparameters.json ./mount/hyperparameters.json
+cp ../../params/hyperparameters.json ./mount/hyperparameters.json
 cp ../../full_data.tar ./mount/full_data.tar
 docker rm dataset
 docker run --name dataset \

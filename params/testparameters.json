@@ -1,0 +1,4 @@
+{
+  "test-video": "/tensorflow/models/research/testing.mp4",
+  "model-tar": "/opt/ml/model/model.tar.gz"
+}
