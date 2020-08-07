@@ -14,13 +14,10 @@ class StreamingHandler(BaseHTTPRequestHandler):
             self.send_header('Content-type', 'multipart/x-mixed-replace; boundary=--jpgboundary')
             self.end_headers()
             while True:
-                try:
-                    r, buf = cv2.imencode(".jpg", MJPEGServer.get_image())
-                    self.wfile.write("--jpgboundary\r\n".encode())
-                    self.end_headers()
-                    self.wfile.write(bytearray(buf))
-                except KeyboardInterrupt:
-                    break
+                r, buf = cv2.imencode(".jpg", MJPEGServer.get_image())
+                self.wfile.write("--jpgboundary\r\n".encode())
+                self.end_headers()
+                self.wfile.write(bytearray(buf))
             return
 
         if self.path.endswith('.html') or self.path == "/":
