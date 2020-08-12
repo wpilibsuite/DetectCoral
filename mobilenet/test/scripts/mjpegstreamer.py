@@ -1,9 +1,6 @@
 import threading
-from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
-from SocketServer import ThreadingMixIn
+from http.server import BaseHTTPRequestHandler, HTTPServer
 import cv2
-from PIL import Image
-import StringIO
 
 
 class StreamingHandler(BaseHTTPRequestHandler):
@@ -13,28 +10,23 @@ class StreamingHandler(BaseHTTPRequestHandler):
             self.send_response(200)
             self.send_header('Content-type', 'multipart/x-mixed-replace; boundary=--jpgboundary')
             self.end_headers()
-            while True:
-                r, buf = cv2.imencode(".jpg", MJPEGServer.get_image())
-                self.wfile.write("--jpgboundary\r\n".encode())
-                self.end_headers()
-                self.wfile.write(bytearray(buf))
-            return
-
-        if self.path.endswith('.html') or self.path == "/":
-            self.send_response(200)
-            self.send_header('Content-type', 'text/html')
-            self.end_headers()
-            self.wfile.write('<html><head></head><body>')
-            self.wfile.write(
-                '<img src="http://localhost:5000/stream.mjpg" height="{}px" width="{}px"/>'.format(MJPEGServer.height,
-                                                                                                   MJPEGServer.width))
-            self.wfile.write('</body></html>')
-            return
+            try:
+                while True:
+                    r, buf = cv2.imencode(".jpg", MJPEGServer.get_image())
+                    self.wfile.write("--jpgboundary\r\n".encode())
+                    self.end_headers()
+                    self.wfile.write(bytearray(buf))
+                return
+            except BrokenPipeError:
+                return
 
 
-class StreamingServer(ThreadingMixIn, HTTPServer):
-    allow_reuse_address = True
-    daemon_threads = True
+        print(self.path)
+        self.send_response(302)
+        self.send_header('Location', "/stream.mjpg")
+        self.end_headers()
+
+
 
 
 class MJPEGServer(threading.Thread):

@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 import cv2
 import numpy as np
 from time import time
@@ -24,14 +22,14 @@ def test_video(video_path, interpreter, labels):
     image_width = video.get(cv2.CAP_PROP_FRAME_WIDTH)
     image_height = video.get(cv2.CAP_PROP_FRAME_HEIGHT)
     fps = video.get(cv2.CAP_PROP_FPS)
-    fourcc = cv2.VideoWriter_fourcc(*'XVID')
-    out = cv2.VideoWriter("/opt/ml/model/inference.avi", fourcc, fps, (int(image_width), int(image_height)))
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    out = cv2.VideoWriter("/opt/ml/model/inference.mp4", fourcc, fps, (int(image_width), int(image_height)))
 
     server = MJPEGServer(image_width, image_height)
     server.start()
     print("MJPEG server started")
 
-    floating_model = (input_details[0]['dtype'] == np.float32)
+    o_scale, o_mean = output_details[1]['quantization']
     while video.isOpened():
         start = time()
         # Acquire frame and resize to expected shape [1xHxWx3]
@@ -42,9 +40,7 @@ def test_video(video_path, interpreter, labels):
         frame_resized = cv2.resize(frame_rgb, (width, height))
         input_data = np.expand_dims(frame_resized, axis=0)
 
-        # Normalize pixel values if using a floating model (i.e. if model is non-quantized)
-        if floating_model:
-            input_data = (np.float32(input_data) - input_mean) / input_std
+        input_data = (np.float32(input_data) - input_mean) / input_std
 
         # Perform the actual detection by running the model with the image as input
         interpreter.set_tensor(input_details[0]['index'], input_data)
@@ -54,7 +50,6 @@ def test_video(video_path, interpreter, labels):
         boxes = interpreter.get_tensor(output_details[0]['index'])
         scores = interpreter.get_tensor(output_details[2]['index'])
 
-        o_scale, o_mean = output_details[1]['quantization']
 
         classes = np.squeeze(interpreter.get_tensor(output_details[1]['index']))
         classes = (classes - o_mean) * o_scale
@@ -108,7 +103,7 @@ def main():
     parser.parse()
     labels = parser.file
 
-    interpreter = tf.contrib.lite.Interpreter(
+    interpreter = tf.lite.Interpreter(
         model_path="/tensorflow/models/research/unoptimized.tflite")
     interpreter.allocate_tensors()
     test_video(video_path, interpreter, labels)
