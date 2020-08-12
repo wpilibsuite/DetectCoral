@@ -27,20 +27,18 @@ def test_video(video_path, interpreter, labels):
 
     server = MJPEGServer(image_width, image_height)
     server.start()
-    print("MJPEG server started")
-
     o_scale, o_mean = output_details[1]['quantization']
+
+    print("MJPEG server started")
     while video.isOpened():
         start = time()
         # Acquire frame and resize to expected shape [1xHxWx3]
         ret, frame = video.read()
-        if ret is None:
+        if not ret:
             break
         frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         frame_resized = cv2.resize(frame_rgb, (width, height))
         input_data = np.expand_dims(frame_resized, axis=0)
-
-        input_data = (np.float32(input_data) - input_mean) / input_std
 
         # Perform the actual detection by running the model with the image as input
         interpreter.set_tensor(input_details[0]['index'], input_data)
@@ -49,7 +47,6 @@ def test_video(video_path, interpreter, labels):
         # Retrieve detection results
         boxes = interpreter.get_tensor(output_details[0]['index'])
         scores = interpreter.get_tensor(output_details[2]['index'])
-
 
         classes = np.squeeze(interpreter.get_tensor(output_details[1]['index']))
         classes = (classes - o_mean) * o_scale
@@ -109,6 +106,7 @@ def main():
     test_video(video_path, interpreter, labels)
 
     print("Done.")
+
 
 if __name__ == '__main__':
     main()
