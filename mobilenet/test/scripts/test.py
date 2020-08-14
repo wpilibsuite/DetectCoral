@@ -15,8 +15,6 @@ def test_video(video_path, interpreter, labels):
     frames = 0
     height = input_details[0]['shape'][1]
     width = input_details[0]['shape'][2]
-    input_mean = 127.5
-    input_std = 127.5
 
     video = cv2.VideoCapture(video_path)
     image_width = video.get(cv2.CAP_PROP_FRAME_WIDTH)

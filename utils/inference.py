@@ -94,9 +94,7 @@ def main(config):
     ntinst.startClientTeam(team)
 
     """Format of these entries found in WPILib documentation."""
-    nb_objects_entry = ntinst.getTable("ML").getEntry("nb_objects")
-    boxes_entry = ntinst.getTable("ML").getEntry("boxes")
-    object_classes_entry = ntinst.getTable("ML").getEntry("object_classes")
+    detections_entry = ntinst.getTable("ML").getEntry("detections")
 
     print("Starting camera server")
     cs = CameraServer.getInstance()
@@ -121,36 +119,36 @@ def main(config):
         # Run inference.
         ans = engine.detect_with_image(Image.fromarray(frame), threshold=0.5, keep_aspect_ratio=True,
                                        relative_coord=False, top_k=10)
-        nb_objects_entry.setNumber(len(ans))
 
-        boxes = []
-        names = []
+        detections = list()
+        name = "No label file found."
 
         # Display result.
         if ans:
             for obj in ans:
                 log_object(obj, labels)
                 if labels:
-                    names.append(labels[obj.label_id])
+                    name = labels[obj.label_id]
                 box = [round(i, 3) for i in obj.bounding_box.flatten().tolist()]
-                boxes.extend(box)
-                xmin, ymin, xmax, ymax = map(int, box)
+                confidence = int(obj.score * 100)
 
-                label = '%s: %d%%' % (names[-1], int(obj.score * 100))  # Example: 'Cargo: 72%'
+                xmin, ymin, xmax, ymax = map(int, box)
+                detection = {"name": name, "box": [(xmin, ymin), (xmax, ymax)], "confidence": confidence}
+                detections.append(detection)
+
+                label = '%s: %d%%' % (name, confidence)  # Example: 'Cargo: 72%'
                 label_size, base_line = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.5, 2)
                 label_ymin = max(ymin, label_size[1] + 10)
                 cv2.rectangle(frame, (xmin, label_ymin - label_size[1] - 10),
                               (xmin + label_size[0], label_ymin + base_line - 10), (255, 255, 255), cv2.FILLED)
                 cv2.putText(frame, label, (xmin, label_ymin - 7), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2)
                 cv2.rectangle(frame, (xmin, ymin), (xmax, ymax), (10, 255, 0), 4)
-
             output.putFrame(frame)
 
         else:
             print('No object detected!')
             output.putFrame(img)
-        boxes_entry.setDoubleArray(boxes)
-        object_classes_entry.setStringArray(names)
+        detections_entry.putString(json.dumps(detections))
         print("FPS: {:.1f}".format(1 / (time() - start)))
 
         start = time()
