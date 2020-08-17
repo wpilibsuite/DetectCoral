@@ -16,7 +16,6 @@ def main(percent_eval):
             csv.write("filename,width,height,class,xmin,ymin,xmax,ymax\n")
 
             for filename in files:
-
                 # path = base + '/' + filename
                 path = filename
                 filename = filename.split('home/')[1]
