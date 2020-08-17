@@ -1,4 +1,4 @@
-import sys
+from __future__ import print_function
 import json
 import glob
 
@@ -7,7 +7,7 @@ def main(percent_eval):
     f = []
     for file in glob.glob("/home/**/**/**/**/*.json"):
         f.append(file)
-
+    print("Percent eval: {}%".format(percent_eval))
     train_jsons = [f[i] for i in range(len(f)) if i % 100 >= percent_eval]
     eval_jsons = [f[i] for i in range(len(f)) if i % 100 < percent_eval]
 
