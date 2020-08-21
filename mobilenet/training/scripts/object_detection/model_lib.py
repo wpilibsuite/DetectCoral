@@ -495,7 +495,8 @@ def create_model_fn(detection_model_fn, configs, hparams, use_tpu=False,
                     train_config.keep_checkpoint_every_n_hours)
                 saver = tf.train.Saver(
                     variables_to_restore,
-                    keep_checkpoint_every_n_hours=keep_checkpoint_every_n_hours)
+                    keep_checkpoint_every_n_hours=keep_checkpoint_every_n_hours,
+                    max_to_keep=None)
                 scaffold = tf.train.Scaffold(saver=saver)
 
         # EVAL executes on CPU, so use regular non-TPU EstimatorSpec.

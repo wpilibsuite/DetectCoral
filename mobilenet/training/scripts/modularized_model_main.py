@@ -32,7 +32,7 @@ def main(
     Returns:
         None
     """
-    config = tf.estimator.RunConfig(model_dir=model_dir, save_checkpoints_steps=eval_period)
+    config = tf.estimator.RunConfig(model_dir=model_dir, save_checkpoints_steps=eval_period, keep_checkpoint_max=None)
 
     train_and_eval_dict = model_lib.create_estimator_and_inputs(
         run_config=config,
