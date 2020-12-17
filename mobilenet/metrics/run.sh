@@ -16,5 +16,5 @@ docker rm metrics
 docker run --name metrics \
       -p 6006:6006 \
        --mount type=bind,src=${DIR},dst=/opt/ml/model \
-       gcperkins/wpilib-ml-metrics:latest
+       gcperkins/wpilib-ml-metrics:small
 # --entrypoint "/bin/bash" -it

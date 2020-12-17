@@ -1,4 +1,4 @@
-FROM gcperkins/wpilib-ml-base
+FROM gcperkins/wpilib-ml-base:small
 
 RUN mkdir -p /tensorflow/models/research/learn && \
     mkdir -p /tensorflow/models/research/learn/ckpt && \

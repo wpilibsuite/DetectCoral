@@ -1,6 +1,6 @@
 {
   "model": "mobilenetv2",
   "name": "model",
-  "epochs": 200,
+  "epochs": 500,
   "export-dir": "/opt/ml/model/"
 }

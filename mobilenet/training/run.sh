@@ -19,5 +19,5 @@ cp ../dataset/mount/map.pbtxt ./mount/map.pbtxt
 docker rm train
 docker run --name train \
        --mount type=bind,src=${DIR},dst=/opt/ml/model \
-       gcperkins/wpilib-ml-train:latest
+       gcperkins/wpilib-ml-train:small
 # --entrypoint "/bin/bash" -it
