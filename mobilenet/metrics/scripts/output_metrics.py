@@ -1,17 +1,21 @@
-import subprocess
-
+import subprocess, argparse, os
 import log_parser
 import parse_hyperparams
 
 
-def main():
+def main(directory):
     # tensorboard runs at http://localhost:6006
-    subprocess.Popen(['tensorboard', '--logdir', '/opt/ml/model/train'])
-    data = parse_hyperparams.parse("/opt/ml/model/hyperparameters.json")
+    subprocess.Popen(['tensorboard', '--logdir', os.path.join(directory,'train')])
+    data = parse_hyperparams.parse(os.path.join(directory,"hyperparameters.json"))
     TRAIN_STEPS = data["epochs"]
-    parser = log_parser.EvalJSONifier(TRAIN_STEPS)
+    parser = log_parser.EvalJSONifier(directory, TRAIN_STEPS)
     parser.start()
 
 
 if __name__ == "__main__":
-    main()
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--dir', type=str, help='Path of the folder to train in.')
+    DIRECTORY = parser.parse_args().dir
+    
+    main(DIRECTORY)
