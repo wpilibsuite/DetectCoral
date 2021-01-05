@@ -12,5 +12,4 @@ RUN mkdir -p /tensorflow/models/research/learn && \
 
 COPY scripts /tensorflow/models/research/
 WORKDIR /tensorflow/models/research/
-ENTRYPOINT ["python"]
-CMD ["train.py"]
+ENTRYPOINT ["python", "train.py"]
