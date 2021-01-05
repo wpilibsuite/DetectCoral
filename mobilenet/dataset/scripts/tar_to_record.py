@@ -18,7 +18,7 @@ def main(dataset_paths, percent_eval, directory):
         for i in dataset_paths:
             shutil.copy(i, join(EXTRACT_PATH, 'data.tar'))
     except:
-        print('unable to retrieve a dataset tar file.')
+        print('unable to retrieve a dataset tar file:')
         sys.exit(1)
     for dataset in dataset_paths:
         with tarfile.open(dataset) as tar_file:
@@ -42,10 +42,10 @@ def main(dataset_paths, percent_eval, directory):
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--dir', type=string, help='Path of the folder to train in.')
+    parser.add_argument('--dir', type=str, help='Path of the folder to train in.')
     DIRECTORY = parser.parse_args().dir
     
-    data = parse_hyperparams.parse(os.path.join(hyperparameters.json))
+    data = parse_hyperparams.parse(os.path.join(DIRECTORY,"hyperparameters.json"))
     DATASET_PATHS = data["dataset-path"]
     PERCENT_EVAL = data["percent-eval"]
     main(DATASET_PATHS, PERCENT_EVAL, DIRECTORY)
