@@ -1,10 +1,11 @@
-import sys, os, shutil, tarfile
+import sys, os, shutil, tarfile, argparse
 import json_to_csv, generate_tfrecord, parse_meta, parse_hyperparams
 from os.path import join
 
 
-def main(dataset_paths, percent_eval):
-    OUTPUT_PATH = "/opt/ml/model"
+def main(dataset_paths, percent_eval, directory):
+
+    OUTPUT_PATH = directory
     EXTRACT_PATH = "/home"
     TMP_PATH = "/home/tmp"
 
@@ -39,7 +40,12 @@ def main(dataset_paths, percent_eval):
 
 
 if __name__ == "__main__":
-    data = parse_hyperparams.parse("/opt/ml/model/hyperparameters.json")
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--dir', type=string, help='Path of the folder to train in.')
+    DIRECTORY = parser.parse_args().dir
+    
+    data = parse_hyperparams.parse(os.path.join(hyperparameters.json))
     DATASET_PATHS = data["dataset-path"]
     PERCENT_EVAL = data["percent-eval"]
-    main(DATASET_PATHS, PERCENT_EVAL)
+    main(DATASET_PATHS, PERCENT_EVAL, DIRECTORY)
