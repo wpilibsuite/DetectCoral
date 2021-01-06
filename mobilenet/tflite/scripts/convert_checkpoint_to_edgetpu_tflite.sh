@@ -8,16 +8,21 @@ usage() {
   cat << END_OF_USAGE
   Converts TensorFlow checkpoint to EdgeTPU-compatible TFLite file.
 
-  --checkpoint_num  Checkpoint number, by default 0.
+  --config_path Path of the pipeline config file.
+  --ckpt_path Path to the checkpoint, without file extension. 
   --help            Display this help.
 END_OF_USAGE
 }
 
-ckpt_number=0
+config_path=""
+ckpt_path=""
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --checkpoint_num)
-      ckpt_number=$2
+    --config_path)
+      config_path=$2
+      shift 2 ;;
+    --ckpt_path)
+      ckpt_path=$2
       shift 2 ;;
     --help)
       usage
@@ -35,12 +40,13 @@ OUTPUT_DIR="/tensorflow/models/research/learn/models"
 rm -rf "${OUTPUT_DIR}"
 mkdir "${OUTPUT_DIR}"
 
-echo $ckpt_number
+echo $config_path
+echo $ckpt_path
 
 echo "EXPORTING frozen graph from checkpoint..."
 python object_detection/export_tflite_ssd_graph.py \
-  --pipeline_config_path="/opt/ml/model/pipeline.config" \
-  --trained_checkpoint_prefix="/opt/ml/model/train/model.ckpt-${ckpt_number}" \
+  --pipeline_config_path="${config_path}" \
+  --trained_checkpoint_prefix="${ckpt_path}" \
   --output_directory="${OUTPUT_DIR}" \
   --add_postprocessing_op=true
 
