@@ -12,4 +12,4 @@ RUN pip3 install tensorflow pillow
 
 COPY scripts /tensorflow/models/research/
 WORKDIR /tensorflow/models/research/
-CMD ["python3", "-u", "test.py"]
+ENTRYPOINT ["python3", "-u", "test.py", "--dir"]
