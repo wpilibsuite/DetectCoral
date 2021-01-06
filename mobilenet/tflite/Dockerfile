@@ -14,4 +14,4 @@ RUN curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - &
 
 COPY scripts /tensorflow/models/research/
 WORKDIR /tensorflow/models/research/
-CMD ["python", "-u", "export.py"]
+ENTRYPOINT ["python", "-u", "export.py", "--dir"]

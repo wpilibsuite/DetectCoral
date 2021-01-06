@@ -5,5 +5,4 @@ RUN mkdir -p /opt/ml/model/tmp && \
 COPY scripts /tensorflow/models/research/
 
 WORKDIR /tensorflow/models/research/
-ENTRYPOINT ["python"]
-CMD ["tar_to_record.py"]
+ENTRYPOINT ["python", "tar_to_record.py", "--dir"]

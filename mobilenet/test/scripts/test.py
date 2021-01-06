@@ -5,11 +5,13 @@ import tensorflow as tf
 import parse_hyperparams
 from pbtxt import PBTXTParser
 import tarfile
+import argparse
+from os.path import join
 
 from mjpegstreamer import MJPEGServer
 
 
-def test_video(video_path, interpreter, labels):
+def test_video(directory, video_path, interpreter, labels):
     input_details = interpreter.get_input_details()
     output_details = interpreter.get_output_details()
     frames = 0
@@ -21,7 +23,7 @@ def test_video(video_path, interpreter, labels):
     image_height = video.get(cv2.CAP_PROP_FRAME_HEIGHT)
     fps = video.get(cv2.CAP_PROP_FPS)
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    out = cv2.VideoWriter("/opt/ml/model/inference.mp4", fourcc, fps, (int(image_width), int(image_height)))
+    out = cv2.VideoWriter(join(directory, "inference.mp4"), fourcc, fps, (int(image_width), int(image_height)))
 
     server = MJPEGServer(image_width, image_height)
     server.start()
@@ -86,25 +88,29 @@ def test_video(video_path, interpreter, labels):
     video.release()
 
 
-def main():
-    model_dir = "/opt/ml/model/"
-    data = parse_hyperparams.parse(model_dir + "testparameters.json")
+def main(directory):
+    model_dir = directory
+    data = parse_hyperparams.parse(join(model_dir, "testparameters.json"))
     video_path = data["test-video"]
     model_path = data["model-tar"]
     tar = tarfile.open(model_path)
     tar.extractall("/tensorflow/models/research/")
 
-    parser = PBTXTParser("/opt/ml/model/map.pbtxt")
+    parser = PBTXTParser(join(model_dir, "map.pbtxt"))
     parser.parse()
     labels = parser.file
 
     interpreter = tf.lite.Interpreter(
         model_path="/tensorflow/models/research/unoptimized.tflite")
     interpreter.allocate_tensors()
-    test_video(video_path, interpreter, labels)
+    test_video(directory, video_path, interpreter, labels)
 
     print("Done.")
 
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--dir', type=str, help='Path of the folder to export in.')
+    DIRECTORY = parser.parse_args().dir
+
+    main(DIRECTORY)

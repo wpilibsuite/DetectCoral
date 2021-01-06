@@ -1,6 +1,7 @@
-def get_total():
+import os
+def get_total(directory):
     a = ""
-    with open("/opt/ml/model/map.pbtxt", 'r') as f:
+    with open(os.path.join(directory, "map.pbtxt"), 'r') as f:
         for i in f.readlines():
             a += i
     return a.count("id")

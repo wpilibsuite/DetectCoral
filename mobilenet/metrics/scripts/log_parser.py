@@ -3,6 +3,7 @@ import glob
 import time
 import json
 from collections import OrderedDict
+import os
 
 from tensorboard.backend.event_processing.event_accumulator import EventAccumulator
 
@@ -12,7 +13,7 @@ class EvalJSONifier:
     Thread for converting evaluation binaries to json
     """
 
-    def __init__(self, last_epoch):
+    def __init__(self, directory, last_epoch):
         """
         Initializes the thread
         Args:
@@ -24,7 +25,8 @@ class EvalJSONifier:
             'scalars': 1000,
             'histograms': 1
         }
-        self.log_path = "/opt/ml/model/train/eval_0/*"
+        self.directory = directory
+        self.log_path = os.path.join(directory, "train/eval_0/*")
         self.last_epoch = last_epoch
         self.precision = OrderedDict()
 
@@ -47,7 +49,7 @@ class EvalJSONifier:
                     self.precision[int(entry.step)] = float(entry.value)
                 if last_saved_epoch != int(mAP[-1].step):
                     last_saved_epoch = int(mAP[-1].step)
-                    with open("/opt/ml/model/metrics.json", 'w') as file:
+                    with open(os.path.join(self.directory, "metrics.json"), 'w') as file:
                         json.dump({"precision": self.precision}, file)
             else:
                 log = glob.glob(self.log_path)
